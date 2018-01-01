@@ -12,16 +12,22 @@ using System.Windows.Forms;
 
 using CryptoTax.TransactionImport;
 using System.IO;
+using Autofac.Features.Indexed;
 
 namespace CryptoTax
 {
     public partial class ImportTransactionsDialog : Form
     {
+        private readonly IIndex<TransactionImporterType, ITransactionImporter> _transacionImporterIndex;
+
         public IReadOnlyCollection<Transaction> Transactions {get; private set; }
 
-        public ImportTransactionsDialog()
+        public ImportTransactionsDialog(
+            IIndex<TransactionImporterType, ITransactionImporter> transacionImporterIndex)
         {
             InitializeComponent();
+
+            this._transacionImporterIndex = transacionImporterIndex;
 
             this.ImportButton.Click += this.ImportButton_Click;
             this.FileBrowseButton.Click += this.FileBrowseButton_Click;
@@ -41,15 +47,15 @@ namespace CryptoTax
             ITransactionImporter transactionImporter;
             if(this.CoinbaseCsvRadioButton.Checked)
             {
-                transactionImporter = new CoinbaseCsvImporter();
+                transactionImporter = this._transacionImporterIndex[TransactionImporterType.CoinbaseCsvImporter];
             }
             else if(this.GdaxFillCsvRadioButton.Checked)
             {
-                transactionImporter = new GdaxFillCsvImporter();
+                transactionImporter = this._transacionImporterIndex[TransactionImporterType.GdaxFillCsvImporter];
             }
             else if (this.BitrexOrderCsvRadioButton.Checked)
             {
-                transactionImporter = new BitrixOrderCsvImporter();
+                transactionImporter = this._transacionImporterIndex[TransactionImporterType.BitrixOrderCsvImporter];
             }
             else
             {

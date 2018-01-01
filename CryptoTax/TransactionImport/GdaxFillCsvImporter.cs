@@ -31,6 +31,13 @@ namespace CryptoTax.TransactionImport
             {"LTC-BTC", new GdaxProduct{ ProductAsset = CryptocurrencyType.Litecoin, TransactionCurrency = ProductTransationCurrency.Bitcoin } },
         };
 
+        private readonly PriceInUsdProvider _priceInUsdProvider;
+
+        public GdaxFillCsvImporter(PriceInUsdProvider priceInUsdProvider)
+        {
+            this._priceInUsdProvider = priceInUsdProvider;
+        }
+
         public TransactionImportResult ImportFile(TransactonImporterSettings settings)
         {
             var textReader = new StreamReader(settings.Filename);
@@ -40,7 +47,6 @@ namespace CryptoTax.TransactionImport
             var transactions = new List<Transaction>();
             var unknownProductTransactionCount = 0;
             var unknownProductTransactionSet = new HashSet<string>();
-            var priceInUsdProvider = new PriceInUsdProvider();
             while (csvReader.Read())
             {
                 var record = csvReader.GetRecord<GdaxFillCsvRecord>();
@@ -66,7 +72,7 @@ namespace CryptoTax.TransactionImport
                         });
                         break;
                     case ProductTransationCurrency.Bitcoin:
-                        var bitcoinPriceAtTransactionTime = priceInUsdProvider.GetBitcoinPrice(record.CreatedAt).Result;
+                        var bitcoinPriceAtTransactionTime = this._priceInUsdProvider.GetBitcoinPrice(record.CreatedAt).Result;
                         var bitcoinAmount = record.AssetPrice * record.AssetAmount;
                         var usdEquivalentAmounnt = bitcoinAmount * bitcoinPriceAtTransactionTime;
 

@@ -9,23 +9,36 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Threading.Tasks;
+using CryptoTax.Utilities;
 
 namespace CryptoTax
 {
     public partial class MainWindow : Form
     {
-        private PriceInUsdProvider _exchangeRateProvider;
+        private PriceInUsdProvider _priceInUsdProvider;
+        private TaxCalculator _taxCalculator;
+        private PortfolioSummaryProvider _portfolioSummaryProvider;
+        private FormFactory _formFactory;
+
         private ConcurrentDictionary<CryptocurrencyType, decimal> _pricesInUsd;
+        
+        private BindingSource TransactionDataGridBindingSource = new BindingSource();
+        private BindingSource SummaryDataGridBindingSource = new BindingSource();
+        private BindingSource FiscalYearSummaryDataGridBindingSource = new BindingSource();
 
-        public BindingSource TransactionDataGridBindingSource = new BindingSource();
-        public BindingSource SummaryDataGridBindingSource = new BindingSource();
-        public BindingSource FiscalYearSummaryDataGridBindingSource = new BindingSource();
-
-        public MainWindow()
+        public MainWindow(
+            PriceInUsdProvider priceInUsdProvider,
+            TaxCalculator taxCalculator,
+            PortfolioSummaryProvider portfolioSummaryProvider,
+            FormFactory formFactory)
         {
             InitializeComponent();
 
-            this._exchangeRateProvider = new PriceInUsdProvider();
+            this._priceInUsdProvider = priceInUsdProvider;
+            this._taxCalculator = taxCalculator;
+            this._portfolioSummaryProvider = portfolioSummaryProvider;
+            this._formFactory = formFactory;
+
             this._pricesInUsd = new ConcurrentDictionary<CryptocurrencyType, decimal>();
             this.SummaryDataRefreshTimer.Tick += this.RefreshSummaryData;
             this.SummaryDataRefreshTimer.Start();
@@ -62,7 +75,7 @@ namespace CryptoTax
 
         private void AddTransactionButton_Click(object sender, EventArgs e)
         {
-            using (var popup = new AddTransactionDialog())
+            using (var popup = this._formFactory.CreateForm<AddTransactionDialog>())
             {
                 var result = popup.ShowDialog();
                 if (result == DialogResult.OK)
@@ -80,8 +93,9 @@ namespace CryptoTax
                 return;
             }
             var transactionToEdit = (Transaction)this.TransactionDataGrid.SelectedRows[0].DataBoundItem;
-            using (var popup = new AddTransactionDialog(transactionToEdit))
+            using (var popup = this._formFactory.CreateForm<AddTransactionDialog>())
             {
+                popup.SetToEditMode(transactionToEdit);
                 var result = popup.ShowDialog();
                 if (result == DialogResult.OK)
                 {
@@ -91,7 +105,7 @@ namespace CryptoTax
         }
         private void ImportTransactionButtons_Click(object sender, EventArgs e)
         {
-            using (var popup = new ImportTransactionsDialog())
+            using (var popup = this._formFactory.CreateForm<ImportTransactionsDialog>())
             {
                 var result = popup.ShowDialog();
                 if (result == DialogResult.OK)
@@ -191,7 +205,7 @@ namespace CryptoTax
             {
                 var queryTask = new Task(async () =>
                 {
-                    var priceInUsd = await this._exchangeRateProvider.GetPriceInUsd(cryptoType);
+                    var priceInUsd = await this._priceInUsdProvider.GetPriceInUsd(cryptoType);
                     if (priceInUsd.HasValue)
                     {
                         this._pricesInUsd[cryptoType] = priceInUsd.Value;
@@ -205,7 +219,6 @@ namespace CryptoTax
 
         private void UpdateFiscalYearSummaryData(object sender, EventArgs e)
         {
-            var taxCalculator = new TaxCalculator();
             var transactions = this.TransactionDataGridBindingSource.List.Cast<Transaction>().ToList();
             var fiscalYearSummaryInfos = new List<FiscalYearSummaryInfo>();
             foreach(var cryptocurrency in transactions.Select(x => x.Cryptocurrency).Distinct())
@@ -213,8 +226,8 @@ namespace CryptoTax
                 var thisCryptoTransactions = transactions.Where(t => t.Cryptocurrency == cryptocurrency);
                 var transactionYears = thisCryptoTransactions.Select(x => x.TransactionDate.Year).Distinct();
 
-                var capitalGainsLifo = taxCalculator.CalculateCapialGains(transactions, AccountingMethodType.Lifo, cryptocurrency);
-                var capitalGainsFifo = taxCalculator.CalculateCapialGains(transactions, AccountingMethodType.Fifo, cryptocurrency);
+                var capitalGainsLifo = this._taxCalculator.CalculateCapialGains(transactions, AccountingMethodType.Lifo, cryptocurrency);
+                var capitalGainsFifo = this._taxCalculator.CalculateCapialGains(transactions, AccountingMethodType.Fifo, cryptocurrency);
                 var usdInvested = thisCryptoTransactions
                         .GroupBy(t => t.TransactionDate.Year)
                         .ToDictionary(x => x.Key, x => x.Aggregate((decimal)0, (v, t) => v + (t.UsDollarAmount * (t.TransactionType == TransactionType.Sell ? -1 : 1))));
@@ -256,7 +269,7 @@ namespace CryptoTax
         private async void UpdateSummaryData(object sender, EventArgs e)
         {
             var transactions = this.TransactionDataGridBindingSource.List.Cast<Transaction>().ToList();
-            var summaryInfos = (new PortfolioSummaryProvider()).GetCryptocurrencySummaryInfo(transactions, this._pricesInUsd);
+            var summaryInfos = this._portfolioSummaryProvider.GetCryptocurrencySummaryInfo(transactions, this._pricesInUsd);
 
             // update portfolio summary label
             if(summaryInfos.Any(x => x.UsdAmount.HasValue))

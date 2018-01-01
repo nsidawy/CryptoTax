@@ -8,7 +8,6 @@ using CryptoTax.Cryptocurrency;
 using CryptoTax.Transactions;
 using CsvHelper.Configuration;
 using CsvHelper;
-using System.Threading;
 
 namespace CryptoTax.TransactionImport
 {
@@ -35,9 +34,16 @@ namespace CryptoTax.TransactionImport
             {"BTC-RDD", CryptocurrencyType.Reddcoin },
         };
 
+        private readonly PriceInUsdProvider _priceInUsdProvider;
+
+        public BitrixOrderCsvImporter(PriceInUsdProvider priceInUsdProvider)
+        {
+            this._priceInUsdProvider = priceInUsdProvider;
+        }
+
+
         public TransactionImportResult ImportFile(TransactonImporterSettings settings)
         {
-            var priceInUsdProvider = new PriceInUsdProvider();
             var textReader = new StreamReader(settings.Filename);
             var csvReader = new CsvReader(textReader);
             csvReader.Configuration.RegisterClassMap<BitrixOrderCsvRecordClassMap>();
@@ -63,7 +69,7 @@ namespace CryptoTax.TransactionImport
                     continue;
                 }
 
-                var bitcoinPriceAtTransactionTime = priceInUsdProvider.GetBitcoinPrice(record.ClosedTimestamp).Result;
+                var bitcoinPriceAtTransactionTime = this._priceInUsdProvider.GetBitcoinPrice(record.ClosedTimestamp).Result;
                 var bitcoinAmount = record.AssetAmount * record.PriceInBitcoin;
                 var usdEquivalentAmounnt = bitcoinAmount * bitcoinPriceAtTransactionTime;
 

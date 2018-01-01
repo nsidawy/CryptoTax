@@ -7,6 +7,13 @@ using CryptoTax.Transactions;
 
 namespace CryptoTax.TransactionImport
 {
+    public enum TransactionImporterType
+    {
+        CoinbaseCsvImporter,
+        GdaxFillCsvImporter,
+        BitrixOrderCsvImporter
+    }
+
     public interface ITransactionImporter
     {
         TransactionImportResult ImportFile(TransactonImporterSettings settings);

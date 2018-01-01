@@ -28,8 +28,8 @@ namespace CryptoTax
                     .Cast<CryptocurrencyType>().OrderBy(x => Enum.GetName(typeof(CryptocurrencyType), x))
                     .ToList();
         }
-
-        public AddTransactionDialog(Transaction transaction) : this()
+        
+        public void SetToEditMode(Transaction transaction)
         {
             // initialize the data inputs with the input transaction
             this.Transaction = transaction;
@@ -41,6 +41,7 @@ namespace CryptoTax
 
             this.Text = "Edit Transaction";
             this.AddButton.Text = "Edit";
+
         }
 
         //handle pasting into the date time picker

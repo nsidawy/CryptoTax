@@ -1,5 +1,8 @@
 ﻿using Autofac;
 using CryptoTax.Cryptocurrency;
+using CryptoTax.TransactionImport;
+using CryptoTax.Transactions;
+using CryptoTax.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,12 +22,39 @@ namespace CryptoTax
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            var containerBuilder = SetupContainer();
+            using (var container = containerBuilder.Build())
+            {
+                Application.Run(container.Resolve<MainWindow>());
+            }
+        }
+
+        private static ContainerBuilder SetupContainer()
+        {
             var container = new ContainerBuilder();
 
-            container.Register(x => new PriceInUsdProvider())
+            container.RegisterType<PriceInUsdProvider>()
                 .InstancePerLifetimeScope();
 
-            Application.Run(new MainWindow());
+            container.RegisterType<BitrixOrderCsvImporter>()
+                .Keyed<ITransactionImporter>(TransactionImporterType.BitrixOrderCsvImporter);
+            container.RegisterType<GdaxFillCsvImporter>()
+                .Keyed<ITransactionImporter>(TransactionImporterType.GdaxFillCsvImporter);
+            container.RegisterType<CoinbaseCsvImporter>()
+                .Keyed<ITransactionImporter>(TransactionImporterType.CoinbaseCsvImporter);
+
+            container.RegisterType<TaxCalculator>();
+            container.RegisterType<PortfolioSummaryProvider>();
+
+            container.RegisterType<FormFactory>();
+            container.RegisterType<ImportTransactionsDialog>()
+                .InstancePerDependency();
+            container.RegisterType<AddTransactionDialog>()
+                .InstancePerDependency();
+            container.RegisterType<MainWindow>()
+                .InstancePerDependency();
+
+            return container;
         }
     }
 }
