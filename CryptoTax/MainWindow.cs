@@ -24,7 +24,7 @@ namespace CryptoTax
         
         private BindingSource TransactionDataGridBindingSource = new BindingSource();
         private BindingSource SummaryDataGridBindingSource = new BindingSource();
-        private BindingSource FiscalYearSummaryDataGridBindingSource = new BindingSource();
+        private BindingSource YearSummaryDataGridBindingSource = new BindingSource();
 
         public MainWindow(
             PriceInUsdProvider priceInUsdProvider,
@@ -53,7 +53,7 @@ namespace CryptoTax
             // data sources
             this.SummaryDataGrid.DataSource = this.SummaryDataGridBindingSource;
             this.TransactionDataGrid.DataSource = this.TransactionDataGridBindingSource;
-            this.FiscalYearSummaryDataGrid.DataSource = this.FiscalYearSummaryDataGridBindingSource;
+            this.YearSummaryDataGrid.DataSource = this.YearSummaryDataGridBindingSource;
             // setup formatting
             this.TransactionDataGrid.CellFormatting += this.DataGrid_BuySellFormatting;
             this.TransactionDataGrid.CellFormatting += this.DataGrid_MoneyFormatting;
@@ -72,6 +72,8 @@ namespace CryptoTax
             this.toolStrip1.Items["SaveButton"].Click += this.SaveButton_Click;
             this.toolStrip1.Items["OpenFileButton"].Click += this.OpenFileButton_Click;
         }
+
+        #region Toolstip button handlers
 
         private void AddTransactionButton_Click(object sender, EventArgs e)
         {
@@ -118,6 +120,48 @@ namespace CryptoTax
             }
         }
 
+
+        private void SaveButton_Click(object sender, EventArgs e)
+        {
+            var saveFileDialog = new SaveFileDialog();
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                Stream filestream;
+                if ((filestream = saveFileDialog.OpenFile()) != null)
+                {
+                    var streamWriter = new StreamWriter(filestream);
+                    foreach (var transaction in this.TransactionDataGridBindingSource.List.Cast<Transaction>())
+                    {
+                        streamWriter.WriteLine(transaction.TransactionToFileRow());
+                    }
+                    streamWriter.Flush();
+                    filestream.Close();
+                }
+            }
+        }
+
+        private void OpenFileButton_Click(object sender, EventArgs e)
+        {
+            var saveFileDialog = new OpenFileDialog();
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                this.TransactionDataGridBindingSource.Clear();
+                Stream filestream;
+                if ((filestream = saveFileDialog.OpenFile()) != null)
+                {
+                    var streamReader = new StreamReader(filestream);
+                    while (streamReader.EndOfStream == false)
+                    {
+                        this.TransactionDataGridBindingSource.Add(TransactionParsingUtilities.ParseFileRow(streamReader.ReadLine()));
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        #region Data grid formatting handlers
+
         private void DataGrid_BuySellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             if (this.TransactionDataGrid.Columns[e.ColumnIndex].Name == nameof(Transaction.TransactionType))
@@ -147,49 +191,15 @@ namespace CryptoTax
 
         private void SummaryDataGrid_MoneyFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (this.SummaryDataGrid.Columns[e.ColumnIndex].Name == nameof(PortfolioSummaryProvider.CryptocurrencySummaryInfo.PriceInUsd)
-                || this.SummaryDataGrid.Columns[e.ColumnIndex].Name == nameof(PortfolioSummaryProvider.CryptocurrencySummaryInfo.UsdAmount))
+            if (this.SummaryDataGrid.Columns[e.ColumnIndex].Name == nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.PriceInUsd)
+                || this.SummaryDataGrid.Columns[e.ColumnIndex].Name == nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.UsdAmount))
             {
                 e.CellStyle.Format = "N2";
             }
         }
 
-        private void SaveButton_Click(object sender, EventArgs e)
-        {
-            var saveFileDialog = new SaveFileDialog();
-            if(saveFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                Stream filestream;
-                if ((filestream = saveFileDialog.OpenFile()) != null)
-                {
-                    var streamWriter = new StreamWriter(filestream);
-                    foreach(var transaction in this.TransactionDataGridBindingSource.List.Cast<Transaction>())
-                    {
-                        streamWriter.WriteLine(transaction.TransactionToFileRow());
-                    }
-                    streamWriter.Flush();
-                    filestream.Close();
-                }
-            }
-        }
+        #endregion
 
-        private void OpenFileButton_Click(object sender, EventArgs e)
-        {
-            var saveFileDialog = new OpenFileDialog();
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                this.TransactionDataGridBindingSource.Clear();
-                Stream filestream;
-                if ((filestream = saveFileDialog.OpenFile()) != null)
-                {
-                    var streamReader = new StreamReader(filestream);
-                    while(streamReader.EndOfStream == false)
-                    {
-                        this.TransactionDataGridBindingSource.Add(TransactionParsingUtilities.ParseFileRow(streamReader.ReadLine()));
-                    }
-                }
-            }
-        }
 
         private async void RefreshSummaryData(object sender, EventArgs e)
         {
@@ -220,56 +230,16 @@ namespace CryptoTax
         private void UpdateFiscalYearSummaryData(object sender, EventArgs e)
         {
             var transactions = this.TransactionDataGridBindingSource.List.Cast<Transaction>().ToList();
-            var fiscalYearSummaryInfos = new List<FiscalYearSummaryInfo>();
-            foreach(var cryptocurrency in transactions.Select(x => x.Cryptocurrency).Distinct())
-            {
-                var thisCryptoTransactions = transactions.Where(t => t.Cryptocurrency == cryptocurrency);
-                var transactionYears = thisCryptoTransactions.Select(x => x.TransactionDate.Year).Distinct();
-
-                var capitalGainsLifo = this._taxCalculator.CalculateCapialGains(transactions, AccountingMethodType.Lifo, cryptocurrency);
-                var capitalGainsFifo = this._taxCalculator.CalculateCapialGains(transactions, AccountingMethodType.Fifo, cryptocurrency);
-                var usdInvested = thisCryptoTransactions
-                        .GroupBy(t => t.TransactionDate.Year)
-                        .ToDictionary(x => x.Key, x => x.Aggregate((decimal)0, (v, t) => v + (t.UsDollarAmount * (t.TransactionType == TransactionType.Sell ? -1 : 1))));
-
-                if (capitalGainsFifo == null)
-                {
-                    fiscalYearSummaryInfos.AddRange(transactionYears
-                        .Select(x => new FiscalYearSummaryInfo
-                        {
-                            Cryptocurrency = cryptocurrency,
-                            Year = x,
-                            UsdInvested = GetValueOrDefault(usdInvested, x, 0),
-                        }));
-                    continue;
-                }
-                
-                fiscalYearSummaryInfos.AddRange(transactionYears.Select(x => new FiscalYearSummaryInfo
-                {
-                    Cryptocurrency = cryptocurrency,
-                    Year = x,
-                    UsdInvested = GetValueOrDefault(usdInvested, x, 0),
-                    FifoShortTermCapitalGains = capitalGainsFifo.Where(y => !y.IsLongTerm && y.YearIncurred == x).Sum(y => y.UsdAmount),
-                    FifoLongTermCapitalGains = capitalGainsFifo.Where(y => y.IsLongTerm && y.YearIncurred == x).Sum(y => y.UsdAmount),
-                    LifoShortTermCapitalGains = capitalGainsLifo.Where(y => !y.IsLongTerm && y.YearIncurred == x).Sum(y => y.UsdAmount),
-                    LifoLongTermCapitalGains = capitalGainsLifo.Where(y => y.IsLongTerm && y.YearIncurred == x).Sum(y => y.UsdAmount),
-                }));
-            }
-            this.FiscalYearSummaryDataGridBindingSource.DataSource = fiscalYearSummaryInfos;
-            this.FiscalYearSummaryDataGridBindingSource.ResetBindings(true);
-        }
-
-        public static TValue GetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue> dictionary,
-            TKey key,
-            TValue defaultValue)
-        {
-            return dictionary.TryGetValue(key, out TValue value) ? value : defaultValue;
+            var yearSummaryInfos = this._portfolioSummaryProvider.GetCryptocurrencyYearSummaryInfo(transactions);
+            
+            this.YearSummaryDataGridBindingSource.DataSource = yearSummaryInfos;
+            this.YearSummaryDataGridBindingSource.ResetBindings(true);
         }
 
         private async void UpdateSummaryData(object sender, EventArgs e)
         {
             var transactions = this.TransactionDataGridBindingSource.List.Cast<Transaction>().ToList();
-            var summaryInfos = this._portfolioSummaryProvider.GetCryptocurrencySummaryInfo(transactions, this._pricesInUsd);
+            var summaryInfos = this._portfolioSummaryProvider.GetCryptocurrencyPortfolioSummaryInfo(transactions, this._pricesInUsd);
 
             // update portfolio summary label
             if(summaryInfos.Any(x => x.UsdAmount.HasValue))
@@ -283,17 +253,6 @@ namespace CryptoTax
 
             this.SummaryDataGridBindingSource.DataSource = summaryInfos;
             this.SummaryDataGridBindingSource.ResetBindings(true);
-        }
-
-        private class FiscalYearSummaryInfo
-        {
-            public CryptocurrencyType Cryptocurrency { get; set; }
-            public int Year { get; set; }
-            public decimal UsdInvested { get; set; }
-            public decimal? LifoLongTermCapitalGains { get; set; }
-            public decimal? LifoShortTermCapitalGains { get; set; }
-            public decimal? FifoLongTermCapitalGains { get; set; }
-            public decimal? FifoShortTermCapitalGains { get; set; }
         }
 
         #region generated methods
