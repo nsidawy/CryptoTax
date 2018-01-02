@@ -54,6 +54,9 @@ namespace CryptoTax
 
         private void SetupDataGrids()
         {
+            this.SummaryDataGridBindingSource.DataSource = new List<PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo>();
+            this.YearSummaryDataGridBindingSource.DataSource = new List<PortfolioSummaryProvider.CryptocurrencyYearSummaryInfo>();
+            this.TransactionDataGridBindingSource.DataSource = new List<Transaction>();
             // data sources
             this.SummaryDataGrid.DataSource = this.SummaryDataGridBindingSource;
             this.TransactionDataGrid.DataSource = this.TransactionDataGridBindingSource;
@@ -132,7 +135,8 @@ namespace CryptoTax
         private async void UpdateSummaryData(object sender, EventArgs e)
         {
             var transactions = this.TransactionDataGridBindingSource.List.Cast<Transaction>().ToList();
-            var summaryInfos = this._portfolioSummaryProvider.GetCryptocurrencyPortfolioSummaryInfo(transactions, this._pricesInUsd);
+            var summaryInfos = this._portfolioSummaryProvider.GetCryptocurrencyPortfolioSummaryInfo(transactions, this._pricesInUsd)
+                .OrderByDescending(x => x.UsdAmount);
 
             // update portfolio summary label
             if (summaryInfos.Any(x => x.UsdAmount.HasValue))
