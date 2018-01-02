@@ -37,7 +37,7 @@ namespace CryptoTax.TransactionImport
             while (csvReader.Read())
             {
                 var record = csvReader.GetRecord<CoinbaseCsvRecord>();
-                if ((!record.Notes.StartsWith("Bought") && !record.Notes.StartsWith("Sold"))
+                if (record.TransferTotal == null
                     || !this._cryptocurrencyMapping.ContainsKey(record.Currency))
                 {
                     nonBuyOrSellTransactionCount++;

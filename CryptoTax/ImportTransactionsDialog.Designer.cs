@@ -120,9 +120,9 @@
             this.BitrexOrderCsvRadioButton.AutoSize = true;
             this.BitrexOrderCsvRadioButton.Location = new System.Drawing.Point(28, 97);
             this.BitrexOrderCsvRadioButton.Name = "BitrexOrderCsvRadioButton";
-            this.BitrexOrderCsvRadioButton.Size = new System.Drawing.Size(133, 21);
+            this.BitrexOrderCsvRadioButton.Size = new System.Drawing.Size(137, 21);
             this.BitrexOrderCsvRadioButton.TabIndex = 18;
-            this.BitrexOrderCsvRadioButton.Text = "Bitrex order CSV";
+            this.BitrexOrderCsvRadioButton.Text = "Bittrex order CSV";
             this.BitrexOrderCsvRadioButton.UseVisualStyleBackColor = true;
             // 
             // ImportTransactionsDialog

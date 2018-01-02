@@ -106,7 +106,7 @@
     <Compile Include="Tests\GdaxFillCsvImporterTest.cs" />
     <Compile Include="Tests\TaxCalculatorTest.cs" />
     <Compile Include="Tests\CoinbaseCsvImporterTest.cs" />
-    <Compile Include="TransactionImport\BitrixOrderCsvImporter.cs" />
+    <Compile Include="TransactionImport\BittrexOrderCsvImporter.cs" />
     <Compile Include="TransactionImport\GdaxFillCsvImporter.cs" />
     <Compile Include="TransactionImport\CoinbaseCsvImporter.cs" />
     <Compile Include="TransactionImport\ITransactionImporter.cs" />
@@ -158,6 +158,16 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\NUnit3TestAdapter.3.9.0\build\net35\NUnit3TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit3TestAdapter.3.9.0\build\net35\NUnit3TestAdapter.props'))" />
     <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\System.Data.SQLite.Core.targets'))" />
+    <Error Condition="!Exists('..\packages\ILMerge.MSBuild.Task.1.0.2\build\ILMerge.MSBuild.Task.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\ILMerge.MSBuild.Task.1.0.2\build\ILMerge.MSBuild.Task.targets'))" />
   </Target>
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\System.Data.SQLite.Core.targets')" />
+  <Import Project="..\packages\ILMerge.MSBuild.Task.1.0.2\build\ILMerge.MSBuild.Task.targets" Condition="Exists('..\packages\ILMerge.MSBuild.Task.1.0.2\build\ILMerge.MSBuild.Task.targets')" />
+  <UsingTask AssemblyFile="$(SolutionDir)packages\ILMerge.Tools.MSBuildToolTask.1.0.2\tools\ILMerge.Tools.MSBuildToolTask.dll" TaskName="ILMerge.Tools.MSBuildToolTask.ILMergeTool" />
+  <ItemGroup>
+    <ILMergeInputAssemblies Include="$(OutputPath)\CryptoTax.exe" />
+    <ILMergeInputAssemblies Include="$(OutputPath)\*.dll" />
+  </ItemGroup>
+  <Target Name="MergeAssemblies">
+    <ILMergeTool InputAssemblies="@(ILMergeInputAssemblies)" OutputFile="$(OutputPath)\${AssemblyName}" ToolPath="$(SolutionDir)\packages\ILMerge.Tools.2.14.1208\tools\ILMerge.exe" />
+  </Target>
 </Project>

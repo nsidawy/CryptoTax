@@ -57,10 +57,12 @@ namespace CryptoTax
             this.SummaryDataGridBindingSource.DataSource = new List<PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo>();
             this.YearSummaryDataGridBindingSource.DataSource = new List<PortfolioSummaryProvider.CryptocurrencyYearSummaryInfo>();
             this.TransactionDataGridBindingSource.DataSource = new List<Transaction>();
+
             // data sources
             this.SummaryDataGrid.DataSource = this.SummaryDataGridBindingSource;
             this.TransactionDataGrid.DataSource = this.TransactionDataGridBindingSource;
             this.YearSummaryDataGrid.DataSource = this.YearSummaryDataGridBindingSource;
+            
             // setup formatting
             this.TransactionDataGrid.CellFormatting += this.DataGrid_BuySellFormatting;
             this.TransactionDataGrid.CellFormatting += this.DataGrid_MoneyFormatting;
@@ -68,6 +70,13 @@ namespace CryptoTax
 
             this.TransactionDataGridBindingSource.ListChanged += this.UpdateSummaryData;
             this.TransactionDataGridBindingSource.ListChanged += this.UpdateFiscalYearSummaryData;
+            this.TransactionDataGridBindingSource.ListChanged += this.OnCryptocurrencyFilterInputChange;
+
+            var cryptocurrenyFilterInput = ((ToolStripComboBox)this.toolStrip2.Items["CryptocurrencyFilterInput"]);
+            cryptocurrenyFilterInput.Items
+                .AddRange(Enum.GetValues(typeof(CryptocurrencyType)).Cast<object>().ToArray());
+            cryptocurrenyFilterInput.SelectedIndexChanged += this.OnCryptocurrencyFilterInputChange;
+            cryptocurrenyFilterInput.TextChanged += this.OnCryptocurrencyFilterInputChange;
         }
 
         private void SetupEventHandlers()
@@ -151,6 +160,30 @@ namespace CryptoTax
             this.SummaryDataGridBindingSource.DataSource = summaryInfos;
             this.SummaryDataGridBindingSource.ResetBindings(true);
         }
+
+        private void OnCryptocurrencyFilterInputChange(object sender, EventArgs e)
+        {
+            var cryptocurrenyFilterInput = ((ToolStripComboBox)this.toolStrip2.Items["CryptocurrencyFilterInput"]);
+            if(cryptocurrenyFilterInput.Selected && cryptocurrenyFilterInput.SelectedItem != null)
+            {
+                var cryptocurrencyFilter = (CryptocurrencyType)cryptocurrenyFilterInput.SelectedItem;
+
+                this.TransactionDataGrid.CurrentCell = null;
+                for (var i = 0; i < this.TransactionDataGrid.Rows.Count; i++)
+                {
+                    this.TransactionDataGrid.Rows[i].Visible =
+                        (CryptocurrencyType)this.TransactionDataGrid.Rows[i].Cells[nameof(Transaction.Cryptocurrency)].Value == cryptocurrencyFilter;
+                }
+            }
+            else
+            {
+                for (var i = 0; i < this.TransactionDataGrid.Rows.Count; i++)
+                {
+                    this.TransactionDataGrid.Rows[i].Visible = true;
+                }
+            }
+        }
+        
 
         #region Toolstip button handlers
 

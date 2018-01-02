@@ -11,7 +11,7 @@ using CsvHelper;
 
 namespace CryptoTax.TransactionImport
 {
-    public class BitrixOrderCsvImporter : ITransactionImporter
+    public class BittrexOrderCsvImporter : ITransactionImporter
     {
         private IReadOnlyDictionary<string, CryptocurrencyType> _exchangeMapping = new Dictionary<string, CryptocurrencyType>
         {
@@ -36,7 +36,7 @@ namespace CryptoTax.TransactionImport
 
         private readonly PriceInUsdProvider _priceInUsdProvider;
 
-        public BitrixOrderCsvImporter(PriceInUsdProvider priceInUsdProvider)
+        public BittrexOrderCsvImporter(PriceInUsdProvider priceInUsdProvider)
         {
             this._priceInUsdProvider = priceInUsdProvider;
         }

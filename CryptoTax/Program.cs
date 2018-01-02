@@ -36,7 +36,7 @@ namespace CryptoTax
             container.RegisterType<PriceInUsdProvider>()
                 .InstancePerLifetimeScope();
 
-            container.RegisterType<BitrixOrderCsvImporter>()
+            container.RegisterType<BittrexOrderCsvImporter>()
                 .Keyed<ITransactionImporter>(TransactionImporterType.BitrixOrderCsvImporter);
             container.RegisterType<GdaxFillCsvImporter>()
                 .Keyed<ITransactionImporter>(TransactionImporterType.GdaxFillCsvImporter);
