@@ -20,6 +20,7 @@ namespace CryptoTax
         private PortfolioSummaryProvider _portfolioSummaryProvider;
         private FormFactory _formFactory;
 
+        private string _filename = null;
         private ConcurrentDictionary<CryptocurrencyType, decimal> _pricesInUsd;
         
         private BindingSource TransactionDataGridBindingSource = new BindingSource();
@@ -46,6 +47,9 @@ namespace CryptoTax
                
             this.SetupDataGrids();
             this.SetupEventHandlers();
+
+            this.KeyPreview = true;
+            this.KeyDown += this.MainWindow_KeyDown;
         }
 
         private void SetupDataGrids()
@@ -61,7 +65,6 @@ namespace CryptoTax
 
             this.TransactionDataGridBindingSource.ListChanged += this.UpdateSummaryData;
             this.TransactionDataGridBindingSource.ListChanged += this.UpdateFiscalYearSummaryData;
-;
         }
 
         private void SetupEventHandlers()
@@ -70,7 +73,79 @@ namespace CryptoTax
             this.toolStrip1.Items["EditTransactionButton"].Click += this.EditTransactionButton_Click;
             this.toolStrip1.Items["ImportTransactionsButton"].Click += this.ImportTransactionButtons_Click;
             this.toolStrip1.Items["SaveButton"].Click += this.SaveButton_Click;
+            this.toolStrip1.Items["SaveAsButton"].Click += this.SaveAsButton_Click;
             this.toolStrip1.Items["OpenFileButton"].Click += this.OpenFileButton_Click;
+        }
+        
+        private void MainWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Modifiers == Keys.Control && e.KeyCode == Keys.S)
+            {
+                this.SaveButton_Click(sender, e);
+            }
+            else if (e.Modifiers == (Keys.Control | Keys.Shift) && e.KeyCode == Keys.S)
+            {
+                this.SaveAsButton_Click(sender, e);
+            }
+            else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.O)
+            {
+                this.SaveAsButton_Click(sender, e);
+            }
+        }
+
+
+        private async void RefreshSummaryData(object sender, EventArgs e)
+        {
+            this.UpdatePricesInUsd();
+            this.UpdateSummaryData(sender, e);
+        }
+
+        private void UpdatePricesInUsd()
+        {
+            var cryptoTypes = Enum.GetValues(typeof(CryptocurrencyType)).Cast<CryptocurrencyType>();
+            var queryTasks = new List<Task>();
+            foreach (var cryptoType in cryptoTypes)
+            {
+                var queryTask = new Task(async () =>
+                {
+                    var priceInUsd = await this._priceInUsdProvider.GetPriceInUsd(cryptoType);
+                    if (priceInUsd.HasValue)
+                    {
+                        this._pricesInUsd[cryptoType] = priceInUsd.Value;
+                    }
+                });
+                queryTask.Start();
+                queryTasks.Add(queryTask);
+            }
+            Task.WaitAll(queryTasks.ToArray());
+        }
+
+        private void UpdateFiscalYearSummaryData(object sender, EventArgs e)
+        {
+            var transactions = this.TransactionDataGridBindingSource.List.Cast<Transaction>().ToList();
+            var yearSummaryInfos = this._portfolioSummaryProvider.GetCryptocurrencyYearSummaryInfo(transactions);
+
+            this.YearSummaryDataGridBindingSource.DataSource = yearSummaryInfos;
+            this.YearSummaryDataGridBindingSource.ResetBindings(true);
+        }
+
+        private async void UpdateSummaryData(object sender, EventArgs e)
+        {
+            var transactions = this.TransactionDataGridBindingSource.List.Cast<Transaction>().ToList();
+            var summaryInfos = this._portfolioSummaryProvider.GetCryptocurrencyPortfolioSummaryInfo(transactions, this._pricesInUsd);
+
+            // update portfolio summary label
+            if (summaryInfos.Any(x => x.UsdAmount.HasValue))
+            {
+                this.SummaryLabel.Text = "Portfolio Summary - $" + summaryInfos.Aggregate((decimal)0, (v, s) => v + s.UsdAmount ?? 0).ToString("N2");
+            }
+            else
+            {
+                this.SummaryLabel.Text = "Portfolio Summary";
+            }
+
+            this.SummaryDataGridBindingSource.DataSource = summaryInfos;
+            this.SummaryDataGridBindingSource.ResetBindings(true);
         }
 
         #region Toolstip button handlers
@@ -120,39 +195,65 @@ namespace CryptoTax
             }
         }
 
-
         private void SaveButton_Click(object sender, EventArgs e)
         {
-            var saveFileDialog = new SaveFileDialog();
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            if (this._filename == null)
             {
-                Stream filestream;
-                if ((filestream = saveFileDialog.OpenFile()) != null)
+                this.SaveAsButton_Click(sender, e);
+                return;
+            }
+
+            using (var filestream = File.OpenWrite(this._filename))
+            {
+                this.SaveFile(filestream);
+            }
+        }
+
+        private void SaveAsButton_Click(object sender, EventArgs e)
+        {
+            using(var saveFileDialog = new SaveFileDialog())
+            {
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    var streamWriter = new StreamWriter(filestream);
-                    foreach (var transaction in this.TransactionDataGridBindingSource.List.Cast<Transaction>())
+                    Stream filestream;
+                    if ((filestream = saveFileDialog.OpenFile()) != null)
                     {
-                        streamWriter.WriteLine(transaction.TransactionToFileRow());
+                        this._filename = saveFileDialog.FileName;
+                        this.SaveFile(filestream);
                     }
-                    streamWriter.Flush();
-                    filestream.Close();
                 }
             }
         }
 
+        private void SaveFile(Stream filestream)
+        {
+            var streamWriter = new StreamWriter(filestream);
+            foreach (var transaction in this.TransactionDataGridBindingSource.List.Cast<Transaction>())
+            {
+                streamWriter.WriteLine(transaction.TransactionToFileRow());
+            }
+            streamWriter.Flush();
+            filestream.Close();
+        }
+
         private void OpenFileButton_Click(object sender, EventArgs e)
         {
-            var saveFileDialog = new OpenFileDialog();
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            using (var openFileDialog = new OpenFileDialog())
             {
-                this.TransactionDataGridBindingSource.Clear();
-                Stream filestream;
-                if ((filestream = saveFileDialog.OpenFile()) != null)
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    var streamReader = new StreamReader(filestream);
-                    while (streamReader.EndOfStream == false)
+                    this.TransactionDataGridBindingSource.Clear();
+                    Stream filestream;
+                    if ((filestream = openFileDialog.OpenFile()) != null)
                     {
-                        this.TransactionDataGridBindingSource.Add(TransactionParsingUtilities.ParseFileRow(streamReader.ReadLine()));
+                        this._filename = openFileDialog.FileName;
+                        using (var streamReader = new StreamReader(filestream))
+                        {
+                            while (streamReader.EndOfStream == false)
+                            {
+                                this.TransactionDataGridBindingSource.Add(TransactionParsingUtilities.ParseFileRow(streamReader.ReadLine()));
+                            }
+                        }
                     }
                 }
             }
@@ -199,62 +300,7 @@ namespace CryptoTax
         }
 
         #endregion
-
-
-        private async void RefreshSummaryData(object sender, EventArgs e)
-        {
-            this.UpdatePricesInUsd();
-            this.UpdateSummaryData(sender, e);
-        }
-
-        private void UpdatePricesInUsd()
-        {
-            var cryptoTypes = Enum.GetValues(typeof(CryptocurrencyType)).Cast<CryptocurrencyType>();
-            var queryTasks = new List<Task>();
-            foreach(var cryptoType in cryptoTypes)
-            {
-                var queryTask = new Task(async () =>
-                {
-                    var priceInUsd = await this._priceInUsdProvider.GetPriceInUsd(cryptoType);
-                    if (priceInUsd.HasValue)
-                    {
-                        this._pricesInUsd[cryptoType] = priceInUsd.Value;
-                    }
-                });
-                queryTask.Start();
-                queryTasks.Add(queryTask);
-            }
-            Task.WaitAll(queryTasks.ToArray());
-        }
-
-        private void UpdateFiscalYearSummaryData(object sender, EventArgs e)
-        {
-            var transactions = this.TransactionDataGridBindingSource.List.Cast<Transaction>().ToList();
-            var yearSummaryInfos = this._portfolioSummaryProvider.GetCryptocurrencyYearSummaryInfo(transactions);
-            
-            this.YearSummaryDataGridBindingSource.DataSource = yearSummaryInfos;
-            this.YearSummaryDataGridBindingSource.ResetBindings(true);
-        }
-
-        private async void UpdateSummaryData(object sender, EventArgs e)
-        {
-            var transactions = this.TransactionDataGridBindingSource.List.Cast<Transaction>().ToList();
-            var summaryInfos = this._portfolioSummaryProvider.GetCryptocurrencyPortfolioSummaryInfo(transactions, this._pricesInUsd);
-
-            // update portfolio summary label
-            if(summaryInfos.Any(x => x.UsdAmount.HasValue))
-            {
-                this.SummaryLabel.Text = "Portfolio Summary - $" + summaryInfos.Aggregate((decimal)0, (v, s) => v + s.UsdAmount ?? 0).ToString("N2");
-            }
-            else
-            {
-                this.SummaryLabel.Text = "Portfolio Summary";
-            }
-
-            this.SummaryDataGridBindingSource.DataSource = summaryInfos;
-            this.SummaryDataGridBindingSource.ResetBindings(true);
-        }
-
+        
         #region generated methods
 
         private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)

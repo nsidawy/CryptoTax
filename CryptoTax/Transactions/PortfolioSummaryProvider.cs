@@ -67,12 +67,19 @@ namespace CryptoTax.Transactions
                     .ToList()
                     .ForEach(x =>
                     {
-                        yearToSummaryInfoLookUp[x.Key].UsdInvested = x
+                        var yearToSummaryInfo = yearToSummaryInfoLookUp[x.Key];
+                        yearToSummaryInfo.UsdInvested = x
                             .Where(t => t.TransactionType == TransactionType.Buy)
                             .Sum(t => t.UsDollarAmount);
-                        yearToSummaryInfoLookUp[x.Key].UsdReturns = x
+                        yearToSummaryInfo.UsdReturns = x
                             .Where(t => t.TransactionType == TransactionType.Sell)
                             .Sum(t => t.UsDollarAmount);
+                        yearToSummaryInfo.CryptocurrencyBought = x
+                            .Where(t => t.TransactionType == TransactionType.Buy)
+                            .Sum(t => t.CryptocurrencyAmount);
+                        yearToSummaryInfo.CryptocurrencySold = x
+                            .Where(t => t.TransactionType == TransactionType.Sell)
+                            .Sum(t => t.CryptocurrencyAmount);
                     });
 
                 // calculate capital gains with both accounting methods
@@ -124,6 +131,8 @@ namespace CryptoTax.Transactions
         {
             public CryptocurrencyType Cryptocurrency { get; set; }
             public int Year { get; set; }
+            public decimal CryptocurrencyBought { get; set; }
+            public decimal CryptocurrencySold { get; set; }
             public decimal UsdInvested { get; set; }
             public decimal UsdReturns { get; set; }
             public decimal? LifoLongTermCapitalGains { get; set; }

@@ -47,6 +47,7 @@
             this.YearSummaryDataGrid = new System.Windows.Forms.DataGridView();
             this.SummaryDataGrid = new System.Windows.Forms.DataGridView();
             this.SummaryDataRefreshTimer = new System.Windows.Forms.Timer(this.components);
+            this.SaveAsButton = new System.Windows.Forms.ToolStripButton();
             this.MainTableLayout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.TransactionDataGrid)).BeginInit();
             this.toolStrip1.SuspendLayout();
@@ -105,8 +106,9 @@
             // 
             this.toolStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.OpenFileButton,
             this.SaveButton,
+            this.SaveAsButton,
+            this.OpenFileButton,
             this.toolStripSeparator1,
             this.AddTransactionButton,
             this.EditTransactionButton,
@@ -125,6 +127,7 @@
             this.OpenFileButton.Name = "OpenFileButton";
             this.OpenFileButton.Size = new System.Drawing.Size(24, 24);
             this.OpenFileButton.Text = "&Open";
+            this.OpenFileButton.ToolTipText = "Open (CTRL+o)";
             // 
             // SaveButton
             // 
@@ -134,6 +137,7 @@
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(24, 24);
             this.SaveButton.Text = "&Save";
+            this.SaveButton.ToolTipText = "Save (CTRL+s)";
             // 
             // toolStripSeparator1
             // 
@@ -243,6 +247,16 @@
             // 
             this.SummaryDataRefreshTimer.Interval = 15000;
             // 
+            // SaveAsButton
+            // 
+            this.SaveAsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.SaveAsButton.Image = ((System.Drawing.Image)(resources.GetObject("SaveAsButton.Image")));
+            this.SaveAsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.SaveAsButton.Name = "SaveAsButton";
+            this.SaveAsButton.Size = new System.Drawing.Size(24, 24);
+            this.SaveAsButton.Text = "saveAsButton";
+            this.SaveAsButton.ToolTipText = "Save as... (CTRL+SHIFT+s)";
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -281,6 +295,7 @@
         private System.Windows.Forms.ToolStripButton ImportTransactionsButton;
         private System.Windows.Forms.TableLayoutPanel SummaryInfoTablePanel;
         private System.Windows.Forms.DataGridView YearSummaryDataGrid;
+        private System.Windows.Forms.ToolStripButton SaveAsButton;
     }
 }
 
