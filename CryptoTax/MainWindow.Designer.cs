@@ -44,16 +44,16 @@
             this.ImportTransactionsButton = new System.Windows.Forms.ToolStripButton();
             this.SummaryLabel = new System.Windows.Forms.Label();
             this.SummaryInfoTablePanel = new System.Windows.Forms.TableLayoutPanel();
-            this.YearSummaryDataGrid = new System.Windows.Forms.DataGridView();
             this.SummaryDataGrid = new System.Windows.Forms.DataGridView();
             this.SummaryDataRefreshTimer = new System.Windows.Forms.Timer(this.components);
             this.SaveAsButton = new System.Windows.Forms.ToolStripButton();
+            this.YearSummaryDataGrid = new System.Windows.Forms.DataGridView();
             this.MainTableLayout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.TransactionDataGrid)).BeginInit();
             this.toolStrip1.SuspendLayout();
             this.SummaryInfoTablePanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.YearSummaryDataGrid)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SummaryDataGrid)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.YearSummaryDataGrid)).BeginInit();
             this.SuspendLayout();
             // 
             // MainTableLayout
@@ -61,20 +61,21 @@
             this.MainTableLayout.AutoSize = true;
             this.MainTableLayout.ColumnCount = 1;
             this.MainTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.MainTableLayout.Controls.Add(this.TransactionDataGrid, 0, 3);
+            this.MainTableLayout.Controls.Add(this.TransactionDataGrid, 0, 4);
+            this.MainTableLayout.Controls.Add(this.SummaryDataGrid, 0, 2);
             this.MainTableLayout.Controls.Add(this.toolStrip1, 0, 0);
             this.MainTableLayout.Controls.Add(this.SummaryLabel, 0, 1);
-            this.MainTableLayout.Controls.Add(this.SummaryInfoTablePanel, 0, 2);
+            this.MainTableLayout.Controls.Add(this.SummaryInfoTablePanel, 0, 3);
             this.MainTableLayout.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MainTableLayout.Location = new System.Drawing.Point(0, 0);
             this.MainTableLayout.Margin = new System.Windows.Forms.Padding(2);
             this.MainTableLayout.Name = "MainTableLayout";
-            this.MainTableLayout.RowCount = 4;
+            this.MainTableLayout.RowCount = 5;
             this.MainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.MainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
             this.MainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 200F));
+            this.MainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 200F));
             this.MainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.MainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.MainTableLayout.Size = new System.Drawing.Size(1382, 641);
             this.MainTableLayout.TabIndex = 0;
             this.MainTableLayout.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
@@ -95,7 +96,7 @@
             this.TransactionDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.TransactionDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.TransactionDataGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.TransactionDataGrid.Location = new System.Drawing.Point(3, 259);
+            this.TransactionDataGrid.Location = new System.Drawing.Point(3, 459);
             this.TransactionDataGrid.Name = "TransactionDataGrid";
             this.TransactionDataGrid.RowTemplate.Height = 24;
             this.TransactionDataGrid.Size = new System.Drawing.Size(1376, 379);
@@ -186,24 +187,22 @@
             this.SummaryInfoTablePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.SummaryInfoTablePanel.ColumnCount = 2;
-            this.SummaryInfoTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.SummaryInfoTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.SummaryInfoTablePanel.Controls.Add(this.YearSummaryDataGrid, 1, 0);
-            this.SummaryInfoTablePanel.Controls.Add(this.SummaryDataGrid, 0, 0);
-            this.SummaryInfoTablePanel.Location = new System.Drawing.Point(3, 59);
+            this.SummaryInfoTablePanel.ColumnCount = 1;
+            this.SummaryInfoTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.SummaryInfoTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.SummaryInfoTablePanel.Controls.Add(this.YearSummaryDataGrid, 0, 0);
+            this.SummaryInfoTablePanel.Location = new System.Drawing.Point(3, 259);
             this.SummaryInfoTablePanel.Name = "SummaryInfoTablePanel";
             this.SummaryInfoTablePanel.RowCount = 1;
             this.SummaryInfoTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.SummaryInfoTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.SummaryInfoTablePanel.Size = new System.Drawing.Size(1376, 194);
             this.SummaryInfoTablePanel.TabIndex = 5;
             // 
-            // YearSummaryDataGrid
+            // SummaryDataGrid
             // 
-            this.YearSummaryDataGrid.AllowUserToAddRows = false;
-            this.YearSummaryDataGrid.AllowUserToDeleteRows = false;
-            this.YearSummaryDataGrid.AllowUserToOrderColumns = true;
+            this.SummaryDataGrid.AllowUserToAddRows = false;
+            this.SummaryDataGrid.AllowUserToDeleteRows = false;
+            this.SummaryDataGrid.AllowUserToOrderColumns = true;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -211,36 +210,14 @@
             dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.YearSummaryDataGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
-            this.YearSummaryDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.YearSummaryDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.YearSummaryDataGrid.Location = new System.Drawing.Point(691, 3);
-            this.YearSummaryDataGrid.Name = "YearSummaryDataGrid";
-            this.YearSummaryDataGrid.ReadOnly = true;
-            this.YearSummaryDataGrid.RowTemplate.Height = 24;
-            this.YearSummaryDataGrid.Size = new System.Drawing.Size(682, 194);
-            this.YearSummaryDataGrid.TabIndex = 5;
-            // 
-            // SummaryDataGrid
-            // 
-            this.SummaryDataGrid.AllowUserToAddRows = false;
-            this.SummaryDataGrid.AllowUserToDeleteRows = false;
-            this.SummaryDataGrid.AllowUserToOrderColumns = true;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.SummaryDataGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            this.SummaryDataGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.SummaryDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.SummaryDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.SummaryDataGrid.Location = new System.Drawing.Point(3, 3);
+            this.SummaryDataGrid.Location = new System.Drawing.Point(3, 59);
             this.SummaryDataGrid.Name = "SummaryDataGrid";
             this.SummaryDataGrid.ReadOnly = true;
             this.SummaryDataGrid.RowTemplate.Height = 24;
-            this.SummaryDataGrid.Size = new System.Drawing.Size(682, 194);
+            this.SummaryDataGrid.Size = new System.Drawing.Size(1376, 194);
             this.SummaryDataGrid.TabIndex = 4;
             // 
             // SummaryDataRefreshTimer
@@ -257,6 +234,28 @@
             this.SaveAsButton.Text = "saveAsButton";
             this.SaveAsButton.ToolTipText = "Save as... (CTRL+SHIFT+s)";
             // 
+            // YearSummaryDataGrid
+            // 
+            this.YearSummaryDataGrid.AllowUserToAddRows = false;
+            this.YearSummaryDataGrid.AllowUserToDeleteRows = false;
+            this.YearSummaryDataGrid.AllowUserToOrderColumns = true;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.YearSummaryDataGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            this.YearSummaryDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.YearSummaryDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.YearSummaryDataGrid.Location = new System.Drawing.Point(3, 3);
+            this.YearSummaryDataGrid.Name = "YearSummaryDataGrid";
+            this.YearSummaryDataGrid.ReadOnly = true;
+            this.YearSummaryDataGrid.RowTemplate.Height = 24;
+            this.YearSummaryDataGrid.Size = new System.Drawing.Size(1370, 194);
+            this.YearSummaryDataGrid.TabIndex = 5;
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -272,8 +271,8 @@
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.SummaryInfoTablePanel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.YearSummaryDataGrid)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.SummaryDataGrid)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.YearSummaryDataGrid)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -294,8 +293,8 @@
         private System.Windows.Forms.Timer SummaryDataRefreshTimer;
         private System.Windows.Forms.ToolStripButton ImportTransactionsButton;
         private System.Windows.Forms.TableLayoutPanel SummaryInfoTablePanel;
-        private System.Windows.Forms.DataGridView YearSummaryDataGrid;
         private System.Windows.Forms.ToolStripButton SaveAsButton;
+        private System.Windows.Forms.DataGridView YearSummaryDataGrid;
     }
 }
 

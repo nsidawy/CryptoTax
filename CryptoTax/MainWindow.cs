@@ -89,7 +89,7 @@ namespace CryptoTax
             }
             else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.O)
             {
-                this.SaveAsButton_Click(sender, e);
+                this.OpenFileButton_Click(sender, e);
             }
         }
 
