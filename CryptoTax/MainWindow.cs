@@ -282,10 +282,7 @@ namespace CryptoTax
         private void SaveFile(Stream filestream)
         {
             var streamWriter = new StreamWriter(filestream);
-            foreach (var transaction in this.TransactionDataGridBindingSource.List.Cast<Transaction>())
-            {
-                streamWriter.WriteLine(transaction.TransactionToFileRow());
-            }
+            TransactionParsingUtilities.SaveTransactionsToStream(streamWriter, this.TransactionDataGridBindingSource.List.Cast<Transaction>().ToList());
             streamWriter.Flush();
             filestream.Close();
         }
@@ -303,7 +300,7 @@ namespace CryptoTax
                         this._filename = openFileDialog.FileName;
                         using (var streamReader = new StreamReader(filestream))
                         {
-                            var transactions = TransactionParsingUtilities.ParseFileRow(streamReader);
+                            var transactions = TransactionParsingUtilities.ReadTransactionsFromStream(streamReader);
                             this.TransactionDataGridBindingSource.List.Clear();
                             foreach(var transaction in transactions)
                             {

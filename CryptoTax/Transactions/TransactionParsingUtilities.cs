@@ -12,7 +12,7 @@ namespace CryptoTax.Transactions
 {
     public static class TransactionParsingUtilities
     {
-        public static IEnumerable<Transaction> ParseFileRow(StreamReader filestream)
+        public static IEnumerable<Transaction> ReadTransactionsFromStream(StreamReader filestream)
         {
             var csvReader = new CsvReader(filestream);
             csvReader.Configuration.RegisterClassMap<TransactionRecordMapper>();
@@ -28,9 +28,14 @@ namespace CryptoTax.Transactions
             }
         }
 
-        public static string TransactionToFileRow(this Transaction @this)
+        public static void SaveTransactionsToStream(StreamWriter filestream, IReadOnlyList<Transaction> transactions)
         {
-            return $"{@this.TransactionDate},{@this.TransactionType},{@this.Cryptocurrency},{@this.CryptocurrencyAmount},{@this.UsDollarAmount},{@this.ExcludeFromPortfolio}";
+            var csvWriter = new CsvWriter(filestream);
+            csvWriter.Configuration.RegisterClassMap<TransactionRecordMapper>();
+            csvWriter.Configuration.HasHeaderRecord = false;
+            csvWriter.Configuration.Delimiter = ",";
+            csvWriter.WriteRecords(transactions);
+            csvWriter.Flush();
         }
 
         private class TransactionRecordMapper : ClassMap<Transaction>
