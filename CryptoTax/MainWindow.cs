@@ -320,8 +320,7 @@ namespace CryptoTax
 
         private void DataGrid_MoneyFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (this.TransactionDataGrid.Columns[e.ColumnIndex].Name == nameof(Transaction.PriceInUsd)
-                || this.TransactionDataGrid.Columns[e.ColumnIndex].Name == nameof(Transaction.UsDollarAmount))
+            if (this.TransactionDataGrid.Columns[e.ColumnIndex].Name == nameof(Transaction.UsDollarAmount))
             {
                 e.CellStyle.Format = "N2";
             }
@@ -329,8 +328,7 @@ namespace CryptoTax
 
         private void SummaryDataGrid_MoneyFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (this.SummaryDataGrid.Columns[e.ColumnIndex].Name == nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.PriceInUsd)
-                || this.SummaryDataGrid.Columns[e.ColumnIndex].Name == nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.UsdAmount))
+            if (this.SummaryDataGrid.Columns[e.ColumnIndex].Name == nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.UsdAmount))
             {
                 e.CellStyle.Format = "N2";
             }

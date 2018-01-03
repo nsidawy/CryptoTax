@@ -57,6 +57,10 @@ namespace CryptoTax
             {
                 transactionImporter = this._transacionImporterIndex[TransactionImporterType.BitrixOrderCsvImporter];
             }
+            else if (this.ZoDogeCsvRadioButton.Checked)
+            {
+                transactionImporter = this._transacionImporterIndex[TransactionImporterType.ZoDogeCsvImporter];
+            }
             else
             {
                 MessageBox.Show("Please select a source file type.", "");
@@ -89,12 +93,12 @@ namespace CryptoTax
 
             if(result.Message != null && result.Message.Length > 0)
             {
-                stringBuilder.AppendLine(result.Message);
                 stringBuilder.AppendLine();
+                stringBuilder.AppendLine(result.Message);
             }
 
-            stringBuilder.AppendLine("Are you sure you want to import these transactions?");
             stringBuilder.AppendLine();
+            stringBuilder.AppendLine("Are you sure you want to import these transactions?");
 
             var confirmResult = MessageBox.Show(stringBuilder.ToString(),
                 "Confirm transaction import",  MessageBoxButtons.YesNo);

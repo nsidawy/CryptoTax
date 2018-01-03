@@ -42,6 +42,8 @@ namespace CryptoTax
                 .Keyed<ITransactionImporter>(TransactionImporterType.GdaxFillCsvImporter);
             container.RegisterType<CoinbaseCsvImporter>()
                 .Keyed<ITransactionImporter>(TransactionImporterType.CoinbaseCsvImporter);
+            container.RegisterType<ZoDogeCsvImporter>()
+                .Keyed<ITransactionImporter>(TransactionImporterType.ZoDogeCsvImporter);
 
             container.RegisterType<TaxCalculator>();
             container.RegisterType<PortfolioSummaryProvider>();

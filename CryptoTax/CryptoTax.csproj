@@ -102,10 +102,12 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tests\BitrexOrderCsvImporterTest.cs" />
+    <Compile Include="Tests\ZoDogeCsvImporterTest.cs" />
     <Compile Include="Tests\PriceInUsdProviderTest.cs" />
     <Compile Include="Tests\GdaxFillCsvImporterTest.cs" />
     <Compile Include="Tests\TaxCalculatorTest.cs" />
     <Compile Include="Tests\CoinbaseCsvImporterTest.cs" />
+    <Compile Include="TransactionImport\ZoDogeCsvImporter.cs" />
     <Compile Include="TransactionImport\BittrexOrderCsvImporter.cs" />
     <Compile Include="TransactionImport\GdaxFillCsvImporter.cs" />
     <Compile Include="TransactionImport\CoinbaseCsvImporter.cs" />
@@ -164,7 +166,6 @@
   <Import Project="..\packages\ILMerge.MSBuild.Task.1.0.2\build\ILMerge.MSBuild.Task.targets" Condition="Exists('..\packages\ILMerge.MSBuild.Task.1.0.2\build\ILMerge.MSBuild.Task.targets')" />
   <UsingTask AssemblyFile="$(SolutionDir)packages\ILMerge.Tools.MSBuildToolTask.1.0.2\tools\ILMerge.Tools.MSBuildToolTask.dll" TaskName="ILMerge.Tools.MSBuildToolTask.ILMergeTool" />
   <ItemGroup>
-    <ILMergeInputAssemblies Include="$(OutputPath)\CryptoTax.exe" />
     <ILMergeInputAssemblies Include="$(OutputPath)\*.dll" />
   </ItemGroup>
   <Target Name="MergeAssemblies">

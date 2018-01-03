@@ -16,5 +16,13 @@ namespace CryptoTax.Tests
             var value = priceInUsdProvider.GetBitcoinPrice(new DateTime(2017, 12, 25)).Result;
             Assert.IsTrue(value == 14250);
         }
+
+        [Test]
+        public void DogericeTest()
+        {
+            var priceInUsdProvider = new PriceInUsdProvider();
+            var value = priceInUsdProvider.GetDogePrice(new DateTime(2017, 12, 25)).Result;
+            Assert.IsTrue(value == (decimal)0.008643);
+        }
     }
 }

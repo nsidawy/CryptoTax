@@ -72,8 +72,7 @@ namespace CryptoTax.Cryptocurrency
 
             return null;
         }
-
-
+        
         // see https://docs.gdax.com/#get-historic-rates for API method documentation
         public async Task<decimal> GetBitcoinPrice(DateTime transactionTime)
         {
@@ -86,7 +85,7 @@ namespace CryptoTax.Cryptocurrency
             var address = $"https://api.gdax.com/products/BTC-USD/candles?start={startTimeString}&end={endTimeTimeString}&granularity=60";
             var client = new HttpClient
             {
-                BaseAddress = new Uri($"https://api.gdax.com/products/BTC-USD/candles?start={startTimeString}&end={endTimeTimeString}&granularity=60")
+                BaseAddress = new Uri(address)
             };
             // Add an Accept header for JSON format.
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -96,11 +95,11 @@ namespace CryptoTax.Cryptocurrency
             try
             {
                 response = await client.GetAsync("").ConfigureAwait(false);
-                var respondeContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 if (response.IsSuccessStatusCode)
                 {
                     // get the first (and only item)
-                    var values = Newtonsoft.Json.Linq.JArray.Parse(respondeContent)[0];
+                    var values = Newtonsoft.Json.Linq.JArray.Parse(responseContent)[0];
                     // array items: [ time, low, high, open, close, volume ]
                     // get the close value
                     return (decimal)values[4];
@@ -108,7 +107,7 @@ namespace CryptoTax.Cryptocurrency
                 else
                 {
                     throw new InvalidOperationException("Request to Gdax for historic bitcoin price failed."
-                        + Environment.NewLine + Environment.NewLine + respondeContent);
+                        + Environment.NewLine + Environment.NewLine + responseContent);
                 }
             }
             catch (Exception e)
@@ -121,6 +120,43 @@ namespace CryptoTax.Cryptocurrency
                     return await this.GetBitcoinPrice(transactionTime);
                 }
                 throw new InvalidOperationException("Unable to get bitcoin price from Gdax rest API.", e);
+            }
+        }
+
+        // see https://www.cryptocompare.com/api/#-api-data-pricehistorical for API method documentation
+        public async Task<decimal?> GetDogePrice(DateTime transactionTime)
+        {
+            // request the prices at the minute of the transaction
+            var unixTimestamp = (int)(transactionTime.Subtract(new DateTime(1970, 1, 1)).TotalSeconds);
+
+            var address = $"https://min-api.cryptocompare.com/data/pricehistorical?fsym=DOGE&tsyms=USD&ts={unixTimestamp}";
+            var client = new HttpClient
+            {
+                BaseAddress = new Uri(address)
+            };
+            // Add an Accept header for JSON format.
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            // User-Agent header required by Gdax. 
+            client.DefaultRequestHeaders.Add("User-Agent", "C# App");
+            HttpResponseMessage response = null;
+            try
+            {
+                response = await client.GetAsync("").ConfigureAwait(false);
+                var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                if (response.IsSuccessStatusCode)
+                {
+                    var value = Newtonsoft.Json.Linq.JObject.Parse(responseContent)["DOGE"].Value<decimal>("USD");
+                    return value == 0 ? (decimal?)null : value;
+                }
+                else
+                {
+                    throw new InvalidOperationException("Request to CryptoCompare for historic dogecoin price failed."
+                        + Environment.NewLine + Environment.NewLine + responseContent);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException("Unable to get dogecoin price from CryptoCompare rest API.", e);
             }
         }
     }
