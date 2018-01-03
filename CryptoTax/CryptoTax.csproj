@@ -118,7 +118,7 @@
     <Compile Include="Transactions\PortfolioSummaryProvider.cs" />
     <Compile Include="Transactions\TaxCalculator.cs" />
     <Compile Include="Transactions\Transaction.cs" />
-    <Compile Include="Transactions\TransactionParsingUtilities.cs" />
+    <Compile Include="Transactions\SaveFileReaderWriter.cs" />
     <Compile Include="Utilities\FormFactory.cs" />
     <EmbeddedResource Include="ImportTransactionsDialog.resx">
       <DependentUpon>ImportTransactionsDialog.cs</DependentUpon>

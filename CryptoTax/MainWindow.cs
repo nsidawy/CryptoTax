@@ -10,6 +10,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 using CryptoTax.Utilities;
+using System.ComponentModel;
 
 namespace CryptoTax
 {
@@ -19,6 +20,7 @@ namespace CryptoTax
         private TaxCalculator _taxCalculator;
         private PortfolioSummaryProvider _portfolioSummaryProvider;
         private FormFactory _formFactory;
+        private SaveFileReaderWriter _saveFileReaderWriter;
 
         private string _filename = null;
         private ConcurrentDictionary<CryptocurrencyType, decimal> _pricesInUsd;
@@ -31,7 +33,8 @@ namespace CryptoTax
             PriceInUsdProvider priceInUsdProvider,
             TaxCalculator taxCalculator,
             PortfolioSummaryProvider portfolioSummaryProvider,
-            FormFactory formFactory)
+            FormFactory formFactory,
+            SaveFileReaderWriter saveFileReaderWriter)
         {
             InitializeComponent();
 
@@ -39,6 +42,7 @@ namespace CryptoTax
             this._taxCalculator = taxCalculator;
             this._portfolioSummaryProvider = portfolioSummaryProvider;
             this._formFactory = formFactory;
+            this._saveFileReaderWriter = saveFileReaderWriter;
 
             this._pricesInUsd = new ConcurrentDictionary<CryptocurrencyType, decimal>();
             this.SummaryDataRefreshTimer.Tick += this.RefreshSummaryData;
@@ -73,6 +77,8 @@ namespace CryptoTax
             this.TransactionDataGridBindingSource.ListChanged += this.UpdateSummaryData;
             this.TransactionDataGridBindingSource.ListChanged += this.UpdateFiscalYearSummaryData;
             this.TransactionDataGridBindingSource.ListChanged += this.OnCryptocurrencyFilterInputChange;
+
+            this.TransactionDataGrid.ColumnHeaderMouseClick += this.DataGrid_ColumnHeaderSortClick;
 
             var cryptocurrenyFilterInput = ((ToolStripComboBox)this.toolStrip2.Items["CryptocurrencyFilterInput"]);
             var noneOption = new NoneOption();
@@ -282,7 +288,7 @@ namespace CryptoTax
         private void SaveFile(Stream filestream)
         {
             var streamWriter = new StreamWriter(filestream);
-            TransactionParsingUtilities.SaveTransactionsToStream(streamWriter, this.TransactionDataGridBindingSource.List.Cast<Transaction>().ToList());
+            this._saveFileReaderWriter.SaveTransactionsToStream(streamWriter, this.TransactionDataGridBindingSource.List.Cast<Transaction>().ToList());
             streamWriter.Flush();
             filestream.Close();
         }
@@ -300,7 +306,7 @@ namespace CryptoTax
                         this._filename = openFileDialog.FileName;
                         using (var streamReader = new StreamReader(filestream))
                         {
-                            var transactions = TransactionParsingUtilities.ReadTransactionsFromStream(streamReader);
+                            var transactions = this._saveFileReaderWriter.ReadTransactionsFromStream(streamReader);
                             this.TransactionDataGridBindingSource.List.Clear();
                             foreach(var transaction in transactions)
                             {
@@ -314,7 +320,41 @@ namespace CryptoTax
 
         #endregion
 
-        #region Data grid formatting handlers
+        #region Data grid handlers
+
+        private void DataGrid_ColumnHeaderSortClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            DataGridViewColumn newColumn = this.TransactionDataGrid.Columns[e.ColumnIndex];
+            DataGridViewColumn oldColumn = this.TransactionDataGrid.SortedColumn;
+            ListSortDirection direction;
+
+            // If oldColumn is null, then the DataGridView is not sorted.
+            if (oldColumn != null)
+            {
+                // Sort the same column again, reversing the SortOrder.
+                if (oldColumn == newColumn &&
+                    this.TransactionDataGrid.SortOrder == SortOrder.Ascending)
+                {
+                    direction = ListSortDirection.Descending;
+                }
+                else
+                {
+                    // Sort a new column and remove the old SortGlyph.
+                    direction = ListSortDirection.Ascending;
+                    oldColumn.HeaderCell.SortGlyphDirection = SortOrder.None;
+                }
+            }
+            else
+            {
+                direction = ListSortDirection.Ascending;
+            }
+
+            // Sort the selected column.
+            this.TransactionDataGrid.Sort(newColumn, direction);
+            newColumn.HeaderCell.SortGlyphDirection =
+                direction == ListSortDirection.Ascending ?
+                SortOrder.Ascending : SortOrder.Descending;
+        }
 
         private void DataGrid_BuySellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {

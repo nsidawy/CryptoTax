@@ -47,6 +47,7 @@ namespace CryptoTax
 
             container.RegisterType<TaxCalculator>();
             container.RegisterType<PortfolioSummaryProvider>();
+            container.RegisterType<SaveFileReaderWriter>();
 
             container.RegisterType<FormFactory>();
             container.RegisterType<ImportTransactionsDialog>()
