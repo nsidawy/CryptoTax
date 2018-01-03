@@ -30,12 +30,11 @@
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.MainTableLayout = new System.Windows.Forms.TableLayoutPanel();
             this.YearSummaryDataGrid = new System.Windows.Forms.DataGridView();
-            this.TransactionDataGrid = new System.Windows.Forms.DataGridView();
             this.SummaryDataGrid = new System.Windows.Forms.DataGridView();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.SaveButton = new System.Windows.Forms.ToolStripButton();
@@ -46,17 +45,19 @@
             this.EditTransactionButton = new System.Windows.Forms.ToolStripButton();
             this.ImportTransactionsButton = new System.Windows.Forms.ToolStripButton();
             this.SummaryLabel = new System.Windows.Forms.Label();
-            this.SummaryDataRefreshTimer = new System.Windows.Forms.Timer(this.components);
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.toolStrip2 = new System.Windows.Forms.ToolStrip();
             this.CryptocurrencyFilterInput = new System.Windows.Forms.ToolStripComboBox();
+            this.TransactionDataGrid = new System.Windows.Forms.DataGridView();
+            this.SummaryDataRefreshTimer = new System.Windows.Forms.Timer(this.components);
+            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.MainTableLayout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.YearSummaryDataGrid)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TransactionDataGrid)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SummaryDataGrid)).BeginInit();
             this.toolStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.toolStrip2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.TransactionDataGrid)).BeginInit();
             this.SuspendLayout();
             // 
             // MainTableLayout
@@ -105,29 +106,6 @@
             this.YearSummaryDataGrid.RowTemplate.Height = 24;
             this.YearSummaryDataGrid.Size = new System.Drawing.Size(1376, 196);
             this.YearSummaryDataGrid.TabIndex = 5;
-            // 
-            // TransactionDataGrid
-            // 
-            this.TransactionDataGrid.AllowUserToAddRows = false;
-            this.TransactionDataGrid.AllowUserToOrderColumns = true;
-            this.TransactionDataGrid.AllowUserToResizeRows = false;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.TransactionDataGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
-            this.TransactionDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.TransactionDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TransactionDataGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.TransactionDataGrid.Location = new System.Drawing.Point(3, 31);
-            this.TransactionDataGrid.Name = "TransactionDataGrid";
-            this.TransactionDataGrid.RowTemplate.Height = 24;
-            this.TransactionDataGrid.Size = new System.Drawing.Size(1370, 221);
-            this.TransactionDataGrid.TabIndex = 1;
-            this.TransactionDataGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
             // SummaryDataGrid
             // 
@@ -240,10 +218,6 @@
             this.SummaryLabel.TabIndex = 3;
             this.SummaryLabel.Text = "Portfolio Summary";
             // 
-            // SummaryDataRefreshTimer
-            // 
-            this.SummaryDataRefreshTimer.Interval = 15000;
-            // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 1;
@@ -263,6 +237,7 @@
             // 
             this.toolStrip2.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripLabel1,
             this.CryptocurrencyFilterInput});
             this.toolStrip2.Location = new System.Drawing.Point(0, 0);
             this.toolStrip2.Name = "toolStrip2";
@@ -272,9 +247,45 @@
             // 
             // CryptocurrencyFilterInput
             // 
+            this.CryptocurrencyFilterInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CryptocurrencyFilterInput.Name = "CryptocurrencyFilterInput";
             this.CryptocurrencyFilterInput.Size = new System.Drawing.Size(121, 28);
+            this.CryptocurrencyFilterInput.Sorted = true;
             this.CryptocurrencyFilterInput.ToolTipText = "Filter by cryptocurrency";
+            // 
+            // TransactionDataGrid
+            // 
+            this.TransactionDataGrid.AllowUserToAddRows = false;
+            this.TransactionDataGrid.AllowUserToOrderColumns = true;
+            this.TransactionDataGrid.AllowUserToResizeRows = false;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.TransactionDataGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            this.TransactionDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.TransactionDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TransactionDataGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            this.TransactionDataGrid.Location = new System.Drawing.Point(3, 31);
+            this.TransactionDataGrid.Name = "TransactionDataGrid";
+            this.TransactionDataGrid.RowTemplate.Height = 24;
+            this.TransactionDataGrid.Size = new System.Drawing.Size(1370, 221);
+            this.TransactionDataGrid.TabIndex = 1;
+            this.TransactionDataGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
+            // 
+            // SummaryDataRefreshTimer
+            // 
+            this.SummaryDataRefreshTimer.Interval = 15000;
+            // 
+            // toolStripLabel1
+            // 
+            this.toolStripLabel1.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.toolStripLabel1.Name = "toolStripLabel1";
+            this.toolStripLabel1.Size = new System.Drawing.Size(124, 25);
+            this.toolStripLabel1.Text = "Filter by Crypto: ";
             // 
             // MainWindow
             // 
@@ -288,7 +299,6 @@
             this.MainTableLayout.ResumeLayout(false);
             this.MainTableLayout.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.YearSummaryDataGrid)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TransactionDataGrid)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.SummaryDataGrid)).EndInit();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
@@ -296,6 +306,7 @@
             this.tableLayoutPanel1.PerformLayout();
             this.toolStrip2.ResumeLayout(false);
             this.toolStrip2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.TransactionDataGrid)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -320,6 +331,7 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.ToolStrip toolStrip2;
         private System.Windows.Forms.ToolStripComboBox CryptocurrencyFilterInput;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel1;
     }
 }
 

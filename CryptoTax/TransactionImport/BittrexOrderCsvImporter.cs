@@ -22,7 +22,7 @@ namespace CryptoTax.TransactionImport
             {"BTC-DASH", CryptocurrencyType.Dash },
             {"BTC-REP", CryptocurrencyType.Augur },
             {"BTC-ADA", CryptocurrencyType.Ada },
-            {"BTC-XVG", CryptocurrencyType.Ripple },
+            {"BTC-XVG", CryptocurrencyType.Verge },
             {"BTC-NXT", CryptocurrencyType.Nxt },
             {"BTC-GNT", CryptocurrencyType.Golem },
             {"BTC-STRAT", CryptocurrencyType.Stratis },

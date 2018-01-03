@@ -65,6 +65,8 @@
             // 
             // TransactionTypeInput
             // 
+            this.TransactionTypeInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.TransactionTypeInput.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.TransactionTypeInput.FormattingEnabled = true;
             this.TransactionTypeInput.Location = new System.Drawing.Point(146, 41);
             this.TransactionTypeInput.Name = "TransactionTypeInput";
@@ -83,6 +85,8 @@
             // 
             // CryptocurrencyInput
             // 
+            this.CryptocurrencyInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CryptocurrencyInput.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CryptocurrencyInput.FormattingEnabled = true;
             this.CryptocurrencyInput.Location = new System.Drawing.Point(146, 72);
             this.CryptocurrencyInput.Name = "CryptocurrencyInput";

@@ -73,6 +73,9 @@ namespace CryptoTax
             this.TransactionDataGridBindingSource.ListChanged += this.OnCryptocurrencyFilterInputChange;
 
             var cryptocurrenyFilterInput = ((ToolStripComboBox)this.toolStrip2.Items["CryptocurrencyFilterInput"]);
+            var noneOption = new NoneOption();
+            cryptocurrenyFilterInput.Items.Add(noneOption);
+            cryptocurrenyFilterInput.SelectedIndex = 0;
             cryptocurrenyFilterInput.Items
                 .AddRange(Enum.GetValues(typeof(CryptocurrencyType)).Cast<object>().ToArray());
             cryptocurrenyFilterInput.SelectedIndexChanged += this.OnCryptocurrencyFilterInputChange;
@@ -164,7 +167,14 @@ namespace CryptoTax
         private void OnCryptocurrencyFilterInputChange(object sender, EventArgs e)
         {
             var cryptocurrenyFilterInput = ((ToolStripComboBox)this.toolStrip2.Items["CryptocurrencyFilterInput"]);
-            if(cryptocurrenyFilterInput.Selected && cryptocurrenyFilterInput.SelectedItem != null)
+            if(!cryptocurrenyFilterInput.Selected || (cryptocurrenyFilterInput.SelectedItem is NoneOption))
+            {
+                for (var i = 0; i < this.TransactionDataGrid.Rows.Count; i++)
+                {
+                    this.TransactionDataGrid.Rows[i].Visible = true;
+                }
+            }
+            else
             {
                 var cryptocurrencyFilter = (CryptocurrencyType)cryptocurrenyFilterInput.SelectedItem;
 
@@ -175,12 +185,13 @@ namespace CryptoTax
                         (CryptocurrencyType)this.TransactionDataGrid.Rows[i].Cells[nameof(Transaction.Cryptocurrency)].Value == cryptocurrencyFilter;
                 }
             }
-            else
+        }
+
+        private class NoneOption
+        {
+            public override string ToString()
             {
-                for (var i = 0; i < this.TransactionDataGrid.Rows.Count; i++)
-                {
-                    this.TransactionDataGrid.Rows[i].Visible = true;
-                }
+                return "(None)";
             }
         }
         
