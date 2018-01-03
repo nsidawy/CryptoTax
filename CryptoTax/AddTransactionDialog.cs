@@ -33,6 +33,7 @@ namespace CryptoTax
             this.CryptocurrencyInput.SelectedItem = this.Transaction.Cryptocurrency;
             this.CryptoAmountInput.Value = this.Transaction.CryptocurrencyAmount;
             this.UsdAmountInput.Value = this.Transaction.UsDollarAmount;
+            this.ExcludeFromPortfolioCheckBox.Checked = this.Transaction.ExcludeFromPortfolio;
 
             this.Text = "Edit Transaction";
             this.AddButton.Text = "Edit";
@@ -64,6 +65,7 @@ namespace CryptoTax
             this.Transaction.Cryptocurrency = (CryptocurrencyType)this.CryptocurrencyInput.SelectedValue;
             this.Transaction.CryptocurrencyAmount = this.CryptoAmountInput.Value;
             this.Transaction.UsDollarAmount = this.UsdAmountInput.Value;
+            this.Transaction.ExcludeFromPortfolio = this.ExcludeFromPortfolioCheckBox.Checked;
 
             this.DialogResult = DialogResult.OK;
             this.Close();

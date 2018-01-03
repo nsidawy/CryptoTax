@@ -62,6 +62,8 @@ namespace CryptoTax
             this.SummaryDataGrid.DataSource = this.SummaryDataGridBindingSource;
             this.TransactionDataGrid.DataSource = this.TransactionDataGridBindingSource;
             this.YearSummaryDataGrid.DataSource = this.YearSummaryDataGridBindingSource;
+
+            this.TransactionDataGrid.Columns[nameof(Transaction.ExcludeFromPortfolio)].ReadOnly = false;
             
             // setup formatting
             this.TransactionDataGrid.CellFormatting += this.DataGrid_BuySellFormatting;
@@ -137,7 +139,9 @@ namespace CryptoTax
 
         private void UpdateFiscalYearSummaryData(object sender, EventArgs e)
         {
-            var transactions = this.TransactionDataGridBindingSource.List.Cast<Transaction>().ToList();
+            var transactions = this.TransactionDataGridBindingSource.List.Cast<Transaction>()
+                .Where(x => !x.ExcludeFromPortfolio)
+                .ToList();
             var yearSummaryInfos = this._portfolioSummaryProvider.GetCryptocurrencyYearSummaryInfo(transactions);
 
             this.YearSummaryDataGridBindingSource.DataSource = yearSummaryInfos;
@@ -146,7 +150,10 @@ namespace CryptoTax
 
         private async void UpdateSummaryData(object sender, EventArgs e)
         {
-            var transactions = this.TransactionDataGridBindingSource.List.Cast<Transaction>().ToList();
+            var transactions = this.TransactionDataGridBindingSource.List
+                .Cast<Transaction>()
+                .Where(x => !x.ExcludeFromPortfolio)
+                .ToList();
             var summaryInfos = this._portfolioSummaryProvider.GetCryptocurrencyPortfolioSummaryInfo(transactions, this._pricesInUsd)
                 .OrderByDescending(x => x.UsdAmount);
 
@@ -194,7 +201,6 @@ namespace CryptoTax
                 return "(None)";
             }
         }
-        
 
         #region Toolstip button handlers
 
@@ -297,9 +303,11 @@ namespace CryptoTax
                         this._filename = openFileDialog.FileName;
                         using (var streamReader = new StreamReader(filestream))
                         {
-                            while (streamReader.EndOfStream == false)
+                            var transactions = TransactionParsingUtilities.ParseFileRow(streamReader);
+                            this.TransactionDataGridBindingSource.List.Clear();
+                            foreach(var transaction in transactions)
                             {
-                                this.TransactionDataGridBindingSource.Add(TransactionParsingUtilities.ParseFileRow(streamReader.ReadLine()));
+                                this.TransactionDataGridBindingSource.Add(transaction);
                             }
                         }
                     }

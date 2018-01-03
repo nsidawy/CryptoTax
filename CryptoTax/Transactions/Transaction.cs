@@ -21,5 +21,6 @@ namespace CryptoTax.Transactions
         public decimal CryptocurrencyAmount { get; set; }
         public decimal UsDollarAmount { get; set; }
         public decimal PriceInUsd { get => this.UsDollarAmount / this.CryptocurrencyAmount; }
+        public bool ExcludeFromPortfolio { get; set; }
     }
 }

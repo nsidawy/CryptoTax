@@ -47,10 +47,10 @@
             this.SummaryLabel = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.toolStrip2 = new System.Windows.Forms.ToolStrip();
+            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.CryptocurrencyFilterInput = new System.Windows.Forms.ToolStripComboBox();
             this.TransactionDataGrid = new System.Windows.Forms.DataGridView();
             this.SummaryDataRefreshTimer = new System.Windows.Forms.Timer(this.components);
-            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.MainTableLayout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.YearSummaryDataGrid)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SummaryDataGrid)).BeginInit();
@@ -245,6 +245,13 @@
             this.toolStrip2.TabIndex = 0;
             this.toolStrip2.Text = "toolStrip2";
             // 
+            // toolStripLabel1
+            // 
+            this.toolStripLabel1.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.toolStripLabel1.Name = "toolStripLabel1";
+            this.toolStripLabel1.Size = new System.Drawing.Size(124, 25);
+            this.toolStripLabel1.Text = "Filter by Crypto: ";
+            // 
             // CryptocurrencyFilterInput
             // 
             this.CryptocurrencyFilterInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -271,6 +278,7 @@
             this.TransactionDataGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.TransactionDataGrid.Location = new System.Drawing.Point(3, 31);
             this.TransactionDataGrid.Name = "TransactionDataGrid";
+            this.TransactionDataGrid.ReadOnly = true;
             this.TransactionDataGrid.RowTemplate.Height = 24;
             this.TransactionDataGrid.Size = new System.Drawing.Size(1370, 221);
             this.TransactionDataGrid.TabIndex = 1;
@@ -279,13 +287,6 @@
             // SummaryDataRefreshTimer
             // 
             this.SummaryDataRefreshTimer.Interval = 15000;
-            // 
-            // toolStripLabel1
-            // 
-            this.toolStripLabel1.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(124, 25);
-            this.toolStripLabel1.Text = "Filter by Crypto: ";
             // 
             // MainWindow
             // 

@@ -40,6 +40,8 @@
             this.AddButton = new System.Windows.Forms.Button();
             this.CancelButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.ExcludeFromPortfolioCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.UsdAmountInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.CryptoAmountInput)).BeginInit();
             this.SuspendLayout();
@@ -108,7 +110,7 @@
             this.UsdAmountInput.DecimalPlaces = 10;
             this.UsdAmountInput.Location = new System.Drawing.Point(146, 103);
             this.UsdAmountInput.Maximum = new decimal(new int[] {
-            100000,
+            1000000000,
             0,
             0,
             0});
@@ -141,7 +143,7 @@
             this.CryptoAmountInput.DecimalPlaces = 10;
             this.CryptoAmountInput.Location = new System.Drawing.Point(146, 132);
             this.CryptoAmountInput.Maximum = new decimal(new int[] {
-            100000,
+            1000000000,
             0,
             0,
             0});
@@ -161,7 +163,7 @@
             // 
             // AddButton
             // 
-            this.AddButton.Location = new System.Drawing.Point(192, 181);
+            this.AddButton.Location = new System.Drawing.Point(192, 202);
             this.AddButton.Name = "AddButton";
             this.AddButton.Size = new System.Drawing.Size(75, 23);
             this.AddButton.TabIndex = 10;
@@ -171,7 +173,7 @@
             // CancelButton
             // 
             this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelButton.Location = new System.Drawing.Point(273, 181);
+            this.CancelButton.Location = new System.Drawing.Point(273, 202);
             this.CancelButton.Name = "CancelButton";
             this.CancelButton.Size = new System.Drawing.Size(75, 23);
             this.CancelButton.TabIndex = 11;
@@ -188,12 +190,33 @@
             this.label2.TabIndex = 12;
             this.label2.Text = "Buy or Sell:";
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(12, 164);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(175, 17);
+            this.label6.TabIndex = 13;
+            this.label6.Text = "Exclude from portfolio?";
+            // 
+            // ExcludeFromPortfolioCheckBox
+            // 
+            this.ExcludeFromPortfolioCheckBox.AutoSize = true;
+            this.ExcludeFromPortfolioCheckBox.Location = new System.Drawing.Point(194, 164);
+            this.ExcludeFromPortfolioCheckBox.Name = "ExcludeFromPortfolioCheckBox";
+            this.ExcludeFromPortfolioCheckBox.Size = new System.Drawing.Size(18, 17);
+            this.ExcludeFromPortfolioCheckBox.TabIndex = 14;
+            this.ExcludeFromPortfolioCheckBox.UseVisualStyleBackColor = true;
+            // 
             // AddTransactionDialog
             // 
             this.AcceptButton = this.AddButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(537, 218);
+            this.ClientSize = new System.Drawing.Size(537, 248);
+            this.Controls.Add(this.ExcludeFromPortfolioCheckBox);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.CancelButton);
             this.Controls.Add(this.AddButton);
@@ -233,5 +256,7 @@
         private System.Windows.Forms.Button AddButton;
         private System.Windows.Forms.Button CancelButton;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.CheckBox ExcludeFromPortfolioCheckBox;
     }
 }

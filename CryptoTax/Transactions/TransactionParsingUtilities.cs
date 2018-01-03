@@ -1,6 +1,9 @@
 ﻿using CryptoTax.Cryptocurrency;
+using CsvHelper;
+using CsvHelper.Configuration;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,22 +12,40 @@ namespace CryptoTax.Transactions
 {
     public static class TransactionParsingUtilities
     {
-        public static Transaction ParseFileRow(string row)
+        public static IEnumerable<Transaction> ParseFileRow(StreamReader filestream)
         {
-            var values = row.Split(',');
-            return new Transaction
+            var csvReader = new CsvReader(filestream);
+            csvReader.Configuration.RegisterClassMap<TransactionRecordMapper>();
+            // no headers on this file
+            csvReader.Configuration.HasHeaderRecord = false;
+            csvReader.Configuration.MissingFieldFound = null;
+
+            var transactions = new List<Transaction>();
+            var unknownDogecoinPriceIds = new HashSet<string>();
+            while (csvReader.Read())
             {
-                TransactionDate = DateTime.Parse(values[0]),
-                TransactionType = (TransactionType)Enum.Parse(typeof(TransactionType), values[1]),
-                Cryptocurrency = (CryptocurrencyType)Enum.Parse(typeof(CryptocurrencyType), values[2]),
-                CryptocurrencyAmount = Decimal.Parse(values[3]),
-                UsDollarAmount = Decimal.Parse(values[4])
-            };
+                yield return csvReader.GetRecord<Transaction>();
+            }
         }
 
         public static string TransactionToFileRow(this Transaction @this)
         {
-            return $"{@this.TransactionDate},{@this.TransactionType},{@this.Cryptocurrency},{@this.CryptocurrencyAmount},{@this.UsDollarAmount}";
+            return $"{@this.TransactionDate},{@this.TransactionType},{@this.Cryptocurrency},{@this.CryptocurrencyAmount},{@this.UsDollarAmount},{@this.ExcludeFromPortfolio}";
+        }
+
+        private class TransactionRecordMapper : ClassMap<Transaction>
+        {
+            public TransactionRecordMapper()
+            {
+                Map(m => m.TransactionDate).Index(0);
+                Map(m => m.TransactionType).Index(1);
+                Map(m => m.Cryptocurrency).Index(2);
+                Map(m => m.CryptocurrencyAmount).Index(3);
+                Map(m => m.UsDollarAmount).Index(4);
+                Map(m => m.ExcludeFromPortfolio).Index(5).Default(false);
+
+                Map(m => m.PriceInUsd).Ignore();
+            }
         }
     }
 }
