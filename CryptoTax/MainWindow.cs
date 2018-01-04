@@ -24,10 +24,11 @@ namespace CryptoTax
 
         private string _filename = null;
         private ConcurrentDictionary<CryptocurrencyType, decimal> _pricesInUsd;
-        
-        private BindingSource TransactionDataGridBindingSource = new BindingSource();
-        private BindingSource SummaryDataGridBindingSource = new BindingSource();
-        private BindingSource YearSummaryDataGridBindingSource = new BindingSource();
+
+        private BindingList<Transaction> Transactions = new BindingList<Transaction>();
+        private BindingList<Transaction> TransactionDataGridBindingSource = new SortableBindingList<Transaction>();
+        private BindingList<PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo> SummaryDataGridBindingSource = new SortableBindingList<PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo>();
+        private BindingList<PortfolioSummaryProvider.CryptocurrencyYearSummaryInfo> YearSummaryDataGridBindingSource = new SortableBindingList<PortfolioSummaryProvider.CryptocurrencyYearSummaryInfo>();
 
         public MainWindow(
             PriceInUsdProvider priceInUsdProvider,
@@ -45,9 +46,9 @@ namespace CryptoTax
             this._saveFileReaderWriter = saveFileReaderWriter;
 
             this._pricesInUsd = new ConcurrentDictionary<CryptocurrencyType, decimal>();
-            this.SummaryDataRefreshTimer.Tick += this.RefreshSummaryData;
+            this.SummaryDataRefreshTimer.Tick += this.RefreshLivePriceData;
             this.SummaryDataRefreshTimer.Start();
-            this.RefreshSummaryData(null, null);
+            this.RefreshLivePriceData(null, null);
                
             this.SetupDataGrids();
             this.SetupEventHandlers();
@@ -58,27 +59,26 @@ namespace CryptoTax
 
         private void SetupDataGrids()
         {
-            this.SummaryDataGridBindingSource.DataSource = new List<PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo>();
-            this.YearSummaryDataGridBindingSource.DataSource = new List<PortfolioSummaryProvider.CryptocurrencyYearSummaryInfo>();
-            this.TransactionDataGridBindingSource.DataSource = new List<Transaction>();
-
             // data sources
             this.SummaryDataGrid.DataSource = this.SummaryDataGridBindingSource;
             this.TransactionDataGrid.DataSource = this.TransactionDataGridBindingSource;
             this.YearSummaryDataGrid.DataSource = this.YearSummaryDataGridBindingSource;
 
-            this.TransactionDataGrid.Columns[nameof(Transaction.ExcludeFromPortfolio)].ReadOnly = false;
+            this.TransactionDataGrid.UserDeletingRow += (object o, DataGridViewRowCancelEventArgs e) =>
+            {
+                // don't let the normal delete row happen. The data grid will be updated when the item is removed from it binding list
+                e.Cancel = true;
+                //this.ReplaceBindingListItems(this.Transactions, this.Transactions.Where(x => x.GetHashCode() != e.Row.DataBoundItem.GetHashCode()).ToList());
+                this.Transactions.Remove((Transaction)e.Row.DataBoundItem);
+            };
+
             
             // setup formatting
             this.TransactionDataGrid.CellFormatting += this.DataGrid_BuySellFormatting;
             this.TransactionDataGrid.CellFormatting += this.DataGrid_MoneyFormatting;
             this.SummaryDataGrid.CellFormatting += this.SummaryDataGrid_MoneyFormatting;
-
-            this.TransactionDataGridBindingSource.ListChanged += this.UpdateSummaryData;
-            this.TransactionDataGridBindingSource.ListChanged += this.UpdateFiscalYearSummaryData;
-            this.TransactionDataGridBindingSource.ListChanged += this.OnCryptocurrencyFilterInputChange;
-
-            this.TransactionDataGrid.ColumnHeaderMouseClick += this.DataGrid_ColumnHeaderSortClick;
+            
+            this.Transactions.ListChanged += this.TransactionsUpdated;
 
             var cryptocurrenyFilterInput = ((ToolStripComboBox)this.toolStrip2.Items["CryptocurrencyFilterInput"]);
             var noneOption = new NoneOption();
@@ -116,11 +116,32 @@ namespace CryptoTax
             }
         }
 
-
-        private async void RefreshSummaryData(object sender, EventArgs e)
+        private async void RefreshLivePriceData(object sender, EventArgs e)
         {
             this.UpdatePricesInUsd();
-            this.UpdateSummaryData(sender, e);
+            this.UpdateSummaryData();
+        }
+
+        private async void TransactionsUpdated(object sender, ListChangedEventArgs e)
+        {
+            this.UpdateSummaryData();
+            this.UpdateFiscalYearSummaryData();
+
+            // update transactions grid source data
+            this.SyncTransactionDataGrid();
+        }
+
+        private void SyncTransactionDataGrid()
+        {
+            IEnumerable<Transaction> transactions = this.Transactions.ToList();
+            var cryptocurrenyFilterInput = ((ToolStripComboBox)this.toolStrip2.Items["CryptocurrencyFilterInput"]);
+            if (!(cryptocurrenyFilterInput.SelectedItem is NoneOption))
+            {
+                var cryptocurrencyFilter = (CryptocurrencyType)cryptocurrenyFilterInput.SelectedItem;
+                transactions = transactions.Where(x => x.Cryptocurrency == cryptocurrencyFilter);
+            }
+
+            this.ReplaceBindingListItems(this.TransactionDataGridBindingSource, transactions.ToList());
         }
 
         private void UpdatePricesInUsd()
@@ -143,25 +164,27 @@ namespace CryptoTax
             Task.WaitAll(queryTasks.ToArray());
         }
 
-        private void UpdateFiscalYearSummaryData(object sender, EventArgs e)
+        private void UpdateFiscalYearSummaryData()
         {
-            var transactions = this.TransactionDataGridBindingSource.List.Cast<Transaction>()
+            var transactions = this.Transactions
                 .Where(x => !x.ExcludeFromPortfolio)
                 .ToList();
-            var yearSummaryInfos = this._portfolioSummaryProvider.GetCryptocurrencyYearSummaryInfo(transactions);
-
-            this.YearSummaryDataGridBindingSource.DataSource = yearSummaryInfos;
-            this.YearSummaryDataGridBindingSource.ResetBindings(true);
+            var yearSummaryInfos = this._portfolioSummaryProvider.GetCryptocurrencyYearSummaryInfo(transactions)
+                .OrderBy(x => x.Cryptocurrency)
+                .ThenBy(x => x.Year)
+                .ToList();
+            
+            this.ReplaceBindingListItems(this.YearSummaryDataGridBindingSource, yearSummaryInfos);
         }
 
-        private async void UpdateSummaryData(object sender, EventArgs e)
+        private async void UpdateSummaryData()
         {
-            var transactions = this.TransactionDataGridBindingSource.List
-                .Cast<Transaction>()
+            var transactions = this.Transactions
                 .Where(x => !x.ExcludeFromPortfolio)
                 .ToList();
             var summaryInfos = this._portfolioSummaryProvider.GetCryptocurrencyPortfolioSummaryInfo(transactions, this._pricesInUsd)
-                .OrderByDescending(x => x.UsdAmount);
+                .OrderByDescending(x => x.UsdAmount)
+                .ToList();
 
             // update portfolio summary label
             if (summaryInfos.Any(x => x.UsdAmount.HasValue))
@@ -172,32 +195,13 @@ namespace CryptoTax
             {
                 this.SummaryLabel.Text = "Portfolio Summary";
             }
-
-            this.SummaryDataGridBindingSource.DataSource = summaryInfos;
-            this.SummaryDataGridBindingSource.ResetBindings(true);
+            
+            this.ReplaceBindingListItems(this.SummaryDataGridBindingSource, summaryInfos);
         }
 
         private void OnCryptocurrencyFilterInputChange(object sender, EventArgs e)
         {
-            var cryptocurrenyFilterInput = ((ToolStripComboBox)this.toolStrip2.Items["CryptocurrencyFilterInput"]);
-            if(!cryptocurrenyFilterInput.Selected || (cryptocurrenyFilterInput.SelectedItem is NoneOption))
-            {
-                for (var i = 0; i < this.TransactionDataGrid.Rows.Count; i++)
-                {
-                    this.TransactionDataGrid.Rows[i].Visible = true;
-                }
-            }
-            else
-            {
-                var cryptocurrencyFilter = (CryptocurrencyType)cryptocurrenyFilterInput.SelectedItem;
-
-                this.TransactionDataGrid.CurrentCell = null;
-                for (var i = 0; i < this.TransactionDataGrid.Rows.Count; i++)
-                {
-                    this.TransactionDataGrid.Rows[i].Visible =
-                        (CryptocurrencyType)this.TransactionDataGrid.Rows[i].Cells[nameof(Transaction.Cryptocurrency)].Value == cryptocurrencyFilter;
-                }
-            }
+            this.SyncTransactionDataGrid();
         }
 
         private class NoneOption
@@ -217,7 +221,7 @@ namespace CryptoTax
                 var result = popup.ShowDialog();
                 if (result == DialogResult.OK)
                 {
-                    this.TransactionDataGridBindingSource.Add(popup.Transaction);
+                    this.Transactions.Add(popup.Transaction);
                 }
             }
         }
@@ -236,7 +240,7 @@ namespace CryptoTax
                 var result = popup.ShowDialog();
                 if (result == DialogResult.OK)
                 {
-                    this.TransactionDataGridBindingSource.ResetBindings(false);
+                    this.Transactions.ResetBindings();
                 }
             }
         }
@@ -249,7 +253,7 @@ namespace CryptoTax
                 {
                     foreach(var transaction in popup.Transactions)
                     {
-                        this.TransactionDataGridBindingSource.Add(transaction);
+                        this.Transactions.Add(transaction);
                     }
                 }
             }
@@ -263,7 +267,7 @@ namespace CryptoTax
                 return;
             }
 
-            using (var filestream = File.OpenWrite(this._filename))
+            using (var filestream = File.Open(this._filename, FileMode.Truncate))
             {
                 this.SaveFile(filestream);
             }
@@ -288,7 +292,7 @@ namespace CryptoTax
         private void SaveFile(Stream filestream)
         {
             var streamWriter = new StreamWriter(filestream);
-            this._saveFileReaderWriter.SaveTransactionsToStream(streamWriter, this.TransactionDataGridBindingSource.List.Cast<Transaction>().ToList());
+            this._saveFileReaderWriter.SaveTransactionsToStream(streamWriter, this.Transactions.ToList());
             streamWriter.Flush();
             filestream.Close();
         }
@@ -299,19 +303,16 @@ namespace CryptoTax
             {
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    this.TransactionDataGridBindingSource.Clear();
+                    this.Transactions.Clear();
                     Stream filestream;
                     if ((filestream = openFileDialog.OpenFile()) != null)
                     {
                         this._filename = openFileDialog.FileName;
                         using (var streamReader = new StreamReader(filestream))
                         {
-                            var transactions = this._saveFileReaderWriter.ReadTransactionsFromStream(streamReader);
-                            this.TransactionDataGridBindingSource.List.Clear();
-                            foreach(var transaction in transactions)
-                            {
-                                this.TransactionDataGridBindingSource.Add(transaction);
-                            }
+                            var transactions = this._saveFileReaderWriter.ReadTransactionsFromStream(streamReader)
+                                .ToList();
+                            this.ReplaceBindingListItems(this.Transactions, transactions);
                         }
                     }
                 }
@@ -321,41 +322,7 @@ namespace CryptoTax
         #endregion
 
         #region Data grid handlers
-
-        private void DataGrid_ColumnHeaderSortClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            DataGridViewColumn newColumn = this.TransactionDataGrid.Columns[e.ColumnIndex];
-            DataGridViewColumn oldColumn = this.TransactionDataGrid.SortedColumn;
-            ListSortDirection direction;
-
-            // If oldColumn is null, then the DataGridView is not sorted.
-            if (oldColumn != null)
-            {
-                // Sort the same column again, reversing the SortOrder.
-                if (oldColumn == newColumn &&
-                    this.TransactionDataGrid.SortOrder == SortOrder.Ascending)
-                {
-                    direction = ListSortDirection.Descending;
-                }
-                else
-                {
-                    // Sort a new column and remove the old SortGlyph.
-                    direction = ListSortDirection.Ascending;
-                    oldColumn.HeaderCell.SortGlyphDirection = SortOrder.None;
-                }
-            }
-            else
-            {
-                direction = ListSortDirection.Ascending;
-            }
-
-            // Sort the selected column.
-            this.TransactionDataGrid.Sort(newColumn, direction);
-            newColumn.HeaderCell.SortGlyphDirection =
-                direction == ListSortDirection.Ascending ?
-                SortOrder.Ascending : SortOrder.Descending;
-        }
-
+        
         private void DataGrid_BuySellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             if (this.TransactionDataGrid.Columns[e.ColumnIndex].Name == nameof(Transaction.TransactionType))
@@ -405,5 +372,17 @@ namespace CryptoTax
         }
 
         #endregion
+
+        private void ReplaceBindingListItems<T>(BindingList<T> bindingList, IReadOnlyCollection<T> newItems)
+        {
+            bindingList.RaiseListChangedEvents = false;
+            bindingList.Clear();
+            foreach (var item in newItems)
+            {
+                bindingList.Add(item);
+            }
+            bindingList.RaiseListChangedEvents = true;
+            bindingList.ResetBindings();
+        }
     }
 }

@@ -120,6 +120,8 @@
     <Compile Include="Transactions\Transaction.cs" />
     <Compile Include="Transactions\SaveFileReaderWriter.cs" />
     <Compile Include="Utilities\FormFactory.cs" />
+    <Compile Include="Utilities\PropertyComparer.cs" />
+    <Compile Include="Utilities\SortableBindingList.cs" />
     <EmbeddedResource Include="ImportTransactionsDialog.resx">
       <DependentUpon>ImportTransactionsDialog.cs</DependentUpon>
     </EmbeddedResource>

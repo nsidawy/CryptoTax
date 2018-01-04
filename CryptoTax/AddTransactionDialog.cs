@@ -37,7 +37,6 @@ namespace CryptoTax
 
             this.Text = "Edit Transaction";
             this.AddButton.Text = "Edit";
-
         }
 
         //handle pasting into the date time picker
