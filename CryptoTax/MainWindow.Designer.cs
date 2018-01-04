@@ -51,6 +51,9 @@
             this.CryptocurrencyFilterInput = new System.Windows.Forms.ToolStripComboBox();
             this.TransactionDataGrid = new System.Windows.Forms.DataGridView();
             this.SummaryDataRefreshTimer = new System.Windows.Forms.Timer(this.components);
+            this.TransactionGridContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.EditTransaction = new System.Windows.Forms.ToolStripMenuItem();
+            this.DeleteTransaction = new System.Windows.Forms.ToolStripMenuItem();
             this.MainTableLayout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.YearSummaryDataGrid)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SummaryDataGrid)).BeginInit();
@@ -58,6 +61,7 @@
             this.tableLayoutPanel1.SuspendLayout();
             this.toolStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.TransactionDataGrid)).BeginInit();
+            this.TransactionGridContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // MainTableLayout
@@ -288,6 +292,27 @@
             // 
             this.SummaryDataRefreshTimer.Interval = 15000;
             // 
+            // TransactionGridContextMenu
+            // 
+            this.TransactionGridContextMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.TransactionGridContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.EditTransaction,
+            this.DeleteTransaction});
+            this.TransactionGridContextMenu.Name = "TransactionGridContextMenu";
+            this.TransactionGridContextMenu.Size = new System.Drawing.Size(202, 52);
+            // 
+            // EditTransaction
+            // 
+            this.EditTransaction.Name = "EditTransaction";
+            this.EditTransaction.Size = new System.Drawing.Size(201, 24);
+            this.EditTransaction.Text = "Edit Transaction";
+            // 
+            // DeleteTransaction
+            // 
+            this.DeleteTransaction.Name = "DeleteTransaction";
+            this.DeleteTransaction.Size = new System.Drawing.Size(201, 24);
+            this.DeleteTransaction.Text = "Delete Transaction";
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -308,6 +333,7 @@
             this.toolStrip2.ResumeLayout(false);
             this.toolStrip2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.TransactionDataGrid)).EndInit();
+            this.TransactionGridContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -333,6 +359,9 @@
         private System.Windows.Forms.ToolStrip toolStrip2;
         private System.Windows.Forms.ToolStripComboBox CryptocurrencyFilterInput;
         private System.Windows.Forms.ToolStripLabel toolStripLabel1;
+        private System.Windows.Forms.ContextMenuStrip TransactionGridContextMenu;
+        private System.Windows.Forms.ToolStripMenuItem EditTransaction;
+        private System.Windows.Forms.ToolStripMenuItem DeleteTransaction;
     }
 }
 

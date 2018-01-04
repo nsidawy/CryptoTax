@@ -71,8 +71,28 @@ namespace CryptoTax
                 //this.ReplaceBindingListItems(this.Transactions, this.Transactions.Where(x => x.GetHashCode() != e.Row.DataBoundItem.GetHashCode()).ToList());
                 this.Transactions.Remove((Transaction)e.Row.DataBoundItem);
             };
+            this.TransactionDataGrid.MouseDown += (object o, MouseEventArgs e) =>
+            {
+                if(e.Button != MouseButtons.Right)
+                {
+                    return;
+                }
+                int currentMouseOverRow = this.TransactionDataGrid.HitTest(e.X, e.Y).RowIndex;
 
-            
+                if (currentMouseOverRow >= 0)
+                {
+                    this.TransactionDataGrid.ClearSelection();
+                    this.TransactionDataGrid.Rows[currentMouseOverRow].Selected = true;
+                    ContextMenu cm = new ContextMenu();
+                    cm.MenuItems.Add("Edit transaction");
+                    cm.MenuItems[0].Click += this.EditTransactionButton_Click;
+                    cm.MenuItems.Add("Delete transaction");
+                    cm.MenuItems[1].Click += (o1, e2) => this.Transactions.Remove((Transaction)this.TransactionDataGrid.Rows[currentMouseOverRow].DataBoundItem);
+                    cm.Show(this.TransactionDataGrid, new Point(e.X, e.Y));
+                }
+            };
+
+
             // setup formatting
             this.TransactionDataGrid.CellFormatting += this.DataGrid_BuySellFormatting;
             this.TransactionDataGrid.CellFormatting += this.DataGrid_MoneyFormatting;
