@@ -13,7 +13,7 @@ namespace CryptoTax.Tests
         public void BtcPriceTest()
         {
             var priceInUsdProvider = new PriceInUsdProvider();
-            var value = priceInUsdProvider.GetBitcoinPrice(new DateTime(2017, 12, 25)).Result;
+            var value = priceInUsdProvider.GetBitcoinPrice(new DateTime(2017, 12, 25));
             Assert.IsTrue(value == 14250);
         }
 

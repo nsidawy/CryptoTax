@@ -16,16 +16,19 @@ using CryptoTax.Forms;
 namespace CryptoTax.TransactionImport
 {
     public class CustomCsvImporter : ITransactionImporter
-    {
+    { 
         private readonly FormFactory _formFactory;
         private readonly PriceInUsdProvider _priceInUsdProvider;
+        private readonly ExchangeParser _exchangeParser;
 
         public CustomCsvImporter(
             PriceInUsdProvider priceInUsdProvider,
-            FormFactory formFactory)
+            FormFactory formFactory,
+            ExchangeParser exchangeParser)
         {
             this._priceInUsdProvider = priceInUsdProvider;
             this._formFactory = formFactory;
+            this._exchangeParser = exchangeParser;
         }
 
         public TransactionImportResult ImportFile(TransactonImporterSettings settings)
@@ -52,14 +55,55 @@ namespace CryptoTax.TransactionImport
             while (csvReader.Read())
             {
                 var record = csvReader.GetRecord<CustomCsvImporterRecord>();
-                transactions.Add(new Transaction {
-                    TransactionDate = record.Date,
-                    TransactionType = record.TransactionType,
-                    ExcludeFromPortfolio = record.ExcludeFromPortfolio,
-                    Cryptocurrency = CryptocurrencyType.Bitcoin,
-                    CryptocurrencyAmount = record.CryptocurrencyAmount,
-                    UsDollarAmount = record.CryptocurrencyAmount * record.CryptocurrencyPrice
-                });
+                var exchangeResult = this._exchangeParser.ParseExchange(record.Exchange);
+
+                if (exchangeResult.TransactionCurrency == TransactionCurrencyType.Usd)
+                {
+                    transactions.Add(new Transaction
+                    {
+                        Cryptocurrency = exchangeResult.AssetCurrency,
+                        TransactionDate = record.Date,
+                        TransactionType = record.TransactionType,
+                        CryptocurrencyAmount = record.CryptocurrencyAmount,
+                        UsDollarAmount = record.TransactionCurrencyAmount,
+                        ExcludeFromPortfolio = record.ExcludeFromPortfolio
+                    });
+                }
+                else
+                {
+                    decimal transactionCurrencyePriceAtTransactionTime;
+                    switch (exchangeResult.TransactionCurrency)
+                    {
+                        case TransactionCurrencyType.Bitcoin:
+                            transactionCurrencyePriceAtTransactionTime = this._priceInUsdProvider.GetBitcoinPrice(record.Date);
+                            break;
+                        case TransactionCurrencyType.Ethereum:
+                            transactionCurrencyePriceAtTransactionTime = this._priceInUsdProvider.GetEthereumPrice(record.Date);
+                            break;
+                        default:
+                            throw new InvalidOperationException("Should never get here.");
+                    }
+                    
+                    var usdEquivalentAmount = record.TransactionCurrencyAmount * transactionCurrencyePriceAtTransactionTime;
+                    transactions.Add(new Transaction
+                    {
+                        Cryptocurrency = exchangeResult.TransactionCurrency.ToCryptocurrencyType(),
+                        TransactionDate = record.Date,
+                        TransactionType = record.TransactionType == TransactionType.Buy ? TransactionType.Sell : TransactionType.Buy,
+                        CryptocurrencyAmount = record.TransactionCurrencyAmount,
+                        UsDollarAmount = usdEquivalentAmount,
+                        ExcludeFromPortfolio = record.ExcludeFromPortfolio
+                    });
+                    transactions.Add(new Transaction
+                    {
+                        Cryptocurrency = exchangeResult.AssetCurrency,
+                        TransactionDate = record.Date,
+                        TransactionType = record.TransactionType == TransactionType.Buy ? TransactionType.Buy : TransactionType.Sell,
+                        CryptocurrencyAmount = record.CryptocurrencyAmount,
+                        UsDollarAmount = usdEquivalentAmount,
+                        ExcludeFromPortfolio = record.ExcludeFromPortfolio
+                    });
+                }
             }
 
             return new TransactionImportResult
@@ -77,6 +121,7 @@ namespace CryptoTax.TransactionImport
             public decimal CryptocurrencyAmount { get; set; }
             public decimal CryptocurrencyPrice { get; set; }
             public bool ExcludeFromPortfolio { get; set; }
+            public decimal TransactionCurrencyAmount { get => this.CryptocurrencyAmount * CryptocurrencyPrice; }
         }
 
         private sealed class CustomCsvImporterRecordClassMap : ClassMap<CustomCsvImporterRecord>
@@ -89,6 +134,8 @@ namespace CryptoTax.TransactionImport
                 Map(m => m.CryptocurrencyAmount).Name(settings.CryptocurrencyAmountHeaderName);
                 Map(m => m.CryptocurrencyPrice).Name(settings.CryptocurrencyPriceHeaderName);
                 Map(m => m.ExcludeFromPortfolio).Name(settings.ExcludeFromPortfolioHeaderName).TypeConverter<ExcludeFromPortfolioConverter>();
+
+                Map(m => m.TransactionCurrencyAmount).Ignore();
             }
 
             private class TransactionTypeConverter : ITypeConverter

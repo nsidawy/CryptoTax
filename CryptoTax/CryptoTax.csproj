@@ -80,6 +80,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cryptocurrency\TransactionCurrencyType.cs" />
+    <Compile Include="Cryptocurrency\ExchangeParser.cs" />
     <Compile Include="Forms\CustomCsvImporterDialog.cs">
       <SubType>Form</SubType>
     </Compile>

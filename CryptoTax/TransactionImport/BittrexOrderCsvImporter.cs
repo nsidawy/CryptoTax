@@ -41,7 +41,6 @@ namespace CryptoTax.TransactionImport
             this._priceInUsdProvider = priceInUsdProvider;
         }
 
-
         public TransactionImportResult ImportFile(TransactonImporterSettings settings)
         {
             var textReader = new StreamReader(settings.Filename);
@@ -69,9 +68,9 @@ namespace CryptoTax.TransactionImport
                     continue;
                 }
 
-                var bitcoinPriceAtTransactionTime = this._priceInUsdProvider.GetBitcoinPrice(record.ClosedTimestamp).Result;
+                var bitcoinPriceAtTransactionTime = this._priceInUsdProvider.GetBitcoinPrice(record.ClosedTimestamp);
                 var bitcoinAmount = record.AssetAmount * record.PriceInBitcoin;
-                var usdEquivalentAmounnt = bitcoinAmount * bitcoinPriceAtTransactionTime;
+                var usdEquivalentAmount = bitcoinAmount * bitcoinPriceAtTransactionTime;
 
                 transactions.Add(new Transaction
                 {
@@ -79,7 +78,7 @@ namespace CryptoTax.TransactionImport
                     TransactionDate = record.ClosedTimestamp,
                     TransactionType = record.TransactionType.Equals("limit_buy", StringComparison.OrdinalIgnoreCase) ? TransactionType.Sell : TransactionType.Buy,
                     CryptocurrencyAmount = bitcoinAmount + record.CommissionInBitcoin,
-                    UsDollarAmount = usdEquivalentAmounnt
+                    UsDollarAmount = usdEquivalentAmount
                 });
 
                 transactions.Add(new Transaction
@@ -88,7 +87,7 @@ namespace CryptoTax.TransactionImport
                     TransactionDate = record.ClosedTimestamp,
                     TransactionType = record.TransactionType.Equals("limit_buy", StringComparison.OrdinalIgnoreCase) ? TransactionType.Buy : TransactionType.Sell,
                     CryptocurrencyAmount = record.AssetAmount,
-                    UsDollarAmount = usdEquivalentAmounnt
+                    UsDollarAmount = usdEquivalentAmount
                 });
             }
 

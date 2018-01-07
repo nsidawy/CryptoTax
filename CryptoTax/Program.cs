@@ -40,6 +40,7 @@ namespace CryptoTax
             container.RegisterType<TaxCalculator>();
             container.RegisterType<PortfolioSummaryProvider>();
             container.RegisterType<SaveFileReaderWriter>();
+            container.RegisterType<ExchangeParser>();
 
             container.RegisterType<BittrexOrderCsvImporter>()
                 .Keyed<ITransactionImporter>(TransactionImporterType.BitrixOrderCsvImporter);

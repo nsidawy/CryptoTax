@@ -72,7 +72,7 @@ namespace CryptoTax.TransactionImport
                         });
                         break;
                     case ProductTransationCurrency.Bitcoin:
-                        var bitcoinPriceAtTransactionTime = this._priceInUsdProvider.GetBitcoinPrice(record.CreatedAt).Result;
+                        var bitcoinPriceAtTransactionTime = this._priceInUsdProvider.GetBitcoinPrice(record.CreatedAt);
                         var bitcoinAmount = record.AssetPrice * record.AssetAmount;
                         var usdEquivalentAmounnt = bitcoinAmount * bitcoinPriceAtTransactionTime;
 

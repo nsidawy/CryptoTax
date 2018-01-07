@@ -73,8 +73,18 @@ namespace CryptoTax.Cryptocurrency
             return null;
         }
         
+        public decimal GetBitcoinPrice(DateTime transactionTime)
+        {
+            return this.GetGdaxPrice(transactionTime, "BTC-USD").Result;
+        }
+
+        public decimal GetEthereumPrice(DateTime transactionTime)
+        {
+            return this.GetGdaxPrice(transactionTime, "ETH-USD").Result;
+        }
+
         // see https://docs.gdax.com/#get-historic-rates for API method documentation
-        public async Task<decimal> GetBitcoinPrice(DateTime transactionTime)
+        private async Task<decimal> GetGdaxPrice(DateTime transactionTime, string exchange)
         {
             var startTime = new DateTime(transactionTime.Year, transactionTime.Month, transactionTime.Day, transactionTime.Hour, transactionTime.Minute, 0);
             var endTime = startTime.AddMinutes(1);
@@ -82,7 +92,7 @@ namespace CryptoTax.Cryptocurrency
             var startTimeString = startTime.ToString("yyyy-MM-ddTHH\\:mm\\:ss");
             var endTimeTimeString = endTime.ToString("yyyy-MM-ddTHH\\:mm\\:ss");
 
-            var address = $"https://api.gdax.com/products/BTC-USD/candles?start={startTimeString}&end={endTimeTimeString}&granularity=60";
+            var address = $"https://api.gdax.com/products/{exchange}/candles?start={startTimeString}&end={endTimeTimeString}&granularity=60";
             var client = new HttpClient
             {
                 BaseAddress = new Uri(address)
@@ -117,7 +127,7 @@ namespace CryptoTax.Cryptocurrency
                 if (response != null && response.StatusCode == (System.Net.HttpStatusCode)429)
                 {
                     Thread.Sleep(1000);
-                    return await this.GetBitcoinPrice(transactionTime);
+                    return this.GetBitcoinPrice(transactionTime);
                 }
                 throw new InvalidOperationException("Unable to get bitcoin price from Gdax rest API.", e);
             }
