@@ -26,9 +26,9 @@ namespace CryptoTax
         private ConcurrentDictionary<CryptocurrencyType, decimal> _pricesInUsd;
 
         private BindingList<Transaction> Transactions = new BindingList<Transaction>();
-        private BindingList<Transaction> TransactionDataGridBindingSource = new SortableBindingList<Transaction>();
-        private BindingList<PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo> SummaryDataGridBindingSource = new SortableBindingList<PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo>();
-        private BindingList<PortfolioSummaryProvider.CryptocurrencyYearSummaryInfo> YearSummaryDataGridBindingSource = new SortableBindingList<PortfolioSummaryProvider.CryptocurrencyYearSummaryInfo>();
+        private SortableBindingList<Transaction> TransactionDataGridBindingSource = new SortableBindingList<Transaction>();
+        private SortableBindingList<PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo> SummaryDataGridBindingSource = new SortableBindingList<PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo>();
+        private SortableBindingList<PortfolioSummaryProvider.CryptocurrencyYearSummaryInfo> YearSummaryDataGridBindingSource = new SortableBindingList<PortfolioSummaryProvider.CryptocurrencyYearSummaryInfo>();
 
         public MainWindow(
             PriceInUsdProvider priceInUsdProvider,
@@ -162,6 +162,7 @@ namespace CryptoTax
             }
 
             this.ReplaceBindingListItems(this.TransactionDataGridBindingSource, transactions.ToList());
+            this.TransactionDataGridBindingSource.Resort();
         }
 
         private void UpdatePricesInUsd()

@@ -48,6 +48,14 @@ namespace CryptoTax.Utilities
             get { return true; }
         }
 
+        public void Resort()
+        {
+            if(this.propertyDescriptor != null)
+            {
+                this.ApplySortCore(this.propertyDescriptor, this.listSortDirection);
+            }
+        }
+
         protected override void ApplySortCore(PropertyDescriptor property, ListSortDirection direction)
         {
             List<T> itemsList = (List<T>)this.Items;

@@ -38,11 +38,12 @@
             this.FileBrowseButton = new System.Windows.Forms.Button();
             this.BitrexOrderCsvRadioButton = new System.Windows.Forms.RadioButton();
             this.ZoDogeCsvRadioButton = new System.Windows.Forms.RadioButton();
+            this.CustomCsvRadioButton = new System.Windows.Forms.RadioButton();
             this.SuspendLayout();
             // 
             // ImportButton
             // 
-            this.ImportButton.Location = new System.Drawing.Point(190, 208);
+            this.ImportButton.Location = new System.Drawing.Point(190, 237);
             this.ImportButton.Name = "ImportButton";
             this.ImportButton.Size = new System.Drawing.Size(75, 25);
             this.ImportButton.TabIndex = 10;
@@ -52,7 +53,7 @@
             // CancelButton
             // 
             this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelButton.Location = new System.Drawing.Point(271, 208);
+            this.CancelButton.Location = new System.Drawing.Point(271, 237);
             this.CancelButton.Name = "CancelButton";
             this.CancelButton.Size = new System.Drawing.Size(75, 25);
             this.CancelButton.TabIndex = 11;
@@ -76,6 +77,7 @@
             this.CoinbaseCsvRadioButton.Name = "CoinbaseCsvRadioButton";
             this.CoinbaseCsvRadioButton.Size = new System.Drawing.Size(239, 21);
             this.CoinbaseCsvRadioButton.TabIndex = 13;
+            this.CoinbaseCsvRadioButton.TabStop = true;
             this.CoinbaseCsvRadioButton.Text = "Coinbase transaction history CSV";
             this.CoinbaseCsvRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -93,7 +95,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(15, 162);
+            this.label2.Location = new System.Drawing.Point(15, 191);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(83, 17);
             this.label2.TabIndex = 15;
@@ -101,14 +103,14 @@
             // 
             // FilenameInput
             // 
-            this.FilenameInput.Location = new System.Drawing.Point(105, 159);
+            this.FilenameInput.Location = new System.Drawing.Point(105, 188);
             this.FilenameInput.Name = "FilenameInput";
             this.FilenameInput.Size = new System.Drawing.Size(229, 22);
             this.FilenameInput.TabIndex = 16;
             // 
             // FileBrowseButton
             // 
-            this.FileBrowseButton.Location = new System.Drawing.Point(340, 159);
+            this.FileBrowseButton.Location = new System.Drawing.Point(340, 188);
             this.FileBrowseButton.Name = "FileBrowseButton";
             this.FileBrowseButton.Size = new System.Drawing.Size(75, 24);
             this.FileBrowseButton.TabIndex = 17;
@@ -135,12 +137,23 @@
             this.ZoDogeCsvRadioButton.Text = "Zo\'s doge transaction CSV";
             this.ZoDogeCsvRadioButton.UseVisualStyleBackColor = true;
             // 
+            // customCsvRadioButton
+            // 
+            this.CustomCsvRadioButton.AutoSize = true;
+            this.CustomCsvRadioButton.Location = new System.Drawing.Point(28, 151);
+            this.CustomCsvRadioButton.Name = "customCsvRadioButton";
+            this.CustomCsvRadioButton.Size = new System.Drawing.Size(129, 21);
+            this.CustomCsvRadioButton.TabIndex = 20;
+            this.CustomCsvRadioButton.Text = "Custom CSV file";
+            this.CustomCsvRadioButton.UseVisualStyleBackColor = true;
+            // 
             // ImportTransactionsDialog
             // 
             this.AcceptButton = this.ImportButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(537, 251);
+            this.ClientSize = new System.Drawing.Size(537, 284);
+            this.Controls.Add(this.CustomCsvRadioButton);
             this.Controls.Add(this.ZoDogeCsvRadioButton);
             this.Controls.Add(this.BitrexOrderCsvRadioButton);
             this.Controls.Add(this.FileBrowseButton);
@@ -173,5 +186,6 @@
         private System.Windows.Forms.Button FileBrowseButton;
         private System.Windows.Forms.RadioButton BitrexOrderCsvRadioButton;
         private System.Windows.Forms.RadioButton ZoDogeCsvRadioButton;
+        private System.Windows.Forms.RadioButton CustomCsvRadioButton;
     }
 }

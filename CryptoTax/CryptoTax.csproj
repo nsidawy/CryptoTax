@@ -80,6 +80,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomCsvImporterDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomCsvImporterDialog.Designer.cs">
+      <DependentUpon>CustomCsvImporterDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="ImportTransactionsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -107,6 +113,7 @@
     <Compile Include="Tests\GdaxFillCsvImporterTest.cs" />
     <Compile Include="Tests\TaxCalculatorTest.cs" />
     <Compile Include="Tests\CoinbaseCsvImporterTest.cs" />
+    <Compile Include="TransactionImport\CustomCsvImporter.cs" />
     <Compile Include="TransactionImport\ZoDogeCsvImporter.cs" />
     <Compile Include="TransactionImport\BittrexOrderCsvImporter.cs" />
     <Compile Include="TransactionImport\GdaxFillCsvImporter.cs" />
@@ -122,6 +129,9 @@
     <Compile Include="Utilities\FormFactory.cs" />
     <Compile Include="Utilities\PropertyComparer.cs" />
     <Compile Include="Utilities\SortableBindingList.cs" />
+    <EmbeddedResource Include="CustomCsvImporterDialog.resx">
+      <DependentUpon>CustomCsvImporterDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ImportTransactionsDialog.resx">
       <DependentUpon>ImportTransactionsDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -167,9 +177,6 @@
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\System.Data.SQLite.Core.targets')" />
   <Import Project="..\packages\ILMerge.MSBuild.Task.1.0.2\build\ILMerge.MSBuild.Task.targets" Condition="Exists('..\packages\ILMerge.MSBuild.Task.1.0.2\build\ILMerge.MSBuild.Task.targets')" />
   <UsingTask AssemblyFile="$(SolutionDir)packages\ILMerge.Tools.MSBuildToolTask.1.0.2\tools\ILMerge.Tools.MSBuildToolTask.dll" TaskName="ILMerge.Tools.MSBuildToolTask.ILMergeTool" />
-  <ItemGroup>
-    <ILMergeInputAssemblies Include="$(OutputPath)\*.dll" />
-  </ItemGroup>
   <Target Name="MergeAssemblies">
     <ILMergeTool InputAssemblies="@(ILMergeInputAssemblies)" OutputFile="$(OutputPath)\${AssemblyName}" ToolPath="$(SolutionDir)\packages\ILMerge.Tools.2.14.1208\tools\ILMerge.exe" />
   </Target>

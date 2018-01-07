@@ -12,7 +12,8 @@ namespace CryptoTax.TransactionImport
         CoinbaseCsvImporter,
         GdaxFillCsvImporter,
         BitrixOrderCsvImporter,
-        ZoDogeCsvImporter
+        ZoDogeCsvImporter,
+        CustomCsvImporter,
     }
 
     public interface ITransactionImporter

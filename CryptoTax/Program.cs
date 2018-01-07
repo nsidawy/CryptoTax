@@ -44,6 +44,8 @@ namespace CryptoTax
                 .Keyed<ITransactionImporter>(TransactionImporterType.CoinbaseCsvImporter);
             container.RegisterType<ZoDogeCsvImporter>()
                 .Keyed<ITransactionImporter>(TransactionImporterType.ZoDogeCsvImporter);
+            container.RegisterType<CustomCsvImporter>()
+                .Keyed<ITransactionImporter>(TransactionImporterType.CustomCsvImporter);
 
             container.RegisterType<TaxCalculator>();
             container.RegisterType<PortfolioSummaryProvider>();
@@ -53,6 +55,8 @@ namespace CryptoTax
             container.RegisterType<ImportTransactionsDialog>()
                 .InstancePerDependency();
             container.RegisterType<AddTransactionDialog>()
+                .InstancePerDependency();
+            container.RegisterType<CustomCsvImporterDialog>()
                 .InstancePerDependency();
             container.RegisterType<MainWindow>()
                 .InstancePerDependency();

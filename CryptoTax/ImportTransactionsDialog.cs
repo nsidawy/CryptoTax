@@ -61,6 +61,10 @@ namespace CryptoTax
             {
                 transactionImporter = this._transacionImporterIndex[TransactionImporterType.ZoDogeCsvImporter];
             }
+            else if (this.CustomCsvRadioButton.Checked)
+            {
+                transactionImporter = this._transacionImporterIndex[TransactionImporterType.CustomCsvImporter];
+            }
             else
             {
                 MessageBox.Show("Please select a source file type.", "");
@@ -81,6 +85,7 @@ namespace CryptoTax
             }
             else
             {
+                MessageBox.Show(transactionImportResult.Message);
                 this.DialogResult = DialogResult.Cancel;
             }
             this.Close();
