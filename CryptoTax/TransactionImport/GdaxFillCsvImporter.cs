@@ -38,7 +38,7 @@ namespace CryptoTax.TransactionImport
             this._priceInUsdProvider = priceInUsdProvider;
         }
 
-        public TransactionImportResult ImportFile(TransactonImporterSettings settings)
+        public async Task<TransactionImportResult> ImportFile(TransactonImporterSettings settings)
         {
             var textReader = new StreamReader(settings.Filename);
             var csvReader = new CsvReader(textReader);
@@ -72,7 +72,7 @@ namespace CryptoTax.TransactionImport
                         });
                         break;
                     case ProductTransationCurrency.Bitcoin:
-                        var bitcoinPriceAtTransactionTime = this._priceInUsdProvider.GetBitcoinPrice(record.CreatedAt);
+                        var bitcoinPriceAtTransactionTime = await this._priceInUsdProvider.GetBitcoinPrice(record.CreatedAt);
                         var bitcoinAmount = record.AssetPrice * record.AssetAmount;
                         var usdEquivalentAmounnt = bitcoinAmount * bitcoinPriceAtTransactionTime;
 

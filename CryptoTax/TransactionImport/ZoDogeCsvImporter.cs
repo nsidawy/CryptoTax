@@ -22,7 +22,7 @@ namespace CryptoTax.TransactionImport
             this._priceInUsdProvider = priceInUsdProvider;
         }
 
-        public TransactionImportResult ImportFile(TransactonImporterSettings settings)
+        public async Task<TransactionImportResult> ImportFile(TransactonImporterSettings settings)
         {
             var textReader = new StreamReader(settings.Filename);
             var csvReader = new CsvReader(textReader);
@@ -38,7 +38,7 @@ namespace CryptoTax.TransactionImport
                     continue;
                 }
 
-                var dogecoinPriceInUsdAtTransactionTime = this._priceInUsdProvider.GetDogePrice(record.TimeStamp).Result;
+                var dogecoinPriceInUsdAtTransactionTime = await this._priceInUsdProvider.GetDogePrice(record.TimeStamp);
 
                 if(!dogecoinPriceInUsdAtTransactionTime.HasValue)
                 {

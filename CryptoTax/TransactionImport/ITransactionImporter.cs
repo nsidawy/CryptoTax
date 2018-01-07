@@ -18,7 +18,7 @@ namespace CryptoTax.TransactionImport
 
     public interface ITransactionImporter
     {
-        TransactionImportResult ImportFile(TransactonImporterSettings settings);
+        Task<TransactionImportResult> ImportFile(TransactonImporterSettings settings);
     }
 
     public class TransactonImporterSettings

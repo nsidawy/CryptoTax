@@ -31,7 +31,7 @@ namespace CryptoTax.TransactionImport
             this._exchangeParser = exchangeParser;
         }
 
-        public TransactionImportResult ImportFile(TransactonImporterSettings settings)
+        public async Task<TransactionImportResult> ImportFile(TransactonImporterSettings settings)
         {
             var settingsDiaolog = this._formFactory.CreateForm<CustomCsvImporterDialog>();
             var result = settingsDiaolog.ShowDialog();
@@ -75,10 +75,10 @@ namespace CryptoTax.TransactionImport
                     switch (exchangeResult.TransactionCurrency)
                     {
                         case TransactionCurrencyType.Bitcoin:
-                            transactionCurrencyePriceAtTransactionTime = this._priceInUsdProvider.GetBitcoinPrice(record.Date);
+                            transactionCurrencyePriceAtTransactionTime = await this._priceInUsdProvider.GetBitcoinPrice(record.Date);
                             break;
                         case TransactionCurrencyType.Ethereum:
-                            transactionCurrencyePriceAtTransactionTime = this._priceInUsdProvider.GetEthereumPrice(record.Date);
+                            transactionCurrencyePriceAtTransactionTime = await this._priceInUsdProvider.GetEthereumPrice(record.Date);
                             break;
                         default:
                             throw new InvalidOperationException("Should never get here.");

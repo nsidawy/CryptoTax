@@ -73,14 +73,14 @@ namespace CryptoTax.Cryptocurrency
             return null;
         }
         
-        public decimal GetBitcoinPrice(DateTime transactionTime)
+        public async Task<decimal> GetBitcoinPrice(DateTime transactionTime)
         {
-            return this.GetGdaxPrice(transactionTime, "BTC-USD").Result;
+            return await this.GetGdaxPrice(transactionTime, "BTC-USD");
         }
 
-        public decimal GetEthereumPrice(DateTime transactionTime)
+        public async Task<decimal> GetEthereumPrice(DateTime transactionTime)
         {
-            return this.GetGdaxPrice(transactionTime, "ETH-USD").Result;
+            return await this.GetGdaxPrice(transactionTime, "ETH-USD");
         }
 
         // see https://docs.gdax.com/#get-historic-rates for API method documentation
@@ -127,7 +127,7 @@ namespace CryptoTax.Cryptocurrency
                 if (response != null && response.StatusCode == (System.Net.HttpStatusCode)429)
                 {
                     Thread.Sleep(1000);
-                    return this.GetBitcoinPrice(transactionTime);
+                    return await this.GetGdaxPrice(transactionTime, exchange);
                 }
                 throw new InvalidOperationException("Unable to get bitcoin price from Gdax rest API.", e);
             }

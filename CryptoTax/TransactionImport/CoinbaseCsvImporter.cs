@@ -21,7 +21,7 @@ namespace CryptoTax.TransactionImport
             {"BCH", CryptocurrencyType.BitcoinCash },
         };
 
-        public TransactionImportResult ImportFile(TransactonImporterSettings settings)
+        public Task<TransactionImportResult> ImportFile(TransactonImporterSettings settings)
         {
             var textReader = new StreamReader(settings.Filename);
             // skip rows prior to the transaction section
@@ -53,12 +53,12 @@ namespace CryptoTax.TransactionImport
                 });
             }
 
-            return new TransactionImportResult
+            return Task.Factory.StartNew(() => new TransactionImportResult
             {
                 IsSuccess = true,
                 Transactions = transactions,
                 Message = $"{nonBuyOrSellTransactionCount} item(s) in the CSV were ignored because they are not a buy or sell transction."
-            };
+            });
         }
 
         private class CoinbaseCsvRecord

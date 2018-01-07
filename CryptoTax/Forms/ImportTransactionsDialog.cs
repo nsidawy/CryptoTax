@@ -42,7 +42,7 @@ namespace CryptoTax.Forms
             }
         }
 
-        private void ImportButton_Click(object sender, EventArgs e)
+        private async void ImportButton_Click(object sender, EventArgs e)
         {
             ITransactionImporter transactionImporter;
             if(this.CoinbaseCsvRadioButton.Checked)
@@ -77,7 +77,7 @@ namespace CryptoTax.Forms
                 return;
             }
 
-            var transactionImportResult = transactionImporter.ImportFile(new TransactonImporterSettings { Filename = this.FilenameInput.Text });
+            var transactionImportResult = transactionImporter.ImportFile(new TransactonImporterSettings { Filename = this.FilenameInput.Text }).Result;
             if (transactionImportResult.IsSuccess && this.ConfirmImportedTransactions(transactionImportResult))
             {
                 this.DialogResult = DialogResult.OK;
