@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using CryptoTax.Utilities;
 using System.ComponentModel;
 
-namespace CryptoTax
+namespace CryptoTax.Forms
 {
     public partial class MainWindow : Form
     {

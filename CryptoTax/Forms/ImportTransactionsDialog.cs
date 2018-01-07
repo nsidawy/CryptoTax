@@ -14,7 +14,7 @@ using CryptoTax.TransactionImport;
 using System.IO;
 using Autofac.Features.Indexed;
 
-namespace CryptoTax
+namespace CryptoTax.Forms
 {
     public partial class ImportTransactionsDialog : Form
     {

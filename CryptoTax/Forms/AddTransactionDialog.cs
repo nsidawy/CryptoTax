@@ -5,7 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace CryptoTax
+namespace CryptoTax.Forms
 {
     public partial class AddTransactionDialog : Form
     {

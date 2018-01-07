@@ -11,6 +11,7 @@ using CsvHelper;
 using CsvHelper.TypeConversion;
 using CryptoTax.Utilities;
 using System.Windows.Forms;
+using CryptoTax.Forms;
 
 namespace CryptoTax.TransactionImport
 {

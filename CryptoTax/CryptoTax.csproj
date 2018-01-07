@@ -80,29 +80,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomCsvImporterDialog.cs">
+    <Compile Include="Forms\CustomCsvImporterDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CustomCsvImporterDialog.Designer.cs">
+    <Compile Include="Forms\CustomCsvImporterDialog.Designer.cs">
       <DependentUpon>CustomCsvImporterDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="ImportTransactionsDialog.cs">
+    <Compile Include="Forms\ImportTransactionsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ImportTransactionsDialog.Designer.cs">
+    <Compile Include="Forms\ImportTransactionsDialog.Designer.cs">
       <DependentUpon>ImportTransactionsDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="AddTransactionDialog.cs">
+    <Compile Include="Forms\AddTransactionDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AddTransactionDialog.Designer.cs">
+    <Compile Include="Forms\AddTransactionDialog.Designer.cs">
       <DependentUpon>AddTransactionDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Cryptocurrency\PriceInUsdProvider.cs" />
-    <Compile Include="MainWindow.cs">
+    <Compile Include="Forms\MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainWindow.Designer.cs">
+    <Compile Include="Forms\MainWindow.Designer.cs">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
@@ -129,16 +129,16 @@
     <Compile Include="Utilities\FormFactory.cs" />
     <Compile Include="Utilities\PropertyComparer.cs" />
     <Compile Include="Utilities\SortableBindingList.cs" />
-    <EmbeddedResource Include="CustomCsvImporterDialog.resx">
+    <EmbeddedResource Include="Forms\CustomCsvImporterDialog.resx">
       <DependentUpon>CustomCsvImporterDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ImportTransactionsDialog.resx">
+    <EmbeddedResource Include="Forms\ImportTransactionsDialog.resx">
       <DependentUpon>ImportTransactionsDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AddTransactionDialog.resx">
+    <EmbeddedResource Include="Forms\AddTransactionDialog.resx">
       <DependentUpon>AddTransactionDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainWindow.resx">
+    <EmbeddedResource Include="Forms\MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

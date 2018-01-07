@@ -1,4 +1,4 @@
-﻿namespace CryptoTax
+﻿namespace CryptoTax.Forms
 {
     partial class MainWindow
     {

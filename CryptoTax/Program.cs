@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using CryptoTax.Cryptocurrency;
+using CryptoTax.Forms;
 using CryptoTax.TransactionImport;
 using CryptoTax.Transactions;
 using CryptoTax.Utilities;
