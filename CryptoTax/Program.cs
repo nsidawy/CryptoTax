@@ -36,6 +36,10 @@ namespace CryptoTax
             container.RegisterType<PriceInUsdProvider>()
                 .InstancePerLifetimeScope();
 
+            container.RegisterType<TaxCalculator>();
+            container.RegisterType<PortfolioSummaryProvider>();
+            container.RegisterType<SaveFileReaderWriter>();
+
             container.RegisterType<BittrexOrderCsvImporter>()
                 .Keyed<ITransactionImporter>(TransactionImporterType.BitrixOrderCsvImporter);
             container.RegisterType<GdaxFillCsvImporter>()
@@ -47,19 +51,13 @@ namespace CryptoTax
             container.RegisterType<CustomCsvImporter>()
                 .Keyed<ITransactionImporter>(TransactionImporterType.CustomCsvImporter);
 
-            container.RegisterType<TaxCalculator>();
-            container.RegisterType<PortfolioSummaryProvider>();
-            container.RegisterType<SaveFileReaderWriter>();
-
+            container.RegisterTypes(
+                    typeof(Program).Assembly.GetTypes()
+                    .Where(x => x.BaseType == typeof(Form))
+                    .Where(x => x.IsPublic)
+                    .ToArray())
+                .InstancePerDependency();
             container.RegisterType<FormFactory>();
-            container.RegisterType<ImportTransactionsDialog>()
-                .InstancePerDependency();
-            container.RegisterType<AddTransactionDialog>()
-                .InstancePerDependency();
-            container.RegisterType<CustomCsvImporterDialog>()
-                .InstancePerDependency();
-            container.RegisterType<MainWindow>()
-                .InstancePerDependency();
 
             return container;
         }
