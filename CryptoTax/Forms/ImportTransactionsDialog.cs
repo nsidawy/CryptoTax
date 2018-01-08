@@ -77,7 +77,8 @@ namespace CryptoTax.Forms
                 return;
             }
 
-            var transactionImportResult = transactionImporter.ImportFile(new TransactonImporterSettings { Filename = this.FilenameInput.Text }).Result;
+            this.Enabled = false;
+            var transactionImportResult = await transactionImporter.ImportFile(new TransactonImporterSettings { Filename = this.FilenameInput.Text });
             if (transactionImportResult.IsSuccess && this.ConfirmImportedTransactions(transactionImportResult))
             {
                 this.DialogResult = DialogResult.OK;

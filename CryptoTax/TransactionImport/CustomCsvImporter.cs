@@ -115,6 +115,12 @@ namespace CryptoTax.TransactionImport
 
         private class CustomCsvImporterRecord
         {
+            public CustomCsvImporterRecord()
+            {
+                // default value
+                this.ExcludeFromPortfolio = false;
+            }
+
             public DateTime Date { get; set; }
             public TransactionType TransactionType { get; set; }
             public string Exchange { get; set; }
@@ -133,7 +139,14 @@ namespace CryptoTax.TransactionImport
                 Map(m => m.Exchange).Name(settings.ExchangeHeaderName);
                 Map(m => m.CryptocurrencyAmount).Name(settings.CryptocurrencyAmountHeaderName);
                 Map(m => m.CryptocurrencyPrice).Name(settings.CryptocurrencyPriceHeaderName);
-                Map(m => m.ExcludeFromPortfolio).Name(settings.ExcludeFromPortfolioHeaderName).TypeConverter<ExcludeFromPortfolioConverter>();
+                if(settings.HasExcludeFromPortfolioValues)
+                {
+                    Map(m => m.ExcludeFromPortfolio).Name(settings.ExcludeFromPortfolioHeaderName).TypeConverter<ExcludeFromPortfolioConverter>();
+                }
+                else
+                {
+                    Map(m => m.ExcludeFromPortfolio).Ignore();
+                }
 
                 Map(m => m.TransactionCurrencyAmount).Ignore();
             }

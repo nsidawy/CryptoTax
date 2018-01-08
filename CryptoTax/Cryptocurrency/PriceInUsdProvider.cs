@@ -58,8 +58,8 @@ namespace CryptoTax.Cryptocurrency
 
             try
             {
-                HttpResponseMessage response = await client.GetAsync("").ConfigureAwait(false);
-                var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                HttpResponseMessage response = await client.GetAsync("");
+                var content = await response.Content.ReadAsStringAsync();
                 if (response.IsSuccessStatusCode)
                 {
                     var values = Newtonsoft.Json.Linq.JArray.Parse(content);
@@ -104,8 +104,8 @@ namespace CryptoTax.Cryptocurrency
             HttpResponseMessage response = null;
             try
             {
-                response = await client.GetAsync("").ConfigureAwait(false);
-                var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                response = await client.GetAsync("");
+                var responseContent = await response.Content.ReadAsStringAsync();
                 if (response.IsSuccessStatusCode)
                 {
                     // get the first (and only item)
@@ -151,8 +151,8 @@ namespace CryptoTax.Cryptocurrency
             HttpResponseMessage response = null;
             try
             {
-                response = await client.GetAsync("").ConfigureAwait(false);
-                var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                response = await client.GetAsync("");
+                var responseContent = await response.Content.ReadAsStringAsync();
                 if (response.IsSuccessStatusCode)
                 {
                     var value = Newtonsoft.Json.Linq.JObject.Parse(responseContent)["DOGE"].Value<decimal>("USD");

@@ -43,6 +43,7 @@
             this.CryptocurrencyAmountInput = new System.Windows.Forms.TextBox();
             this.ExcludeLabel = new System.Windows.Forms.Label();
             this.ExcludeFromPortfolioInput = new System.Windows.Forms.TextBox();
+            this.ExcludeFromPortfolioCheckbox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // ImportButton
@@ -87,15 +88,17 @@
             // 
             this.TransactionDateInput.Location = new System.Drawing.Point(177, 45);
             this.TransactionDateInput.Name = "TransactionDateInput";
-            this.TransactionDateInput.Size = new System.Drawing.Size(147, 22);
+            this.TransactionDateInput.Size = new System.Drawing.Size(171, 22);
             this.TransactionDateInput.TabIndex = 14;
+            this.TransactionDateInput.Text = "Closed";
             // 
             // TransctionTypeInput
             // 
             this.TransctionTypeInput.Location = new System.Drawing.Point(177, 73);
             this.TransctionTypeInput.Name = "TransctionTypeInput";
-            this.TransctionTypeInput.Size = new System.Drawing.Size(147, 22);
+            this.TransctionTypeInput.Size = new System.Drawing.Size(171, 22);
             this.TransctionTypeInput.TabIndex = 16;
+            this.TransctionTypeInput.Text = "Type";
             // 
             // TransactionTypeLabel
             // 
@@ -110,8 +113,9 @@
             // 
             this.ExchangeInput.Location = new System.Drawing.Point(177, 101);
             this.ExchangeInput.Name = "ExchangeInput";
-            this.ExchangeInput.Size = new System.Drawing.Size(147, 22);
+            this.ExchangeInput.Size = new System.Drawing.Size(171, 22);
             this.ExchangeInput.TabIndex = 18;
+            this.ExchangeInput.Text = "Exchange";
             // 
             // ExchangeLabel
             // 
@@ -126,8 +130,9 @@
             // 
             this.CryptocurrencyPriceInput.Location = new System.Drawing.Point(177, 129);
             this.CryptocurrencyPriceInput.Name = "CryptocurrencyPriceInput";
-            this.CryptocurrencyPriceInput.Size = new System.Drawing.Size(147, 22);
+            this.CryptocurrencyPriceInput.Size = new System.Drawing.Size(171, 22);
             this.CryptocurrencyPriceInput.TabIndex = 20;
+            this.CryptocurrencyPriceInput.Text = "Limit";
             // 
             // CryptocurrencyPriceLabel
             // 
@@ -151,8 +156,9 @@
             // 
             this.CryptocurrencyAmountInput.Location = new System.Drawing.Point(177, 157);
             this.CryptocurrencyAmountInput.Name = "CryptocurrencyAmountInput";
-            this.CryptocurrencyAmountInput.Size = new System.Drawing.Size(147, 22);
+            this.CryptocurrencyAmountInput.Size = new System.Drawing.Size(171, 22);
             this.CryptocurrencyAmountInput.TabIndex = 22;
+            this.CryptocurrencyAmountInput.Text = "Quantity";
             // 
             // ExcludeLabel
             // 
@@ -165,10 +171,21 @@
             // 
             // ExcludeFromPortfolioInput
             // 
-            this.ExcludeFromPortfolioInput.Location = new System.Drawing.Point(177, 186);
+            this.ExcludeFromPortfolioInput.Enabled = false;
+            this.ExcludeFromPortfolioInput.Location = new System.Drawing.Point(201, 185);
             this.ExcludeFromPortfolioInput.Name = "ExcludeFromPortfolioInput";
             this.ExcludeFromPortfolioInput.Size = new System.Drawing.Size(147, 22);
             this.ExcludeFromPortfolioInput.TabIndex = 24;
+            this.ExcludeFromPortfolioInput.Text = "Non Alonzo Trx";
+            // 
+            // ExcludeFromPortfolioCheckbox
+            // 
+            this.ExcludeFromPortfolioCheckbox.AutoSize = true;
+            this.ExcludeFromPortfolioCheckbox.Location = new System.Drawing.Point(177, 188);
+            this.ExcludeFromPortfolioCheckbox.Name = "ExcludeFromPortfolioCheckbox";
+            this.ExcludeFromPortfolioCheckbox.Size = new System.Drawing.Size(18, 17);
+            this.ExcludeFromPortfolioCheckbox.TabIndex = 26;
+            this.ExcludeFromPortfolioCheckbox.UseVisualStyleBackColor = true;
             // 
             // CustomCsvImporterDialog
             // 
@@ -176,6 +193,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(473, 266);
+            this.Controls.Add(this.ExcludeFromPortfolioCheckbox);
             this.Controls.Add(this.ExcludeLabel);
             this.Controls.Add(this.ExcludeFromPortfolioInput);
             this.Controls.Add(this.CyrptocurrencyAmount);
@@ -218,5 +236,6 @@
         private System.Windows.Forms.TextBox CryptocurrencyAmountInput;
         private System.Windows.Forms.Label ExcludeLabel;
         private System.Windows.Forms.TextBox ExcludeFromPortfolioInput;
+        private System.Windows.Forms.CheckBox ExcludeFromPortfolioCheckbox;
     }
 }
