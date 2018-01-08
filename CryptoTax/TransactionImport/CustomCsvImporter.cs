@@ -31,6 +31,8 @@ namespace CryptoTax.TransactionImport
             this._exchangeParser = exchangeParser;
         }
 
+        public event RowProcessedEventHandler RowProcessed;
+
         public async Task<TransactionImportResult> ImportFile(TransactonImporterSettings settings)
         {
             var settingsDiaolog = this._formFactory.CreateForm<CustomCsvImporterDialog>();
@@ -52,6 +54,7 @@ namespace CryptoTax.TransactionImport
 
             var transactions = new List<Transaction>();
             var unknownDogecoinPriceIds = new HashSet<string>();
+            var rowCount = 0;
             while (csvReader.Read())
             {
                 var record = csvReader.GetRecord<CustomCsvImporterRecord>();
@@ -103,6 +106,8 @@ namespace CryptoTax.TransactionImport
                         UsDollarAmount = usdEquivalentAmount,
                         ExcludeFromPortfolio = record.ExcludeFromPortfolio
                     });
+
+                    this.RowProcessed?.Invoke(this, new RowProcessedEventArgs { RowsProcessed = ++rowCount });
                 }
             }
 

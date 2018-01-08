@@ -36,6 +36,8 @@ namespace CryptoTax.TransactionImport
 
         private readonly PriceInUsdProvider _priceInUsdProvider;
 
+        public event RowProcessedEventHandler RowProcessed;
+
         public BittrexOrderCsvImporter(PriceInUsdProvider priceInUsdProvider)
         {
             this._priceInUsdProvider = priceInUsdProvider;
@@ -52,6 +54,7 @@ namespace CryptoTax.TransactionImport
             var unknownExchangeCount = 0;
             var unknownExchangeSet = new HashSet<string>();
             var unknownTransactionTypeSet = new HashSet<string>();
+            var rowCount = 0;
             while (csvReader.Read())
             {
                 var record = csvReader.GetRecord<BitrixOrderCsvRecord>();
@@ -89,6 +92,8 @@ namespace CryptoTax.TransactionImport
                     CryptocurrencyAmount = record.AssetAmount,
                     UsDollarAmount = usdEquivalentAmount
                 });
+
+                this.RowProcessed?.Invoke(this, new RowProcessedEventArgs { RowsProcessed = ++rowCount });
             }
 
             var messageStringBuilder = new StringBuilder();

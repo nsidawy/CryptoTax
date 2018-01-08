@@ -21,6 +21,8 @@ namespace CryptoTax.TransactionImport
             {"BCH", CryptocurrencyType.BitcoinCash },
         };
 
+        public event RowProcessedEventHandler RowProcessed;
+
         public Task<TransactionImportResult> ImportFile(TransactonImporterSettings settings)
         {
             var textReader = new StreamReader(settings.Filename);
@@ -34,6 +36,7 @@ namespace CryptoTax.TransactionImport
 
             var transactions = new List<Transaction>();
             var nonBuyOrSellTransactionCount = 0;
+            var rowCount = 0;
             while (csvReader.Read())
             {
                 var record = csvReader.GetRecord<CoinbaseCsvRecord>();
@@ -46,11 +49,13 @@ namespace CryptoTax.TransactionImport
                 transactions.Add(new Transaction
                 {
                     Cryptocurrency = this._cryptocurrencyMapping[record.Currency],
-                    CryptocurrencyAmount = record.Amount.Value,
+                    CryptocurrencyAmount = record.Amount.Value * (record.Notes.StartsWith("Bought") ? 1 : -1),
                     TransactionDate = record.Timestamp,
                     TransactionType = record.Notes.StartsWith("Bought") ? TransactionType.Buy : TransactionType.Sell,
                     UsDollarAmount = record.TransferTotal.Value - record.TransferFee.Value
                 });
+
+                this.RowProcessed?.Invoke(this, new RowProcessedEventArgs { RowsProcessed = ++rowCount });
             }
 
             return Task.Factory.StartNew(() => new TransactionImportResult

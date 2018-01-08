@@ -22,6 +22,8 @@ namespace CryptoTax.TransactionImport
             this._priceInUsdProvider = priceInUsdProvider;
         }
 
+        public event RowProcessedEventHandler RowProcessed;
+
         public async Task<TransactionImportResult> ImportFile(TransactonImporterSettings settings)
         {
             var textReader = new StreamReader(settings.Filename);
@@ -29,7 +31,8 @@ namespace CryptoTax.TransactionImport
             csvReader.Configuration.RegisterClassMap<ZoDogeCsvImporterRecordClassMap>();
 
             var transactions = new List<Transaction>();
-            var unknownDogecoinPriceIds = new HashSet<string>(); 
+            var unknownDogecoinPriceIds = new HashSet<string>();
+            var rowCount = 0;
             while (csvReader.Read())
             {
                 var record = csvReader.GetRecord<ZoDogeCsvImporterRecord>();
@@ -54,6 +57,8 @@ namespace CryptoTax.TransactionImport
                     CryptocurrencyAmount = record.Amount,
                     UsDollarAmount = dogecoinPriceInUsdAtTransactionTime.Value * record.Amount
                 });
+
+                this.RowProcessed?.Invoke(this, new RowProcessedEventArgs { RowsProcessed = ++rowCount });
             }
 
             string message = null;

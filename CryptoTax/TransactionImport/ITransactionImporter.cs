@@ -18,7 +18,15 @@ namespace CryptoTax.TransactionImport
 
     public interface ITransactionImporter
     {
+        event RowProcessedEventHandler RowProcessed;
         Task<TransactionImportResult> ImportFile(TransactonImporterSettings settings);
+    }
+
+    public delegate void RowProcessedEventHandler(object sender, RowProcessedEventArgs e);
+
+    public class RowProcessedEventArgs : EventArgs
+    {
+        public int RowsProcessed { get; set; }
     }
 
     public class TransactonImporterSettings

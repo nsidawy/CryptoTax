@@ -33,6 +33,8 @@ namespace CryptoTax.TransactionImport
 
         private readonly PriceInUsdProvider _priceInUsdProvider;
 
+        public event RowProcessedEventHandler RowProcessed;
+
         public GdaxFillCsvImporter(PriceInUsdProvider priceInUsdProvider)
         {
             this._priceInUsdProvider = priceInUsdProvider;
@@ -47,6 +49,7 @@ namespace CryptoTax.TransactionImport
             var transactions = new List<Transaction>();
             var unknownProductTransactionCount = 0;
             var unknownProductTransactionSet = new HashSet<string>();
+            var rowCount = 0;
             while (csvReader.Read())
             {
                 var record = csvReader.GetRecord<GdaxFillCsvRecord>();
@@ -97,8 +100,10 @@ namespace CryptoTax.TransactionImport
                     default:
                         throw new InvalidOperationException($"Unknown transaction currency: {product.TransactionCurrency}");
                 }
+
+                this.RowProcessed?.Invoke(this, new RowProcessedEventArgs { RowsProcessed = ++rowCount });
             }
-            
+
             var result = new TransactionImportResult
             {
                 IsSuccess = true,

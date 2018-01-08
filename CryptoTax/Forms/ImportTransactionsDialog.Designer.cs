@@ -39,11 +39,12 @@
             this.BitrexOrderCsvRadioButton = new System.Windows.Forms.RadioButton();
             this.ZoDogeCsvRadioButton = new System.Windows.Forms.RadioButton();
             this.CustomCsvRadioButton = new System.Windows.Forms.RadioButton();
+            this.ProgressLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // ImportButton
             // 
-            this.ImportButton.Location = new System.Drawing.Point(190, 237);
+            this.ImportButton.Location = new System.Drawing.Point(190, 256);
             this.ImportButton.Name = "ImportButton";
             this.ImportButton.Size = new System.Drawing.Size(75, 25);
             this.ImportButton.TabIndex = 10;
@@ -53,7 +54,7 @@
             // CancelButton
             // 
             this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelButton.Location = new System.Drawing.Point(271, 237);
+            this.CancelButton.Location = new System.Drawing.Point(271, 256);
             this.CancelButton.Name = "CancelButton";
             this.CancelButton.Size = new System.Drawing.Size(75, 25);
             this.CancelButton.TabIndex = 11;
@@ -137,22 +138,31 @@
             this.ZoDogeCsvRadioButton.Text = "Zo\'s doge transaction CSV";
             this.ZoDogeCsvRadioButton.UseVisualStyleBackColor = true;
             // 
-            // customCsvRadioButton
+            // CustomCsvRadioButton
             // 
             this.CustomCsvRadioButton.AutoSize = true;
             this.CustomCsvRadioButton.Location = new System.Drawing.Point(28, 151);
-            this.CustomCsvRadioButton.Name = "customCsvRadioButton";
+            this.CustomCsvRadioButton.Name = "CustomCsvRadioButton";
             this.CustomCsvRadioButton.Size = new System.Drawing.Size(129, 21);
             this.CustomCsvRadioButton.TabIndex = 20;
             this.CustomCsvRadioButton.Text = "Custom CSV file";
             this.CustomCsvRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // ProgressLabel
+            // 
+            this.ProgressLabel.AutoSize = true;
+            this.ProgressLabel.Location = new System.Drawing.Point(18, 225);
+            this.ProgressLabel.Name = "ProgressLabel";
+            this.ProgressLabel.Size = new System.Drawing.Size(0, 17);
+            this.ProgressLabel.TabIndex = 21;
             // 
             // ImportTransactionsDialog
             // 
             this.AcceptButton = this.ImportButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(537, 284);
+            this.ClientSize = new System.Drawing.Size(537, 308);
+            this.Controls.Add(this.ProgressLabel);
             this.Controls.Add(this.CustomCsvRadioButton);
             this.Controls.Add(this.ZoDogeCsvRadioButton);
             this.Controls.Add(this.BitrexOrderCsvRadioButton);
@@ -187,5 +197,6 @@
         private System.Windows.Forms.RadioButton BitrexOrderCsvRadioButton;
         private System.Windows.Forms.RadioButton ZoDogeCsvRadioButton;
         private System.Windows.Forms.RadioButton CustomCsvRadioButton;
+        private System.Windows.Forms.Label ProgressLabel;
     }
 }

@@ -78,6 +78,9 @@ namespace CryptoTax.Forms
             }
 
             this.Enabled = false;
+
+            transactionImporter.RowProcessed += (object o, RowProcessedEventArgs a) => this.ProgressLabel.Text = $"{a.RowsProcessed} rows proccessed...";
+            
             var transactionImportResult = await transactionImporter.ImportFile(new TransactonImporterSettings { Filename = this.FilenameInput.Text });
             if (transactionImportResult.IsSuccess && this.ConfirmImportedTransactions(transactionImportResult))
             {
