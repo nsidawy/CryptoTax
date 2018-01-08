@@ -8,6 +8,7 @@ using CryptoTax.Cryptocurrency;
 using CryptoTax.Transactions;
 using CsvHelper.Configuration;
 using CsvHelper;
+using CsvHelper.TypeConversion;
 
 namespace CryptoTax.TransactionImport
 {
@@ -58,10 +59,10 @@ namespace CryptoTax.TransactionImport
             while (csvReader.Read())
             {
                 var record = csvReader.GetRecord<BitrixOrderCsvRecord>();
-                if((!record.TransactionType.Equals("limit_buy", StringComparison.OrdinalIgnoreCase) && !record.TransactionType.Equals("limit_sell", StringComparison.OrdinalIgnoreCase)))
+                if(!record.TransactionType.HasValue)
                 {
                     unknownTransactionTypeCount++;
-                    unknownTransactionTypeSet.Add(record.TransactionType);
+                    unknownTransactionTypeSet.Add(record.RawTransactionTypeText);
                     continue;
                 }
                 if (!this._exchangeMapping.ContainsKey(record.Exchange))
@@ -79,7 +80,7 @@ namespace CryptoTax.TransactionImport
                 {
                     Cryptocurrency = CryptocurrencyType.Bitcoin,
                     TransactionDate = record.ClosedTimestamp,
-                    TransactionType = record.TransactionType.Equals("limit_buy", StringComparison.OrdinalIgnoreCase) ? TransactionType.Sell : TransactionType.Buy,
+                    TransactionType = record.TransactionType.Value == TransactionType.Buy ? TransactionType.Sell : TransactionType.Buy,
                     CryptocurrencyAmount = bitcoinAmount + record.CommissionInBitcoin,
                     UsDollarAmount = usdEquivalentAmount
                 });
@@ -88,7 +89,7 @@ namespace CryptoTax.TransactionImport
                 {
                     Cryptocurrency = this._exchangeMapping[record.Exchange],
                     TransactionDate = record.ClosedTimestamp,
-                    TransactionType = record.TransactionType.Equals("limit_buy", StringComparison.OrdinalIgnoreCase) ? TransactionType.Buy : TransactionType.Sell,
+                    TransactionType = record.TransactionType.Value,
                     CryptocurrencyAmount = record.AssetAmount,
                     UsDollarAmount = usdEquivalentAmount
                 });
@@ -122,7 +123,8 @@ namespace CryptoTax.TransactionImport
             public decimal AssetAmount { get; set; }
             public decimal PriceInBitcoin { get; set; }
             public decimal CommissionInBitcoin { get; set; }
-            public string TransactionType { get; set; }
+            public TransactionType? TransactionType { get; set; }
+            public string RawTransactionTypeText { get; set; }
         }
 
         private sealed class BitrixOrderCsvRecordClassMap : ClassMap<BitrixOrderCsvRecord>
@@ -132,9 +134,31 @@ namespace CryptoTax.TransactionImport
                 Map(m => m.ClosedTimestamp).Name("Closed");
                 Map(m => m.AssetAmount).Name("Quantity");
                 Map(m => m.PriceInBitcoin).Name("Limit");
-                Map(m => m.TransactionType).Name("Type");
+                Map(m => m.TransactionType).Name("Type").TypeConverter<TransactionTypeTypeConverter>();
+                Map(m => m.RawTransactionTypeText).Name("Type");
                 Map(m => m.CommissionInBitcoin).Name("CommissionPaid");
                 Map(m => m.Exchange);
+            }
+
+            private class TransactionTypeTypeConverter : ITypeConverter
+            {
+                public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
+                {
+                    if (text.Equals("limit_buy", StringComparison.OrdinalIgnoreCase)) {
+                        return TransactionType.Buy;
+                    }
+                    if (text.Equals("limit_sell", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return TransactionType.Sell;
+                    }
+
+                    return null;
+                }
+
+                public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
+                {
+                    throw new NotImplementedException();
+                }
             }
         }
     }

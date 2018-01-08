@@ -10,25 +10,20 @@ using CsvHelper.Configuration;
 using CsvHelper;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using CsvHelper.TypeConversion;
 
 namespace CryptoTax.TransactionImport
 {
     public class GdaxFillCsvImporter : ITransactionImporter
     {
-        private enum ProductTransationCurrency
-        {
-            Usd,
-            Bitcoin
-        }
-
         private IReadOnlyDictionary<string, GdaxProduct> _productMapping = new Dictionary<string, GdaxProduct>
         {
-            {"BTC-USD", new GdaxProduct{ ProductAsset = CryptocurrencyType.Bitcoin, TransactionCurrency = ProductTransationCurrency.Usd } },
-            {"LTC-USD", new GdaxProduct{ ProductAsset = CryptocurrencyType.Litecoin, TransactionCurrency = ProductTransationCurrency.Usd } },
-            {"ETH-USD", new GdaxProduct{ ProductAsset = CryptocurrencyType.Ethereum, TransactionCurrency = ProductTransationCurrency.Usd } },
-            {"BCH-USD", new GdaxProduct{ ProductAsset = CryptocurrencyType.BitcoinCash, TransactionCurrency = ProductTransationCurrency.Usd } },
-            {"ETH-BTC", new GdaxProduct{ ProductAsset = CryptocurrencyType.Ethereum, TransactionCurrency = ProductTransationCurrency.Bitcoin } },
-            {"LTC-BTC", new GdaxProduct{ ProductAsset = CryptocurrencyType.Litecoin, TransactionCurrency = ProductTransationCurrency.Bitcoin } },
+            {"BTC-USD", new GdaxProduct{ ProductAsset = CryptocurrencyType.Bitcoin, TransactionCurrency = TransactionCurrencyType.Usd } },
+            {"LTC-USD", new GdaxProduct{ ProductAsset = CryptocurrencyType.Litecoin, TransactionCurrency = TransactionCurrencyType.Usd } },
+            {"ETH-USD", new GdaxProduct{ ProductAsset = CryptocurrencyType.Ethereum, TransactionCurrency = TransactionCurrencyType.Usd } },
+            {"BCH-USD", new GdaxProduct{ ProductAsset = CryptocurrencyType.BitcoinCash, TransactionCurrency = TransactionCurrencyType.Usd } },
+            {"ETH-BTC", new GdaxProduct{ ProductAsset = CryptocurrencyType.Ethereum, TransactionCurrency = TransactionCurrencyType.Bitcoin } },
+            {"LTC-BTC", new GdaxProduct{ ProductAsset = CryptocurrencyType.Litecoin, TransactionCurrency = TransactionCurrencyType.Bitcoin } },
         };
 
         private readonly PriceInUsdProvider _priceInUsdProvider;
@@ -63,18 +58,17 @@ namespace CryptoTax.TransactionImport
                 var product = this._productMapping[record.Product];
                 switch (product.TransactionCurrency)
                 {
-                    case ProductTransationCurrency.Usd:
+                    case TransactionCurrencyType.Usd:
                         transactions.Add(new Transaction
                         {
                             Cryptocurrency = product.ProductAsset,
                             TransactionDate = record.CreatedAt,
-                            TransactionType = record.Side.Equals("buy", StringComparison.OrdinalIgnoreCase) ? TransactionType.Buy : TransactionType.Sell,
+                            TransactionType = record.TransactionType,
                             CryptocurrencyAmount = record.AssetAmount,
-                            // if the transacton is a buy then the USD amount will be a negative value on the record
                             UsDollarAmount = record.AssetPrice * record.AssetAmount
                         });
                         break;
-                    case ProductTransationCurrency.Bitcoin:
+                    case TransactionCurrencyType.Bitcoin:
                         var bitcoinPriceAtTransactionTime = await this._priceInUsdProvider.GetBitcoinPrice(record.CreatedAt);
                         var bitcoinAmount = record.AssetPrice * record.AssetAmount;
                         var usdEquivalentAmounnt = bitcoinAmount * bitcoinPriceAtTransactionTime;
@@ -83,7 +77,7 @@ namespace CryptoTax.TransactionImport
                         {
                             Cryptocurrency = CryptocurrencyType.Bitcoin,
                             TransactionDate = record.CreatedAt,
-                            TransactionType = record.Side.Equals("buy", StringComparison.OrdinalIgnoreCase) ? TransactionType.Sell : TransactionType.Buy,
+                            TransactionType = record.TransactionType == TransactionType.Buy ? TransactionType.Sell : TransactionType.Buy,
                             CryptocurrencyAmount = bitcoinAmount,
                             UsDollarAmount = usdEquivalentAmounnt
                         });
@@ -92,7 +86,7 @@ namespace CryptoTax.TransactionImport
                         {
                             Cryptocurrency = product.ProductAsset,
                             TransactionDate = record.CreatedAt,
-                            TransactionType = record.Side.Equals("buy", StringComparison.OrdinalIgnoreCase) ? TransactionType.Buy : TransactionType.Sell,
+                            TransactionType = record.TransactionType,
                             CryptocurrencyAmount = record.AssetAmount,
                             UsDollarAmount = usdEquivalentAmounnt
                         });
@@ -121,7 +115,7 @@ namespace CryptoTax.TransactionImport
         {
             public DateTime CreatedAt { get; set; }
             public string Product { get; set; }
-            public string Side { get; set; }
+            public TransactionType TransactionType { get; set; }
             public decimal AssetPrice { get; set; }
             public decimal AssetAmount { get; set; }
         }
@@ -131,16 +125,29 @@ namespace CryptoTax.TransactionImport
             public GdaxFillCsvRecordClassMap()
             {
                 Map(m => m.CreatedAt).Name("created at");
-                Map(m => m.Side).Name("side");
+                Map(m => m.TransactionType).Name("side").TypeConverter<TransactionTypeConverter>();
                 Map(m => m.AssetAmount).Name("size");
                 Map(m => m.Product).Name("product");
                 Map(m => m.AssetPrice).Name("price");
+            }
+
+            private class TransactionTypeConverter : ITypeConverter
+            {
+                public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
+                {
+                    return text.ToLower().Equals("buy", StringComparison.OrdinalIgnoreCase) ? TransactionType.Buy : TransactionType.Sell;
+                }
+
+                public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
+                {
+                    throw new NotImplementedException();
+                }
             }
         }
 
         private class GdaxProduct
         {
-            public ProductTransationCurrency TransactionCurrency { get; set; }
+            public TransactionCurrencyType TransactionCurrency { get; set; }
             public CryptocurrencyType ProductAsset { get; set; }
         }
     }

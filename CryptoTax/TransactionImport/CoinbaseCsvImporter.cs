@@ -8,6 +8,7 @@ using CryptoTax.Cryptocurrency;
 using CryptoTax.Transactions;
 using CsvHelper.Configuration;
 using CsvHelper;
+using CsvHelper.TypeConversion;
 
 namespace CryptoTax.TransactionImport
 {
@@ -49,9 +50,10 @@ namespace CryptoTax.TransactionImport
                 transactions.Add(new Transaction
                 {
                     Cryptocurrency = this._cryptocurrencyMapping[record.Currency],
-                    CryptocurrencyAmount = record.Amount.Value * (record.Notes.StartsWith("Bought") ? 1 : -1),
+                    // Sell transactions appear as negative cryptocurrency amounts so that needs to be corrected.
+                    CryptocurrencyAmount = record.Amount.Value * (record.TransactionType == TransactionType.Buy ? 1 : -1),
                     TransactionDate = record.Timestamp,
-                    TransactionType = record.Notes.StartsWith("Bought") ? TransactionType.Buy : TransactionType.Sell,
+                    TransactionType = record.TransactionType,
                     UsDollarAmount = record.TransferTotal.Value - record.TransferFee.Value
                 });
 
@@ -71,7 +73,7 @@ namespace CryptoTax.TransactionImport
             public decimal? Amount { get; set; }
             public string Currency { get; set; }
             public DateTime Timestamp { get; set; }
-            public string Notes { get; set; }
+            public TransactionType TransactionType { get; set; }
             public decimal? TransferTotal { get; set; }
             public decimal? TransferFee { get; set; }
             public string TransferCurrency { get; set; }
@@ -84,10 +86,23 @@ namespace CryptoTax.TransactionImport
                 Map(m => m.Amount);
                 Map(m => m.Currency);
                 Map(m => m.Timestamp);
-                Map(m => m.Notes);
+                Map(m => m.TransactionType).Name("Notes").TypeConverter<NotesTypeConverter>();
                 Map(m => m.TransferTotal).Name("Transfer Total");
                 Map(m => m.TransferFee).Name("Transfer Fee");
                 Map(m => m.TransferCurrency).Name("Transfer Total Currency");
+            }
+
+            private class NotesTypeConverter : ITypeConverter
+            {
+                public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
+                {
+                    return text.ToLower().StartsWith("bought") ? TransactionType.Buy : TransactionType.Sell; 
+                }
+
+                public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
+                {
+                    throw new NotImplementedException();
+                }
             }
         }
     }
