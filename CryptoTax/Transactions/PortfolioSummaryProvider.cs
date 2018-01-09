@@ -18,17 +18,21 @@ namespace CryptoTax.Transactions
 
         public IReadOnlyList<CryptocurrencyPortfolioSummaryInfo> GetCryptocurrencyPortfolioSummaryInfo(
             IReadOnlyList<Transaction> transactions,
-            IReadOnlyDictionary<CryptocurrencyType, decimal> pricesInUsd)
+            IReadOnlyDictionary<CryptocurrencyType, CoinMarketCapDataProvider.CoinMarketCapData> coinMarketCapData)
         {
             var groupedTransactions = transactions.GroupBy(x => x.Cryptocurrency);
             var summaryInfos = new List<CryptocurrencyPortfolioSummaryInfo>();
             foreach (var groupedTransaction in groupedTransactions)
             {
-                var foundPriceInUsd = pricesInUsd.TryGetValue(groupedTransaction.Key, out decimal priceInUsd);
+                coinMarketCapData.TryGetValue(groupedTransaction.Key, out CoinMarketCapDataProvider.CoinMarketCapData data);
                 summaryInfos.Add(new CryptocurrencyPortfolioSummaryInfo
                 {
                     Cryptocurrency = groupedTransaction.Key,
-                    PriceInUsd = foundPriceInUsd ? priceInUsd : (decimal?)null,
+                    PriceInUsd = data?.PriceInUsd,
+                    OneHourChange = data?.OneHourChangePercent,
+                    TwentyFourHourChange = data?.TwentyFourHourChangePercent,
+                    MarketCap = data?.MarketCap,
+                    Link = data?.Link,
                     CryptocurrencyAmount = groupedTransaction.Aggregate((decimal)0, (val, t) =>
                     {
                         switch (t.TransactionType)
@@ -125,6 +129,10 @@ namespace CryptoTax.Transactions
             public decimal CryptocurrencyAmount { get; set; }
             public decimal? PriceInUsd { get; set; }
             public decimal? UsdAmount => this.PriceInUsd * this.CryptocurrencyAmount;
+            public decimal? OneHourChange { get; set; }
+            public decimal? TwentyFourHourChange { get; set; }
+            public decimal? MarketCap { get; set; }
+            public string Link { get; set; }
         }
         
         public class CryptocurrencyYearSummaryInfo

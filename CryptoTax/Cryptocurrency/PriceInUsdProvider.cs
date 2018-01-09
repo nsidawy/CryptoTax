@@ -13,67 +13,7 @@ namespace CryptoTax.Cryptocurrency
 {
     public class PriceInUsdProvider
     {
-        private IReadOnlyDictionary<CryptocurrencyType, string> _coinMarketcapCrypocurrencyLookupNames =
-            new Dictionary<CryptocurrencyType, string>
-            {
-                { CryptocurrencyType.Bitcoin, "bitcoin" },
-                { CryptocurrencyType.Ethereum, "ethereum" },
-                { CryptocurrencyType.Litecoin, "litecoin" },
-                { CryptocurrencyType.Augur, "augur" },
-                { CryptocurrencyType.Ada, "cardano" },
-                { CryptocurrencyType.Dogecoin, "dogecoin" },
-                { CryptocurrencyType.Golem, "golem" },
-                { CryptocurrencyType.Ripple, "ripple" },
-                { CryptocurrencyType.Stratis, "stratis" },
-                { CryptocurrencyType.BitcoinCash, "bitcoin-cash" },
-                { CryptocurrencyType.Decentraland, "decentraland" },
-                { CryptocurrencyType.Dash, "dash" },
-                { CryptocurrencyType.Einsteinium, "einsteinium" },
-                { CryptocurrencyType.Monero, "monero" },
-                { CryptocurrencyType.ZCash, "zcash" },
-                { CryptocurrencyType.ZeroX, "0x" },
-                { CryptocurrencyType.Humaniq, "humaniq" },
-                { CryptocurrencyType.Quantum, "qtum" },
-                { CryptocurrencyType.Verge, "verge" },
-                { CryptocurrencyType.Nxt, "nxt" },
-                { CryptocurrencyType.Reddcoin, "reddcoin" },
-                { CryptocurrencyType.Neo, "neo" },
-                { CryptocurrencyType.Stellar, "stellar" },
-            };
-
-        public async Task<decimal?> GetPriceInUsd(CryptocurrencyType cryptocurrencyType)
-        {
-            if(!this._coinMarketcapCrypocurrencyLookupNames.ContainsKey(cryptocurrencyType))
-            {
-                return null;
-            }
-
-            var client = new HttpClient
-            {
-                BaseAddress = new Uri($"https://api.coinmarketcap.com/v1/ticker/{this._coinMarketcapCrypocurrencyLookupNames[cryptocurrencyType]}/")
-            };
-
-            // Add an Accept header for JSON format.
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            try
-            {
-                HttpResponseMessage response = await client.GetAsync("");
-                var content = await response.Content.ReadAsStringAsync();
-                if (response.IsSuccessStatusCode)
-                {
-                    var values = Newtonsoft.Json.Linq.JArray.Parse(content);
-                    return values.First().Value<decimal>("price_usd");
-                }
-            }
-            catch (Exception e) {
-                /* swallow exceptions for now*/
-            }
-
-            return null;
-        }
-        
-        public async Task<decimal> GetBitcoinPrice(DateTime transactionTime)
+       public async Task<decimal> GetBitcoinPrice(DateTime transactionTime)
         {
             return await this.GetGdaxPrice(transactionTime, "BTC-USD");
         }

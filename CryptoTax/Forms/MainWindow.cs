@@ -11,19 +11,21 @@ using System.Windows.Forms;
 using System.Threading.Tasks;
 using CryptoTax.Utilities;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace CryptoTax.Forms
 {
     public partial class MainWindow : Form
     {
         private PriceInUsdProvider _priceInUsdProvider;
+        private CoinMarketCapDataProvider _coinMarketCapDataProvider;
         private TaxCalculator _taxCalculator;
         private PortfolioSummaryProvider _portfolioSummaryProvider;
         private FormFactory _formFactory;
         private SaveFileReaderWriter _saveFileReaderWriter;
 
         private string _filename = null;
-        private ConcurrentDictionary<CryptocurrencyType, decimal> _pricesInUsd;
+        private ConcurrentDictionary<CryptocurrencyType, CoinMarketCapDataProvider.CoinMarketCapData> _coinMarketCapData;
 
         private BindingList<Transaction> Transactions = new BindingList<Transaction>();
         private SortableBindingList<Transaction> TransactionDataGridBindingSource = new SortableBindingList<Transaction>();
@@ -32,6 +34,7 @@ namespace CryptoTax.Forms
 
         public MainWindow(
             PriceInUsdProvider priceInUsdProvider,
+            CoinMarketCapDataProvider coinMarketCapDataProvider,
             TaxCalculator taxCalculator,
             PortfolioSummaryProvider portfolioSummaryProvider,
             FormFactory formFactory,
@@ -40,12 +43,13 @@ namespace CryptoTax.Forms
             InitializeComponent();
 
             this._priceInUsdProvider = priceInUsdProvider;
+            this._coinMarketCapDataProvider = coinMarketCapDataProvider;
             this._taxCalculator = taxCalculator;
             this._portfolioSummaryProvider = portfolioSummaryProvider;
             this._formFactory = formFactory;
             this._saveFileReaderWriter = saveFileReaderWriter;
 
-            this._pricesInUsd = new ConcurrentDictionary<CryptocurrencyType, decimal>();
+            this._coinMarketCapData = new ConcurrentDictionary<CryptocurrencyType, CoinMarketCapDataProvider.CoinMarketCapData>();
             this.SummaryDataRefreshTimer.Tick += this.RefreshLivePriceData;
             this.SummaryDataRefreshTimer.Start();
             this.RefreshLivePriceData(null, null);
@@ -64,39 +68,27 @@ namespace CryptoTax.Forms
             this.TransactionDataGrid.DataSource = this.TransactionDataGridBindingSource;
             this.YearSummaryDataGrid.DataSource = this.YearSummaryDataGridBindingSource;
 
+            this.SummaryDataGrid.Columns.Remove(nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.Link));
+            var linkColumn = new DataGridViewLinkColumn
+            {
+                DataPropertyName = nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.Link),
+                Name = nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.Link)
+            };
+            this.SummaryDataGrid.Columns.Add(linkColumn);
+            this.SummaryDataGrid.CellClick += this.SummaryDataGrid_LinkClick;
+
             this.TransactionDataGrid.UserDeletingRow += (object o, DataGridViewRowCancelEventArgs e) =>
             {
                 // don't let the normal delete row happen. The data grid will be updated when the item is removed from it binding list
                 e.Cancel = true;
-                //this.ReplaceBindingListItems(this.Transactions, this.Transactions.Where(x => x.GetHashCode() != e.Row.DataBoundItem.GetHashCode()).ToList());
                 this.Transactions.Remove((Transaction)e.Row.DataBoundItem);
             };
-            this.TransactionDataGrid.MouseDown += (object o, MouseEventArgs e) =>
-            {
-                if(e.Button != MouseButtons.Right)
-                {
-                    return;
-                }
-                int currentMouseOverRow = this.TransactionDataGrid.HitTest(e.X, e.Y).RowIndex;
-
-                if (currentMouseOverRow >= 0)
-                {
-                    this.TransactionDataGrid.ClearSelection();
-                    this.TransactionDataGrid.Rows[currentMouseOverRow].Selected = true;
-                    ContextMenu cm = new ContextMenu();
-                    cm.MenuItems.Add("Edit transaction");
-                    cm.MenuItems[0].Click += this.EditTransactionButton_Click;
-                    cm.MenuItems.Add("Delete transaction");
-                    cm.MenuItems[1].Click += (o1, e2) => this.Transactions.Remove((Transaction)this.TransactionDataGrid.Rows[currentMouseOverRow].DataBoundItem);
-                    cm.Show(this.TransactionDataGrid, new Point(e.X, e.Y));
-                }
-            };
-
+            this.TransactionDataGrid.MouseDown += this.TransactionDataGrid_Click;
 
             // setup formatting
             this.TransactionDataGrid.CellFormatting += this.DataGrid_BuySellFormatting;
             this.TransactionDataGrid.CellFormatting += this.DataGrid_MoneyFormatting;
-            this.SummaryDataGrid.CellFormatting += this.SummaryDataGrid_MoneyFormatting;
+            this.SummaryDataGrid.CellFormatting += this.SummaryDataGrid_CellFormatting;
             
             this.Transactions.ListChanged += this.TransactionsUpdated;
 
@@ -108,6 +100,15 @@ namespace CryptoTax.Forms
                 .AddRange(Enum.GetValues(typeof(CryptocurrencyType)).Cast<object>().ToArray());
             cryptocurrenyFilterInput.SelectedIndexChanged += this.OnCryptocurrencyFilterInputChange;
             cryptocurrenyFilterInput.TextChanged += this.OnCryptocurrencyFilterInputChange;
+        }
+
+        private void SummaryDataGrid_LinkClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if(this.SummaryDataGrid.Columns[e.ColumnIndex].Name == nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.Link))
+            {
+                var cell = this.SummaryDataGrid.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                Task.Run(() => Process.Start((string)cell.Value));
+            }
         }
 
         private void SetupEventHandlers()
@@ -173,10 +174,10 @@ namespace CryptoTax.Forms
             {
                 var queryTask = new Task(async () =>
                 {
-                    var priceInUsd = await this._priceInUsdProvider.GetPriceInUsd(cryptoType);
-                    if (priceInUsd.HasValue)
+                    var coinMarketCapData = await this._coinMarketCapDataProvider.GetCoinMarketCapData(cryptoType);
+                    if (coinMarketCapData != null)
                     {
-                        this._pricesInUsd[cryptoType] = priceInUsd.Value;
+                        this._coinMarketCapData[cryptoType] = coinMarketCapData;
                     }
                 });
                 queryTask.Start();
@@ -203,7 +204,7 @@ namespace CryptoTax.Forms
             var transactions = this.Transactions
                 .Where(x => !x.ExcludeFromPortfolio)
                 .ToList();
-            var summaryInfos = this._portfolioSummaryProvider.GetCryptocurrencyPortfolioSummaryInfo(transactions, this._pricesInUsd)
+            var summaryInfos = this._portfolioSummaryProvider.GetCryptocurrencyPortfolioSummaryInfo(transactions, this._coinMarketCapData)
                 .OrderByDescending(x => x.UsdAmount)
                 .ToList();
 
@@ -343,6 +344,27 @@ namespace CryptoTax.Forms
         #endregion
 
         #region Data grid handlers
+
+        private void TransactionDataGrid_Click(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right)
+            {
+                return;
+            }
+            int currentMouseOverRow = this.TransactionDataGrid.HitTest(e.X, e.Y).RowIndex;
+
+            if (currentMouseOverRow >= 0)
+            {
+                this.TransactionDataGrid.ClearSelection();
+                this.TransactionDataGrid.Rows[currentMouseOverRow].Selected = true;
+                ContextMenu cm = new ContextMenu();
+                cm.MenuItems.Add("Edit transaction");
+                cm.MenuItems[0].Click += this.EditTransactionButton_Click;
+                cm.MenuItems.Add("Delete transaction");
+                cm.MenuItems[1].Click += (o1, e2) => this.Transactions.Remove((Transaction)this.TransactionDataGrid.Rows[currentMouseOverRow].DataBoundItem);
+                cm.Show(this.TransactionDataGrid, new Point(e.X, e.Y));
+            }
+        }
         
         private void DataGrid_BuySellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
@@ -370,11 +392,25 @@ namespace CryptoTax.Forms
             }
         }
 
-        private void SummaryDataGrid_MoneyFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        private void SummaryDataGrid_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             if (this.SummaryDataGrid.Columns[e.ColumnIndex].Name == nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.UsdAmount))
             {
                 e.CellStyle.Format = "N2";
+            }
+            else if (this.SummaryDataGrid.Columns[e.ColumnIndex].Name == nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.PriceInUsd))
+            {
+                e.CellStyle.Format = "N8";
+            }
+            else if (this.SummaryDataGrid.Columns[e.ColumnIndex].Name == nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.MarketCap))
+            {
+                e.CellStyle.Format = "N0";
+            }
+            else if (this.SummaryDataGrid.Columns[e.ColumnIndex].Name == nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.OneHourChange)
+                || this.SummaryDataGrid.Columns[e.ColumnIndex].Name == nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.TwentyFourHourChange))
+            {
+                e.CellStyle.Format = @"P2";
+                e.CellStyle.ForeColor = (decimal?)e.Value >= 0 ? Color.Green : Color.Red;
             }
         }
 
