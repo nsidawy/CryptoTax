@@ -102,15 +102,6 @@ namespace CryptoTax.Forms
             cryptocurrenyFilterInput.TextChanged += this.OnCryptocurrencyFilterInputChange;
         }
 
-        private void SummaryDataGrid_LinkClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if(this.SummaryDataGrid.Columns[e.ColumnIndex].Name == nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.Link))
-            {
-                var cell = this.SummaryDataGrid.Rows[e.RowIndex].Cells[e.ColumnIndex];
-                Task.Run(() => Process.Start((string)cell.Value));
-            }
-        }
-
         private void SetupEventHandlers()
         {
             this.toolStrip1.Items["AddTransactionButton"].Click += this.AddTransactionButton_Click;
@@ -195,8 +186,15 @@ namespace CryptoTax.Forms
                 .OrderBy(x => x.Cryptocurrency)
                 .ThenBy(x => x.Year)
                 .ToList();
-            
+
+            var firstVisibleRowIndex = this.YearSummaryDataGrid.FirstDisplayedScrollingRowIndex;
             this.ReplaceBindingListItems(this.YearSummaryDataGridBindingSource, yearSummaryInfos);
+            this.YearSummaryDataGridBindingSource.Resort();
+            // do this to maintain data grid scroll location after data rebinding
+            if (firstVisibleRowIndex >= 0)
+            {
+                this.YearSummaryDataGrid.FirstDisplayedScrollingRowIndex = Math.Min(firstVisibleRowIndex, this.SummaryDataGrid.RowCount - 1);
+            }
         }
 
         private async void UpdateSummaryData()
@@ -217,8 +215,15 @@ namespace CryptoTax.Forms
             {
                 this.SummaryLabel.Text = "Portfolio Summary";
             }
-            
+
+            var firstVisiblRowIndex = this.SummaryDataGrid.FirstDisplayedScrollingRowIndex;
             this.ReplaceBindingListItems(this.SummaryDataGridBindingSource, summaryInfos);
+            this.SummaryDataGridBindingSource.Resort();
+            // do this to maintain data grid scroll location after data rebinding
+            if (firstVisiblRowIndex >= 0)
+            {
+                this.SummaryDataGrid.FirstDisplayedScrollingRowIndex = Math.Min(firstVisiblRowIndex, this.SummaryDataGrid.RowCount - 1);
+            }
         }
 
         private void OnCryptocurrencyFilterInputChange(object sender, EventArgs e)
@@ -344,6 +349,15 @@ namespace CryptoTax.Forms
         #endregion
 
         #region Data grid handlers
+
+        private void SummaryDataGrid_LinkClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (this.SummaryDataGrid.Columns[e.ColumnIndex].Name == nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.Link))
+            {
+                var cell = this.SummaryDataGrid.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                Task.Run(() => Process.Start((string)cell.Value));
+            }
+        }
 
         private void TransactionDataGrid_Click(object sender, MouseEventArgs e)
         {
