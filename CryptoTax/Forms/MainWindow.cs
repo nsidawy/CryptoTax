@@ -352,7 +352,7 @@ namespace CryptoTax.Forms
 
         private void SummaryDataGrid_LinkClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (this.SummaryDataGrid.Columns[e.ColumnIndex].Name == nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.Link))
+            if (this.SummaryDataGrid.Columns[nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.Link)].Index == e.ColumnIndex)
             {
                 var cell = this.SummaryDataGrid.Rows[e.RowIndex].Cells[e.ColumnIndex];
                 Task.Run(() => Process.Start((string)cell.Value));
