@@ -376,7 +376,7 @@ namespace CryptoTax.Forms
         
         private void DataGrid_BuySellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (this.TransactionDataGrid.Columns[e.ColumnIndex].Name == nameof(Transaction.TransactionType))
+            if (this.TransactionDataGrid.Columns[nameof(Transaction.TransactionType)].Index == e.ColumnIndex)
             {
                 switch((TransactionType)e.Value)
                 {
@@ -394,7 +394,7 @@ namespace CryptoTax.Forms
 
         private void DataGrid_MoneyFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (this.TransactionDataGrid.Columns[e.ColumnIndex].Name == nameof(Transaction.UsDollarAmount))
+            if (this.TransactionDataGrid.Columns[nameof(Transaction.UsDollarAmount)].Index == e.ColumnIndex)
             {
                 e.CellStyle.Format = "N2";
             }
@@ -402,20 +402,24 @@ namespace CryptoTax.Forms
 
         private void SummaryDataGrid_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (this.SummaryDataGrid.Columns[e.ColumnIndex].Name == nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.UsdAmount))
+            if (this.SummaryDataGrid.Columns[nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.UsdAmount)].Index == e.ColumnIndex)
             {
                 e.CellStyle.Format = "N2";
             }
-            else if (this.SummaryDataGrid.Columns[e.ColumnIndex].Name == nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.PriceInUsd))
+            else if (this.SummaryDataGrid.Columns[nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.PriceInUsd)].Index == e.ColumnIndex)
             {
                 e.CellStyle.Format = "N8";
             }
-            else if (this.SummaryDataGrid.Columns[e.ColumnIndex].Name == nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.MarketCap))
+            else if (this.SummaryDataGrid.Columns[nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.MarketCap)].Index == e.ColumnIndex)
             {
                 e.CellStyle.Format = "N0";
             }
-            else if (this.SummaryDataGrid.Columns[e.ColumnIndex].Name == nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.OneHourChange)
-                || this.SummaryDataGrid.Columns[e.ColumnIndex].Name == nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.TwentyFourHourChange))
+            else if (this.SummaryDataGrid.Columns[nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.AveragePriceBought)].Index == e.ColumnIndex)
+            {
+                e.CellStyle.Format = "N8";
+            }
+            else if (this.SummaryDataGrid.Columns[nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.OneHourChange)].Index == e.ColumnIndex
+                || this.SummaryDataGrid.Columns[nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.TwentyFourHourChange)].Index == e.ColumnIndex)
             {
                 e.CellStyle.Format = @"P2";
                 e.CellStyle.ForeColor = (decimal?)e.Value >= 0 ? Color.Green : Color.Red;

@@ -20,13 +20,13 @@ namespace CryptoTax.Transactions
             var sortedTransactions = transactions
                 .Where(x => x.Cryptocurrency == cryptocurrency)
                 .OrderBy(x => x.TransactionDate);
-            var assetList = new AssetList(accountingMethod);           
+            var assetCollection = new AssetCollection(accountingMethod);           
             foreach(var transaction in sortedTransactions)
             {
                 switch (transaction.TransactionType)
                 {
                     case TransactionType.Buy:
-                        assetList.Add(new Asset
+                        assetCollection.Add(new Asset
                         {
                             TransactionDate = transaction.TransactionDate,
                             Amount = transaction.CryptocurrencyAmount,
@@ -37,20 +37,20 @@ namespace CryptoTax.Transactions
                         var cryptocurrencySellAmount = transaction.CryptocurrencyAmount;
                         while (cryptocurrencySellAmount > 0)
                         {
-                            if (assetList.Count == 0)
+                            if (assetCollection.Count == 0)
                             {
                                 return null;
                             }
                             Asset soldAsset;
                             decimal sellAmount;
-                            if (assetList.Peek().Amount <= cryptocurrencySellAmount)
+                            if (assetCollection.Peek().Amount <= cryptocurrencySellAmount)
                             {
-                                soldAsset = assetList.Pop();
+                                soldAsset = assetCollection.Pop();
                                 sellAmount = soldAsset.Amount;
                             }
                             else
                             {
-                                soldAsset = assetList.Peek();
+                                soldAsset = assetCollection.Peek();
                                 sellAmount = cryptocurrencySellAmount;
                                 soldAsset.Amount -= sellAmount;
                             }
@@ -68,93 +68,6 @@ namespace CryptoTax.Transactions
                 }
             }
             return capitalGains;
-        }
-
-        public class Asset
-        {
-            public decimal Amount { get; set; }
-            public DateTime TransactionDate { get; set; }
-            public decimal ExchangeRate { get; set; }
-        }
-
-        private class AssetList
-        {
-            public AssetList(AccountingMethodType accountingMethod)
-            {
-                this.AccountingMethod = accountingMethod;
-                switch(this.AccountingMethod)
-                {
-                    case AccountingMethodType.Fifo:
-                        this.AssetQueue = new Queue<Asset>();
-                        break;
-                    case AccountingMethodType.Lifo:
-                        this.AssetStack = new Stack<Asset>();
-                        break;
-                    default:
-                        throw new ArgumentException($"{this.AccountingMethod.ToString()} is not a valid input");
-                }
-            }
-
-            public AccountingMethodType AccountingMethod { get; private set; }
-
-            private Queue<Asset> AssetQueue { get; set; }
-            private Stack<Asset> AssetStack { get; set; }
-
-            public int Count {
-                get
-                {
-                    switch (this.AccountingMethod)
-                    {
-                        case AccountingMethodType.Fifo:
-                            return this.AssetQueue.Count;
-                        case AccountingMethodType.Lifo:
-                            return this.AssetStack.Count;
-                        default:
-                            throw new ArgumentException($"{this.AccountingMethod.ToString()} is not a valid input");
-                    }
-                }
-            }
-            
-            public void Add(Asset asset)
-            {
-                switch (this.AccountingMethod)
-                {
-                    case AccountingMethodType.Fifo:
-                        this.AssetQueue.Enqueue(asset);
-                        break;
-                    case AccountingMethodType.Lifo:
-                        this.AssetStack.Push(asset);
-                        break;
-                    default:
-                        throw new ArgumentException($"{this.AccountingMethod.ToString()} is not a valid input");
-                }
-            }
-
-            public Asset Peek()
-            {
-                switch (this.AccountingMethod)
-                {
-                    case AccountingMethodType.Fifo:
-                        return this.AssetQueue.Peek();
-                    case AccountingMethodType.Lifo:
-                        return this.AssetStack.Peek();
-                    default:
-                        throw new ArgumentException($"{this.AccountingMethod.ToString()} is not a valid input");
-                }
-            }
-
-            public Asset Pop()
-            {
-                switch (this.AccountingMethod)
-                {
-                    case AccountingMethodType.Fifo:
-                        return this.AssetQueue.Dequeue();
-                    case AccountingMethodType.Lifo:
-                        return this.AssetStack.Pop();
-                    default:
-                        throw new ArgumentException($"{this.AccountingMethod.ToString()} is not a valid input");
-                }
-            }
         }
     }
 }
