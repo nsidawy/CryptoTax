@@ -40,6 +40,7 @@ namespace CryptoTax.Cryptocurrency
             {"NEO", CryptocurrencyType.Neo },
             {"ZRX", CryptocurrencyType.ZeroX },
             {"RDD", CryptocurrencyType.Reddcoin },
+            {"COSS", CryptocurrencyType.Coss },
         };
 
         public ExchangeResult ParseExchange(string exchange)

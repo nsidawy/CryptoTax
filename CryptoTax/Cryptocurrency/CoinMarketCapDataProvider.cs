@@ -39,6 +39,7 @@ namespace CryptoTax.Cryptocurrency
                 { CryptocurrencyType.Reddcoin, "reddcoin" },
                 { CryptocurrencyType.Neo, "neo" },
                 { CryptocurrencyType.Stellar, "stellar" },
+                { CryptocurrencyType.Coss, "coss" },
             };
 
         public async Task<CoinMarketCapData> GetCoinMarketCapData(CryptocurrencyType cryptocurrencyType)
