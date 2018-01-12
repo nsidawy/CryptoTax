@@ -30,6 +30,7 @@ namespace CryptoTax.Cryptocurrency
         Nxt,
         Reddcoin,
         Neo,
-        Stellar
+        Stellar,
+        Coss
     }
 }
