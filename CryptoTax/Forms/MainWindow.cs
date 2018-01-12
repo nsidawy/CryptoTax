@@ -424,6 +424,11 @@ namespace CryptoTax.Forms
                 e.CellStyle.Format = @"P2";
                 e.CellStyle.ForeColor = (decimal?)e.Value >= 0 ? Color.Green : Color.Red;
             }
+            else if (this.SummaryDataGrid.Columns[nameof(PortfolioSummaryProvider.CryptocurrencyPortfolioSummaryInfo.Return)].Index == e.ColumnIndex)
+            {
+                e.CellStyle.Format = @"P4";
+                e.CellStyle.ForeColor = (decimal?)e.Value >= 0 ? Color.Green : Color.Red;
+            }
         }
 
         #endregion
