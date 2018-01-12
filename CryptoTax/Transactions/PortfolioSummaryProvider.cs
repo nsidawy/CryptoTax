@@ -25,6 +25,16 @@ namespace CryptoTax.Transactions
             foreach (var groupedTransaction in groupedTransactions)
             {
                 coinMarketCapData.TryGetValue(groupedTransaction.Key, out CoinMarketCapDataProvider.CoinMarketCapData data);
+
+                var heldAssets = this.GetHeldAssets(groupedTransaction.ToList());
+                decimal? averagePriceBought = null;
+                decimal? percentReturn = null;
+                var totalAssetAmount = heldAssets.Sum(x => x.Amount);
+                if (totalAssetAmount != 0)
+                {
+                    averagePriceBought = heldAssets.Aggregate((decimal)0, (t, a) => t + a.Amount * a.ExchangeRate) / totalAssetAmount;
+                }
+
                 summaryInfos.Add(new CryptocurrencyPortfolioSummaryInfo
                 {
                     Cryptocurrency = groupedTransaction.Key,
@@ -32,20 +42,9 @@ namespace CryptoTax.Transactions
                     OneHourChange = data?.OneHourChangePercent,
                     TwentyFourHourChange = data?.TwentyFourHourChangePercent,
                     MarketCap = data?.MarketCap,
-                    AveragePriceBought = this.GetAverageAssetPrice(groupedTransaction.ToList()),
+                    AveragePriceBought = averagePriceBought,
                     Link = data?.Link,
-                    CryptocurrencyAmount = groupedTransaction.Aggregate((decimal)0, (val, t) =>
-                    {
-                        switch (t.TransactionType)
-                        {
-                            case TransactionType.Buy:
-                                return val + t.CryptocurrencyAmount;
-                            case TransactionType.Sell:
-                                return val - t.CryptocurrencyAmount;
-                            default:
-                                throw new InvalidOperationException($"Unknown value of Transaction Type: {t.TransactionType}");
-                        }
-                    })
+                    CryptocurrencyAmount = totalAssetAmount
                 });
             }
 
@@ -116,9 +115,9 @@ namespace CryptoTax.Transactions
             return yearSummaryInfos;
         }
 
-        private decimal? GetAverageAssetPrice(IReadOnlyCollection<Transaction> transactions)
+        private List<Asset> GetHeldAssets(IReadOnlyCollection<Transaction> transactions)
         {
-            var AssetCollection = new AssetCollection(AccountingMethodType.Lifo);
+            var assetCollection = new AssetCollection(AccountingMethodType.Lifo);
 
             var sortedtransactions = transactions
                 .OrderBy(x => x.TransactionDate);
@@ -128,7 +127,7 @@ namespace CryptoTax.Transactions
                 switch (transaction.TransactionType)
                 {
                     case TransactionType.Buy:
-                        AssetCollection.Add(new Asset
+                        assetCollection.Add(new Asset
                         {
                             TransactionDate = transaction.TransactionDate,
                             Amount = transaction.CryptocurrencyAmount,
@@ -139,20 +138,21 @@ namespace CryptoTax.Transactions
                         var cryptocurrencySellAmount = transaction.CryptocurrencyAmount;
                         while (cryptocurrencySellAmount > 0)
                         {
-                            if (AssetCollection.Count == 0)
+                            if (assetCollection.Count == 0)
                             {
-                                return null;
+                                // return an empty list if the assets can't be correctly calculated
+                                return new List<Asset>();
                             }
                             Asset soldAsset;
                             decimal sellAmount;
-                            if (AssetCollection.Peek().Amount <= cryptocurrencySellAmount)
+                            if (assetCollection.Peek().Amount <= cryptocurrencySellAmount)
                             {
-                                soldAsset = AssetCollection.Pop();
+                                soldAsset = assetCollection.Pop();
                                 sellAmount = soldAsset.Amount;
                             }
                             else
                             {
-                                soldAsset = AssetCollection.Peek();
+                                soldAsset = assetCollection.Peek();
                                 sellAmount = cryptocurrencySellAmount;
                                 soldAsset.Amount -= sellAmount;
                             }
@@ -164,14 +164,7 @@ namespace CryptoTax.Transactions
                 }
             }
 
-            var assets = AssetCollection.ToList();
-            var totalWeight = assets.Sum(x => x.Amount);
-            if(totalWeight == 0)
-            {
-                return null;
-            }
-
-            return assets.Aggregate((decimal)0, (t, a) => t + a.Amount * a.ExchangeRate) / totalWeight;
+            return assetCollection.ToList();
         }
 
         private TValue GetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue> dictionary,
@@ -191,6 +184,7 @@ namespace CryptoTax.Transactions
             public decimal? PriceInUsd { get; set; }
             public decimal? UsdAmount => this.PriceInUsd * this.CryptocurrencyAmount;
             public decimal? AveragePriceBought { get; set; }
+            public decimal? Return => (this.PriceInUsd / this.AveragePriceBought) - 1;
             public decimal? MarketCap { get; set; }
             public string Link { get; set; }
         }
