@@ -123,6 +123,7 @@
     <Compile Include="TransactionImport\CoinbaseCsvImporter.cs" />
     <Compile Include="TransactionImport\ITransactionImporter.cs" />
     <Compile Include="Transactions\AccountingMethodType.cs" />
+    <Compile Include="Transactions\Asset.cs" />
     <Compile Include="Transactions\CapitalGain.cs" />
     <Compile Include="Cryptocurrency\CryptocurrencyType.cs" />
     <Compile Include="Transactions\PortfolioSummaryProvider.cs" />

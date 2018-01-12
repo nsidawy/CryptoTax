@@ -32,6 +32,7 @@ namespace CryptoTax.Transactions
                     OneHourChange = data?.OneHourChangePercent,
                     TwentyFourHourChange = data?.TwentyFourHourChangePercent,
                     MarketCap = data?.MarketCap,
+                    AveragePriceBought = this.GetAverageAssetPrice(groupedTransaction.ToList()),
                     Link = data?.Link,
                     CryptocurrencyAmount = groupedTransaction.Aggregate((decimal)0, (val, t) =>
                     {
@@ -115,7 +116,65 @@ namespace CryptoTax.Transactions
             return yearSummaryInfos;
         }
 
-        private static TValue GetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue> dictionary,
+        private decimal? GetAverageAssetPrice(IReadOnlyCollection<Transaction> transactions)
+        {
+            var AssetCollection = new AssetCollection(AccountingMethodType.Lifo);
+
+            var sortedtransactions = transactions
+                .OrderBy(x => x.TransactionDate);
+
+            foreach (var transaction in sortedtransactions)
+            {
+                switch (transaction.TransactionType)
+                {
+                    case TransactionType.Buy:
+                        AssetCollection.Add(new Asset
+                        {
+                            TransactionDate = transaction.TransactionDate,
+                            Amount = transaction.CryptocurrencyAmount,
+                            ExchangeRate = transaction.PriceInUsd
+                        });
+                        break;
+                    case TransactionType.Sell:
+                        var cryptocurrencySellAmount = transaction.CryptocurrencyAmount;
+                        while (cryptocurrencySellAmount > 0)
+                        {
+                            if (AssetCollection.Count == 0)
+                            {
+                                return null;
+                            }
+                            Asset soldAsset;
+                            decimal sellAmount;
+                            if (AssetCollection.Peek().Amount <= cryptocurrencySellAmount)
+                            {
+                                soldAsset = AssetCollection.Pop();
+                                sellAmount = soldAsset.Amount;
+                            }
+                            else
+                            {
+                                soldAsset = AssetCollection.Peek();
+                                sellAmount = cryptocurrencySellAmount;
+                                soldAsset.Amount -= sellAmount;
+                            }
+                            cryptocurrencySellAmount -= sellAmount;
+                        }
+                        break;
+                    default:
+                        throw new InvalidOperationException();
+                }
+            }
+
+            var assets = AssetCollection.ToList();
+            var totalWeight = assets.Sum(x => x.Amount);
+            if(totalWeight == 0)
+            {
+                return null;
+            }
+
+            return assets.Aggregate((decimal)0, (t, a) => t + a.Amount * a.ExchangeRate) / totalWeight;
+        }
+
+        private TValue GetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue> dictionary,
             TKey key,
             TValue defaultValue)
         {
@@ -126,11 +185,12 @@ namespace CryptoTax.Transactions
         public class CryptocurrencyPortfolioSummaryInfo
         {
             public CryptocurrencyType Cryptocurrency { get; set; }
+            public decimal? OneHourChange { get; set; }
+            public decimal? TwentyFourHourChange { get; set; }
             public decimal CryptocurrencyAmount { get; set; }
             public decimal? PriceInUsd { get; set; }
             public decimal? UsdAmount => this.PriceInUsd * this.CryptocurrencyAmount;
-            public decimal? OneHourChange { get; set; }
-            public decimal? TwentyFourHourChange { get; set; }
+            public decimal? AveragePriceBought { get; set; }
             public decimal? MarketCap { get; set; }
             public string Link { get; set; }
         }
