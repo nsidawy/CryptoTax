@@ -30,9 +30,9 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.SummaryDataRefreshTimer = new System.Windows.Forms.Timer(this.components);
             this.TransactionGridContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.EditTransaction = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,35 +46,35 @@
             this.EditTransactionButton = new System.Windows.Forms.ToolStripButton();
             this.ImportTransactionsButton = new System.Windows.Forms.ToolStripButton();
             this.MainTableLayout = new System.Windows.Forms.TableLayoutPanel();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.YearSummaryDataGrid = new System.Windows.Forms.DataGridView();
+            this.MainWindowTabs = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.PortfolioTableLayout = new System.Windows.Forms.TableLayoutPanel();
+            this.SummaryLabel = new System.Windows.Forms.Label();
             this.PortfolioSplitContainer = new System.Windows.Forms.SplitContainer();
+            this.SummaryDataGrid = new System.Windows.Forms.DataGridView();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.TransactionDataGrid = new System.Windows.Forms.DataGridView();
             this.toolStrip2 = new System.Windows.Forms.ToolStrip();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.CryptocurrencyFilterInput = new System.Windows.Forms.ToolStripComboBox();
-            this.TransactionDataGrid = new System.Windows.Forms.DataGridView();
-            this.SummaryDataGrid = new System.Windows.Forms.DataGridView();
-            this.SummaryLabel = new System.Windows.Forms.Label();
-            this.MainWindowTabs = new System.Windows.Forms.TabControl();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.YearSummaryDataGrid = new System.Windows.Forms.DataGridView();
             this.TransactionGridContextMenu.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.MainTableLayout.SuspendLayout();
-            this.tabPage3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.YearSummaryDataGrid)).BeginInit();
+            this.MainWindowTabs.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.PortfolioTableLayout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PortfolioSplitContainer)).BeginInit();
             this.PortfolioSplitContainer.Panel1.SuspendLayout();
             this.PortfolioSplitContainer.Panel2.SuspendLayout();
             this.PortfolioSplitContainer.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.toolStrip2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.TransactionDataGrid)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SummaryDataGrid)).BeginInit();
-            this.MainWindowTabs.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.TransactionDataGrid)).BeginInit();
+            this.toolStrip2.SuspendLayout();
+            this.tabPage3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.YearSummaryDataGrid)).BeginInit();
             this.SuspendLayout();
             // 
             // SummaryDataRefreshTimer
@@ -200,38 +200,16 @@
             this.MainTableLayout.TabIndex = 0;
             this.MainTableLayout.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
             // 
-            // tabPage3
+            // MainWindowTabs
             // 
-            this.tabPage3.AutoScroll = true;
-            this.tabPage3.Controls.Add(this.YearSummaryDataGrid);
-            this.tabPage3.Location = new System.Drawing.Point(4, 25);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(1368, 637);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Tax Summary";
-            this.tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // YearSummaryDataGrid
-            // 
-            this.YearSummaryDataGrid.AllowUserToAddRows = false;
-            this.YearSummaryDataGrid.AllowUserToDeleteRows = false;
-            this.YearSummaryDataGrid.AllowUserToOrderColumns = true;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.YearSummaryDataGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
-            this.YearSummaryDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.YearSummaryDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.YearSummaryDataGrid.Location = new System.Drawing.Point(0, 0);
-            this.YearSummaryDataGrid.Name = "YearSummaryDataGrid";
-            this.YearSummaryDataGrid.ReadOnly = true;
-            this.YearSummaryDataGrid.RowTemplate.Height = 24;
-            this.YearSummaryDataGrid.Size = new System.Drawing.Size(1368, 637);
-            this.YearSummaryDataGrid.TabIndex = 6;
+            this.MainWindowTabs.Controls.Add(this.tabPage1);
+            this.MainWindowTabs.Controls.Add(this.tabPage3);
+            this.MainWindowTabs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MainWindowTabs.Location = new System.Drawing.Point(3, 30);
+            this.MainWindowTabs.Name = "MainWindowTabs";
+            this.MainWindowTabs.SelectedIndex = 0;
+            this.MainWindowTabs.Size = new System.Drawing.Size(1376, 686);
+            this.MainWindowTabs.TabIndex = 7;
             // 
             // tabPage1
             // 
@@ -261,11 +239,23 @@
             this.PortfolioTableLayout.Size = new System.Drawing.Size(1362, 651);
             this.PortfolioTableLayout.TabIndex = 0;
             // 
+            // SummaryLabel
+            // 
+            this.SummaryLabel.AutoSize = true;
+            this.SummaryLabel.Dock = System.Windows.Forms.DockStyle.Left;
+            this.SummaryLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SummaryLabel.Location = new System.Drawing.Point(3, 0);
+            this.SummaryLabel.Name = "SummaryLabel";
+            this.SummaryLabel.Size = new System.Drawing.Size(263, 29);
+            this.SummaryLabel.TabIndex = 8;
+            this.SummaryLabel.Text = "Crypto Net Worth - $0";
+            // 
             // PortfolioSplitContainer
             // 
             this.PortfolioSplitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.PortfolioSplitContainer.Location = new System.Drawing.Point(3, 32);
             this.PortfolioSplitContainer.Name = "PortfolioSplitContainer";
+            this.PortfolioSplitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
             // PortfolioSplitContainer.Panel1
             // 
@@ -275,51 +265,46 @@
             // 
             this.PortfolioSplitContainer.Panel2.Controls.Add(this.tableLayoutPanel1);
             this.PortfolioSplitContainer.Size = new System.Drawing.Size(1356, 616);
-            this.PortfolioSplitContainer.SplitterDistance = 452;
+            this.PortfolioSplitContainer.SplitterDistance = 250;
+            this.PortfolioSplitContainer.SplitterWidth = 10;
             this.PortfolioSplitContainer.TabIndex = 1;
+            // 
+            // SummaryDataGrid
+            // 
+            this.SummaryDataGrid.AllowUserToAddRows = false;
+            this.SummaryDataGrid.AllowUserToDeleteRows = false;
+            this.SummaryDataGrid.AllowUserToOrderColumns = true;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.SummaryDataGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.SummaryDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.SummaryDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SummaryDataGrid.Location = new System.Drawing.Point(0, 0);
+            this.SummaryDataGrid.Name = "SummaryDataGrid";
+            this.SummaryDataGrid.ReadOnly = true;
+            this.SummaryDataGrid.RowTemplate.Height = 24;
+            this.SummaryDataGrid.Size = new System.Drawing.Size(1356, 250);
+            this.SummaryDataGrid.TabIndex = 10;
             // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 1;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.TransactionDataGrid, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.toolStrip2, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.TransactionDataGrid, 0, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(900, 616);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1356, 356);
             this.tableLayoutPanel1.TabIndex = 0;
-            // 
-            // toolStrip2
-            // 
-            this.toolStrip2.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripLabel1,
-            this.CryptocurrencyFilterInput});
-            this.toolStrip2.Location = new System.Drawing.Point(0, 0);
-            this.toolStrip2.Name = "toolStrip2";
-            this.toolStrip2.Size = new System.Drawing.Size(900, 28);
-            this.toolStrip2.TabIndex = 4;
-            this.toolStrip2.Text = "toolStrip2";
-            // 
-            // toolStripLabel1
-            // 
-            this.toolStripLabel1.Enabled = false;
-            this.toolStripLabel1.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(124, 25);
-            this.toolStripLabel1.Text = "Filter by Crypto: ";
-            // 
-            // CryptocurrencyFilterInput
-            // 
-            this.CryptocurrencyFilterInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.CryptocurrencyFilterInput.Name = "CryptocurrencyFilterInput";
-            this.CryptocurrencyFilterInput.Size = new System.Drawing.Size(121, 28);
-            this.CryptocurrencyFilterInput.Sorted = true;
-            this.CryptocurrencyFilterInput.ToolTipText = "Filter by cryptocurrency";
             // 
             // TransactionDataGrid
             // 
@@ -341,52 +326,69 @@
             this.TransactionDataGrid.Name = "TransactionDataGrid";
             this.TransactionDataGrid.ReadOnly = true;
             this.TransactionDataGrid.RowTemplate.Height = 24;
-            this.TransactionDataGrid.Size = new System.Drawing.Size(894, 582);
+            this.TransactionDataGrid.Size = new System.Drawing.Size(1350, 322);
             this.TransactionDataGrid.TabIndex = 8;
             // 
-            // SummaryDataGrid
+            // toolStrip2
             // 
-            this.SummaryDataGrid.AllowUserToAddRows = false;
-            this.SummaryDataGrid.AllowUserToDeleteRows = false;
-            this.SummaryDataGrid.AllowUserToOrderColumns = true;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.SummaryDataGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            this.SummaryDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.SummaryDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.SummaryDataGrid.Location = new System.Drawing.Point(0, 0);
-            this.SummaryDataGrid.Name = "SummaryDataGrid";
-            this.SummaryDataGrid.ReadOnly = true;
-            this.SummaryDataGrid.RowTemplate.Height = 24;
-            this.SummaryDataGrid.Size = new System.Drawing.Size(452, 616);
-            this.SummaryDataGrid.TabIndex = 10;
+            this.toolStrip2.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripLabel1,
+            this.CryptocurrencyFilterInput});
+            this.toolStrip2.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip2.Name = "toolStrip2";
+            this.toolStrip2.Size = new System.Drawing.Size(1356, 28);
+            this.toolStrip2.TabIndex = 4;
+            this.toolStrip2.Text = "toolStrip2";
             // 
-            // SummaryLabel
+            // toolStripLabel1
             // 
-            this.SummaryLabel.AutoSize = true;
-            this.SummaryLabel.Dock = System.Windows.Forms.DockStyle.Left;
-            this.SummaryLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SummaryLabel.Location = new System.Drawing.Point(3, 0);
-            this.SummaryLabel.Name = "SummaryLabel";
-            this.SummaryLabel.Size = new System.Drawing.Size(263, 29);
-            this.SummaryLabel.TabIndex = 8;
-            this.SummaryLabel.Text = "Crypto Net Worth - $0";
+            this.toolStripLabel1.Enabled = false;
+            this.toolStripLabel1.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.toolStripLabel1.Name = "toolStripLabel1";
+            this.toolStripLabel1.Size = new System.Drawing.Size(124, 25);
+            this.toolStripLabel1.Text = "Filter by Crypto: ";
             // 
-            // MainWindowTabs
+            // CryptocurrencyFilterInput
             // 
-            this.MainWindowTabs.Controls.Add(this.tabPage1);
-            this.MainWindowTabs.Controls.Add(this.tabPage3);
-            this.MainWindowTabs.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MainWindowTabs.Location = new System.Drawing.Point(3, 30);
-            this.MainWindowTabs.Name = "MainWindowTabs";
-            this.MainWindowTabs.SelectedIndex = 0;
-            this.MainWindowTabs.Size = new System.Drawing.Size(1376, 686);
-            this.MainWindowTabs.TabIndex = 7;
+            this.CryptocurrencyFilterInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CryptocurrencyFilterInput.Name = "CryptocurrencyFilterInput";
+            this.CryptocurrencyFilterInput.Size = new System.Drawing.Size(121, 28);
+            this.CryptocurrencyFilterInput.Sorted = true;
+            this.CryptocurrencyFilterInput.ToolTipText = "Filter by cryptocurrency";
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.AutoScroll = true;
+            this.tabPage3.Controls.Add(this.YearSummaryDataGrid);
+            this.tabPage3.Location = new System.Drawing.Point(4, 25);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(1368, 657);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Tax Summary";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // YearSummaryDataGrid
+            // 
+            this.YearSummaryDataGrid.AllowUserToAddRows = false;
+            this.YearSummaryDataGrid.AllowUserToDeleteRows = false;
+            this.YearSummaryDataGrid.AllowUserToOrderColumns = true;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.YearSummaryDataGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            this.YearSummaryDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.YearSummaryDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.YearSummaryDataGrid.Location = new System.Drawing.Point(0, 0);
+            this.YearSummaryDataGrid.Name = "YearSummaryDataGrid";
+            this.YearSummaryDataGrid.ReadOnly = true;
+            this.YearSummaryDataGrid.RowTemplate.Height = 24;
+            this.YearSummaryDataGrid.Size = new System.Drawing.Size(1368, 657);
+            this.YearSummaryDataGrid.TabIndex = 6;
             // 
             // MainWindow
             // 
@@ -402,8 +404,7 @@
             this.toolStrip1.PerformLayout();
             this.MainTableLayout.ResumeLayout(false);
             this.MainTableLayout.PerformLayout();
-            this.tabPage3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.YearSummaryDataGrid)).EndInit();
+            this.MainWindowTabs.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.PortfolioTableLayout.ResumeLayout(false);
             this.PortfolioTableLayout.PerformLayout();
@@ -411,13 +412,14 @@
             this.PortfolioSplitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.PortfolioSplitContainer)).EndInit();
             this.PortfolioSplitContainer.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.SummaryDataGrid)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.TransactionDataGrid)).EndInit();
             this.toolStrip2.ResumeLayout(false);
             this.toolStrip2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.TransactionDataGrid)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SummaryDataGrid)).EndInit();
-            this.MainWindowTabs.ResumeLayout(false);
+            this.tabPage3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.YearSummaryDataGrid)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -207,19 +207,8 @@ namespace CryptoTax.Forms
                 .ToList();
 
             // update portfolio summary label
-<<<<<<< HEAD
-            var networth = summaryInfos.Aggregate((decimal)0, (v, s) => v + s.UsdAmount ?? 0);
+            var networth = summaryInfos.Aggregate((decimal)0, (v, s) => v + s.TotalUsd ?? 0);
             this.SummaryLabel.Text = "Crypto Net Worth - $" + networth.ToString("N2");
-=======
-            if (summaryInfos.Any(x => x.TotalUsd.HasValue))
-            {
-                this.SummaryLabel.Text = "Portfolio Summary - $" + summaryInfos.Aggregate((decimal)0, (v, s) => v + s.TotalUsd ?? 0).ToString("N2");
-            }
-            else
-            {
-                this.SummaryLabel.Text = "Portfolio Summary";
-            }
->>>>>>> master
 
             var firstVisiblRowIndex = this.SummaryDataGrid.FirstDisplayedScrollingRowIndex;
             this.ReplaceBindingListItems(this.SummaryDataGridBindingSource, summaryInfos);
