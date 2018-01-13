@@ -16,12 +16,12 @@ namespace CryptoTax.Transactions
             this._taxCalculator = taxCalculator;
         }
 
-        public IReadOnlyList<CryptocurrencyPortfolioSummaryInfo> GetCryptocurrencyPortfolioSummaryInfo(
+        public IReadOnlyList<CryptoPortfolioSummaryInfo> GetCryptocurrencyPortfolioSummaryInfo(
             IReadOnlyList<Transaction> transactions,
             IReadOnlyDictionary<CryptocurrencyType, CoinMarketCapDataProvider.CoinMarketCapData> coinMarketCapData)
         {
             var groupedTransactions = transactions.GroupBy(x => x.Crypto);
-            var summaryInfos = new List<CryptocurrencyPortfolioSummaryInfo>();
+            var summaryInfos = new List<CryptoPortfolioSummaryInfo>();
             foreach (var groupedTransaction in groupedTransactions)
             {
                 coinMarketCapData.TryGetValue(groupedTransaction.Key, out CoinMarketCapDataProvider.CoinMarketCapData data);
@@ -35,7 +35,7 @@ namespace CryptoTax.Transactions
                     averagePriceBought = heldAssets.Aggregate((decimal)0, (t, a) => t + a.Amount * a.ExchangeRate) / totalAssetAmount;
                 }
 
-                summaryInfos.Add(new CryptocurrencyPortfolioSummaryInfo
+                summaryInfos.Add(new CryptoPortfolioSummaryInfo
                 {
                     Crypto = groupedTransaction.Key,
                     PriceInUsd = data?.PriceInUsd,
@@ -51,15 +51,15 @@ namespace CryptoTax.Transactions
             return summaryInfos.Where(x => x.Quantity != 0).ToList();
         }
 
-        public IReadOnlyList<CryptocurrencyYearSummaryInfo> GetCryptocurrencyYearSummaryInfo(
+        public IReadOnlyList<CryptoYearSummaryInfo> GetCryptocurrencyYearSummaryInfo(
             IReadOnlyList<Transaction> transactions)
         {
-            var yearSummaryInfos = new List<CryptocurrencyYearSummaryInfo>();
+            var yearSummaryInfos = new List<CryptoYearSummaryInfo>();
             foreach (var cryptocurrency in transactions.Select(x => x.Crypto).Distinct())
             {
                 var thisCryptoTransactions = transactions.Where(t => t.Crypto == cryptocurrency);
                 var transactionYears = thisCryptoTransactions.Select(x => x.TransactionDate.Year).Distinct().ToList();
-                var yearToSummaryInfoLookUp = transactionYears.ToDictionary(x => x, x => new CryptocurrencyYearSummaryInfo
+                var yearToSummaryInfoLookUp = transactionYears.ToDictionary(x => x, x => new CryptoYearSummaryInfo
                 {
                     Year = x,
                     Crypto = cryptocurrency
@@ -78,10 +78,10 @@ namespace CryptoTax.Transactions
                         yearToSummaryInfo.UsdReturns = x
                             .Where(t => t.TransactionType == TransactionType.Sell)
                             .Sum(t => t.UsDollarAmount);
-                        yearToSummaryInfo.CryptocurrencyBought = x
+                        yearToSummaryInfo.QuantityBought = x
                             .Where(t => t.TransactionType == TransactionType.Buy)
                             .Sum(t => t.Quantity);
-                        yearToSummaryInfo.CryptocurrencySold = x
+                        yearToSummaryInfo.QuantitySold = x
                             .Where(t => t.TransactionType == TransactionType.Sell)
                             .Sum(t => t.Quantity);
                     });
@@ -175,7 +175,7 @@ namespace CryptoTax.Transactions
         }
 
 
-        public class CryptocurrencyPortfolioSummaryInfo
+        public class CryptoPortfolioSummaryInfo
         {
             public CryptocurrencyType Crypto { get; set; }
             public decimal? OneHourChange { get; set; }
@@ -189,12 +189,12 @@ namespace CryptoTax.Transactions
             public string Link { get; set; }
         }
         
-        public class CryptocurrencyYearSummaryInfo
+        public class CryptoYearSummaryInfo
         {
             public CryptocurrencyType Crypto { get; set; }
             public int Year { get; set; }
-            public decimal CryptocurrencyBought { get; set; }
-            public decimal CryptocurrencySold { get; set; }
+            public decimal QuantityBought { get; set; }
+            public decimal QuantitySold { get; set; }
             public decimal UsdInvested { get; set; }
             public decimal UsdReturns { get; set; }
             public decimal? LifoLongTermCapitalGains { get; set; }
