@@ -31,8 +31,8 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.SummaryDataRefreshTimer = new System.Windows.Forms.Timer(this.components);
             this.TransactionGridContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.EditTransaction = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,13 +52,13 @@
             this.SummaryLabel = new System.Windows.Forms.Label();
             this.PortfolioSplitContainer = new System.Windows.Forms.SplitContainer();
             this.SummaryDataGrid = new System.Windows.Forms.DataGridView();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.TransactionDataGrid = new System.Windows.Forms.DataGridView();
+            this.TransactionTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.toolStrip2 = new System.Windows.Forms.ToolStrip();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.CryptocurrencyFilterInput = new System.Windows.Forms.ToolStripComboBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.YearSummaryDataGrid = new System.Windows.Forms.DataGridView();
+            this.TransactionDataGrid = new System.Windows.Forms.DataGridView();
             this.TransactionGridContextMenu.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.MainTableLayout.SuspendLayout();
@@ -70,11 +70,11 @@
             this.PortfolioSplitContainer.Panel2.SuspendLayout();
             this.PortfolioSplitContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SummaryDataGrid)).BeginInit();
-            this.tableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.TransactionDataGrid)).BeginInit();
+            this.TransactionTableLayoutPanel.SuspendLayout();
             this.toolStrip2.SuspendLayout();
             this.tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.YearSummaryDataGrid)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TransactionDataGrid)).BeginInit();
             this.SuspendLayout();
             // 
             // SummaryDataRefreshTimer
@@ -263,7 +263,7 @@
             // 
             // PortfolioSplitContainer.Panel2
             // 
-            this.PortfolioSplitContainer.Panel2.Controls.Add(this.tableLayoutPanel1);
+            this.PortfolioSplitContainer.Panel2.Controls.Add(this.TransactionTableLayoutPanel);
             this.PortfolioSplitContainer.Size = new System.Drawing.Size(1356, 616);
             this.PortfolioSplitContainer.SplitterDistance = 250;
             this.PortfolioSplitContainer.SplitterWidth = 10;
@@ -291,43 +291,20 @@
             this.SummaryDataGrid.Size = new System.Drawing.Size(1356, 250);
             this.SummaryDataGrid.TabIndex = 10;
             // 
-            // tableLayoutPanel1
+            // TransactionTableLayoutPanel
             // 
-            this.tableLayoutPanel1.ColumnCount = 1;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.toolStrip2, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.TransactionDataGrid, 0, 1);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1356, 356);
-            this.tableLayoutPanel1.TabIndex = 0;
-            // 
-            // TransactionDataGrid
-            // 
-            this.TransactionDataGrid.AllowUserToAddRows = false;
-            this.TransactionDataGrid.AllowUserToOrderColumns = true;
-            this.TransactionDataGrid.AllowUserToResizeRows = false;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.TransactionDataGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
-            this.TransactionDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.TransactionDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TransactionDataGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.TransactionDataGrid.Location = new System.Drawing.Point(3, 31);
-            this.TransactionDataGrid.Name = "TransactionDataGrid";
-            this.TransactionDataGrid.ReadOnly = true;
-            this.TransactionDataGrid.RowTemplate.Height = 24;
-            this.TransactionDataGrid.Size = new System.Drawing.Size(1350, 322);
-            this.TransactionDataGrid.TabIndex = 8;
+            this.TransactionTableLayoutPanel.ColumnCount = 1;
+            this.TransactionTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.TransactionTableLayoutPanel.Controls.Add(this.toolStrip2, 0, 0);
+            this.TransactionTableLayoutPanel.Controls.Add(this.TransactionDataGrid, 0, 1);
+            this.TransactionTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TransactionTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
+            this.TransactionTableLayoutPanel.Name = "TransactionTableLayoutPanel";
+            this.TransactionTableLayoutPanel.RowCount = 2;
+            this.TransactionTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.TransactionTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.TransactionTableLayoutPanel.Size = new System.Drawing.Size(1356, 356);
+            this.TransactionTableLayoutPanel.TabIndex = 0;
             // 
             // toolStrip2
             // 
@@ -390,13 +367,36 @@
             this.YearSummaryDataGrid.Size = new System.Drawing.Size(1368, 657);
             this.YearSummaryDataGrid.TabIndex = 6;
             // 
+            // TransactionDataGrid
+            // 
+            this.TransactionDataGrid.AllowUserToAddRows = false;
+            this.TransactionDataGrid.AllowUserToOrderColumns = true;
+            this.TransactionDataGrid.AllowUserToResizeRows = false;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.TransactionDataGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            this.TransactionDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.TransactionDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TransactionDataGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            this.TransactionDataGrid.Location = new System.Drawing.Point(3, 31);
+            this.TransactionDataGrid.Name = "TransactionDataGrid";
+            this.TransactionDataGrid.ReadOnly = true;
+            this.TransactionDataGrid.RowTemplate.Height = 24;
+            this.TransactionDataGrid.Size = new System.Drawing.Size(1350, 322);
+            this.TransactionDataGrid.TabIndex = 10;
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1381, 719);
             this.Controls.Add(this.MainTableLayout);
-            this.MinimumSize = new System.Drawing.Size(1200, 700);
+            this.MinimumSize = new System.Drawing.Size(1399, 766);
             this.Name = "MainWindow";
             this.Text = "CryptoTax";
             this.TransactionGridContextMenu.ResumeLayout(false);
@@ -413,13 +413,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.PortfolioSplitContainer)).EndInit();
             this.PortfolioSplitContainer.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.SummaryDataGrid)).EndInit();
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.TransactionDataGrid)).EndInit();
+            this.TransactionTableLayoutPanel.ResumeLayout(false);
+            this.TransactionTableLayoutPanel.PerformLayout();
             this.toolStrip2.ResumeLayout(false);
             this.toolStrip2.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.YearSummaryDataGrid)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TransactionDataGrid)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -445,13 +445,13 @@
         private System.Windows.Forms.Label SummaryLabel;
         private System.Windows.Forms.SplitContainer PortfolioSplitContainer;
         private System.Windows.Forms.DataGridView SummaryDataGrid;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.DataGridView TransactionDataGrid;
+        private System.Windows.Forms.TableLayoutPanel TransactionTableLayoutPanel;
         private System.Windows.Forms.ToolStrip toolStrip2;
         private System.Windows.Forms.ToolStripLabel toolStripLabel1;
         private System.Windows.Forms.ToolStripComboBox CryptocurrencyFilterInput;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.DataGridView YearSummaryDataGrid;
+        private System.Windows.Forms.DataGridView TransactionDataGrid;
     }
 }
 
