@@ -64,10 +64,10 @@ namespace CryptoTax.TransactionImport
                 {
                     transactions.Add(new Transaction
                     {
-                        Cryptocurrency = exchangeResult.AssetCurrency,
+                        Crypto = exchangeResult.AssetCurrency,
                         TransactionDate = record.Date,
                         TransactionType = record.TransactionType,
-                        CryptocurrencyAmount = record.CryptocurrencyAmount,
+                        Quantity = record.CryptocurrencyAmount,
                         UsDollarAmount = record.TransactionCurrencyAmount,
                         ExcludeFromPortfolio = record.ExcludeFromPortfolio
                     });
@@ -90,19 +90,19 @@ namespace CryptoTax.TransactionImport
                     var usdEquivalentAmount = record.TransactionCurrencyAmount * transactionCurrencyePriceAtTransactionTime;
                     transactions.Add(new Transaction
                     {
-                        Cryptocurrency = exchangeResult.TransactionCurrency.ToCryptocurrencyType(),
+                        Crypto = exchangeResult.TransactionCurrency.ToCryptocurrencyType(),
                         TransactionDate = record.Date,
                         TransactionType = record.TransactionType == TransactionType.Buy ? TransactionType.Sell : TransactionType.Buy,
-                        CryptocurrencyAmount = record.TransactionCurrencyAmount,
+                        Quantity = record.TransactionCurrencyAmount,
                         UsDollarAmount = usdEquivalentAmount,
                         ExcludeFromPortfolio = record.ExcludeFromPortfolio
                     });
                     transactions.Add(new Transaction
                     {
-                        Cryptocurrency = exchangeResult.AssetCurrency,
+                        Crypto = exchangeResult.AssetCurrency,
                         TransactionDate = record.Date,
                         TransactionType = record.TransactionType == TransactionType.Buy ? TransactionType.Buy : TransactionType.Sell,
-                        CryptocurrencyAmount = record.CryptocurrencyAmount,
+                        Quantity = record.CryptocurrencyAmount,
                         UsDollarAmount = usdEquivalentAmount,
                         ExcludeFromPortfolio = record.ExcludeFromPortfolio
                     });

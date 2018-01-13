@@ -30,8 +30,8 @@ namespace CryptoTax.Forms
             this.Transaction = transaction;
             this.TransactionDateInput.Value = this.Transaction.TransactionDate;
             this.TransactionTypeInput.SelectedItem = this.Transaction.TransactionType;
-            this.CryptocurrencyInput.SelectedItem = this.Transaction.Cryptocurrency;
-            this.CryptoAmountInput.Value = this.Transaction.CryptocurrencyAmount;
+            this.CryptocurrencyInput.SelectedItem = this.Transaction.Crypto;
+            this.CryptoAmountInput.Value = this.Transaction.Quantity;
             this.UsdAmountInput.Value = this.Transaction.UsDollarAmount;
             this.ExcludeFromPortfolioCheckBox.Checked = this.Transaction.ExcludeFromPortfolio;
 
@@ -61,8 +61,8 @@ namespace CryptoTax.Forms
             }
             this.Transaction.TransactionDate = this.TransactionDateInput.Value;
             this.Transaction.TransactionType = (TransactionType)this.TransactionTypeInput.SelectedValue;
-            this.Transaction.Cryptocurrency = (CryptocurrencyType)this.CryptocurrencyInput.SelectedValue;
-            this.Transaction.CryptocurrencyAmount = this.CryptoAmountInput.Value;
+            this.Transaction.Crypto = (CryptocurrencyType)this.CryptocurrencyInput.SelectedValue;
+            this.Transaction.Quantity = this.CryptoAmountInput.Value;
             this.Transaction.UsDollarAmount = this.UsdAmountInput.Value;
             this.Transaction.ExcludeFromPortfolio = this.ExcludeFromPortfolioCheckBox.Checked;
 

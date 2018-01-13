@@ -49,9 +49,9 @@ namespace CryptoTax.TransactionImport
                 }
                 transactions.Add(new Transaction
                 {
-                    Cryptocurrency = this._cryptocurrencyMapping[record.Currency],
+                    Crypto = this._cryptocurrencyMapping[record.Currency],
                     // Sell transactions appear as negative cryptocurrency amounts so that needs to be corrected.
-                    CryptocurrencyAmount = record.Amount.Value * (record.TransactionType == TransactionType.Buy ? 1 : -1),
+                    Quantity = record.Amount.Value * (record.TransactionType == TransactionType.Buy ? 1 : -1),
                     TransactionDate = record.Timestamp,
                     TransactionType = record.TransactionType,
                     UsDollarAmount = record.TransferTotal.Value - record.TransferFee.Value

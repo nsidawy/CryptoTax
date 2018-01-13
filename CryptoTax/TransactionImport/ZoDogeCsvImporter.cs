@@ -51,10 +51,10 @@ namespace CryptoTax.TransactionImport
 
                 transactions.Add(new Transaction
                 {
-                    Cryptocurrency = CryptocurrencyType.Dogecoin,
+                    Crypto = CryptocurrencyType.Dogecoin,
                     TransactionDate = record.TimeStamp,
                     TransactionType = record.IsReceived ? TransactionType.Buy : TransactionType.Sell,
-                    CryptocurrencyAmount = record.Amount,
+                    Quantity = record.Amount,
                     UsDollarAmount = dogecoinPriceInUsdAtTransactionTime.Value * record.Amount
                 });
 

@@ -16,11 +16,11 @@ namespace CryptoTax.Transactions
     public class Transaction
     {
         public DateTime TransactionDate { get; set; }
-        public CryptocurrencyType Cryptocurrency { get; set; }
+        public CryptocurrencyType Crypto { get; set; }
         public TransactionType TransactionType { get; set; }
-        public decimal CryptocurrencyAmount { get; set; }
+        public decimal Quantity { get; set; }
         public decimal UsDollarAmount { get; set; }
-        public decimal PriceInUsd { get => this.UsDollarAmount / this.CryptocurrencyAmount; }
+        public decimal PriceInUsd { get => this.UsDollarAmount / this.Quantity; }
         public bool ExcludeFromPortfolio { get; set; }
     }
 }

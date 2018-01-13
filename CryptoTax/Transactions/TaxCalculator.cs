@@ -18,7 +18,7 @@ namespace CryptoTax.Transactions
         {
             var capitalGains = new List<CapitalGain>();
             var sortedTransactions = transactions
-                .Where(x => x.Cryptocurrency == cryptocurrency)
+                .Where(x => x.Crypto == cryptocurrency)
                 .OrderBy(x => x.TransactionDate);
             var assetCollection = new AssetCollection(accountingMethod);           
             foreach(var transaction in sortedTransactions)
@@ -29,12 +29,12 @@ namespace CryptoTax.Transactions
                         assetCollection.Add(new Asset
                         {
                             TransactionDate = transaction.TransactionDate,
-                            Amount = transaction.CryptocurrencyAmount,
+                            Amount = transaction.Quantity,
                             ExchangeRate = transaction.PriceInUsd
                         });
                         break;
                     case TransactionType.Sell:
-                        var cryptocurrencySellAmount = transaction.CryptocurrencyAmount;
+                        var cryptocurrencySellAmount = transaction.Quantity;
                         while (cryptocurrencySellAmount > 0)
                         {
                             if (assetCollection.Count == 0)
