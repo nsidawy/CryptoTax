@@ -61,10 +61,10 @@ namespace CryptoTax.TransactionImport
                     case TransactionCurrencyType.Usd:
                         transactions.Add(new Transaction
                         {
-                            Cryptocurrency = product.ProductAsset,
+                            Crypto = product.ProductAsset,
                             TransactionDate = record.CreatedAt,
                             TransactionType = record.TransactionType,
-                            CryptocurrencyAmount = record.AssetAmount,
+                            Quantity = record.AssetAmount,
                             UsDollarAmount = record.AssetPrice * record.AssetAmount
                         });
                         break;
@@ -75,19 +75,19 @@ namespace CryptoTax.TransactionImport
 
                         transactions.Add(new Transaction
                         {
-                            Cryptocurrency = CryptocurrencyType.Bitcoin,
+                            Crypto = CryptocurrencyType.Bitcoin,
                             TransactionDate = record.CreatedAt,
                             TransactionType = record.TransactionType == TransactionType.Buy ? TransactionType.Sell : TransactionType.Buy,
-                            CryptocurrencyAmount = bitcoinAmount,
+                            Quantity = bitcoinAmount,
                             UsDollarAmount = usdEquivalentAmounnt
                         });
 
                         transactions.Add(new Transaction
                         {
-                            Cryptocurrency = product.ProductAsset,
+                            Crypto = product.ProductAsset,
                             TransactionDate = record.CreatedAt,
                             TransactionType = record.TransactionType,
-                            CryptocurrencyAmount = record.AssetAmount,
+                            Quantity = record.AssetAmount,
                             UsDollarAmount = usdEquivalentAmounnt
                         });
                         break;

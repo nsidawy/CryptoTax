@@ -78,19 +78,19 @@ namespace CryptoTax.TransactionImport
 
                 transactions.Add(new Transaction
                 {
-                    Cryptocurrency = CryptocurrencyType.Bitcoin,
+                    Crypto = CryptocurrencyType.Bitcoin,
                     TransactionDate = record.ClosedTimestamp,
                     TransactionType = record.TransactionType.Value == TransactionType.Buy ? TransactionType.Sell : TransactionType.Buy,
-                    CryptocurrencyAmount = bitcoinAmount + record.CommissionInBitcoin,
+                    Quantity = bitcoinAmount + record.CommissionInBitcoin,
                     UsDollarAmount = usdEquivalentAmount
                 });
 
                 transactions.Add(new Transaction
                 {
-                    Cryptocurrency = this._exchangeMapping[record.Exchange],
+                    Crypto = this._exchangeMapping[record.Exchange],
                     TransactionDate = record.ClosedTimestamp,
                     TransactionType = record.TransactionType.Value,
-                    CryptocurrencyAmount = record.AssetAmount,
+                    Quantity = record.AssetAmount,
                     UsDollarAmount = usdEquivalentAmount
                 });
 

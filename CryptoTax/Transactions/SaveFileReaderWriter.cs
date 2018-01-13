@@ -44,8 +44,8 @@ namespace CryptoTax.Transactions
             {
                 Map(m => m.TransactionDate).Index(0);
                 Map(m => m.TransactionType).Index(1);
-                Map(m => m.Cryptocurrency).Index(2);
-                Map(m => m.CryptocurrencyAmount).Index(3);
+                Map(m => m.Crypto).Index(2);
+                Map(m => m.Quantity).Index(3);
                 Map(m => m.UsDollarAmount).Index(4);
                 Map(m => m.ExcludeFromPortfolio).Index(5).Default(false);
 

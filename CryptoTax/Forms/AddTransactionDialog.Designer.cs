@@ -134,9 +134,9 @@
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.Location = new System.Drawing.Point(12, 134);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(119, 17);
+            this.label5.Size = new System.Drawing.Size(126, 17);
             this.label5.TabIndex = 8;
-            this.label5.Text = "Crypto Amount:";
+            this.label5.Text = "Crypto Quantity:";
             // 
             // CryptoAmountInput
             // 
