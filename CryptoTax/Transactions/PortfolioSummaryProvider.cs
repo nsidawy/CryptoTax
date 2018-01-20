@@ -4,27 +4,40 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static CryptoTax.Cryptocurrency.CoinMarketCapDataProvider;
 
 namespace CryptoTax.Transactions
 {
     public class PortfolioSummaryProvider
     {
         private readonly TaxCalculator _taxCalculator;
+        private readonly CoinMarketCapDataProvider _coinMarketCapDataProvider;
 
-        public PortfolioSummaryProvider(TaxCalculator taxCalculator)
+        public PortfolioSummaryProvider(TaxCalculator taxCalculator, CoinMarketCapDataProvider coinMarketCapDataProvider)
         {
             this._taxCalculator = taxCalculator;
+            this._coinMarketCapDataProvider = coinMarketCapDataProvider;
         }
 
         public IReadOnlyList<CryptoPortfolioSummaryInfo> GetCryptocurrencyPortfolioSummaryInfo(
-            IReadOnlyList<Transaction> transactions,
-            IReadOnlyDictionary<CryptocurrencyType, CoinMarketCapDataProvider.CoinMarketCapData> coinMarketCapData)
+            IReadOnlyList<Transaction> transactions)
         {
+            // pull all needed coin market cap data in parallel
+            var coinMarketCapDataTasks = new List<Task<CoinMarketCapData>>();
+            foreach(var crypto in transactions.Select(x => x.Crypto).Distinct())
+            {
+                coinMarketCapDataTasks.Add(Task.Run(async () => await this._coinMarketCapDataProvider.GetCoinMarketCapData(crypto)));
+            }
+            Task.WaitAll(coinMarketCapDataTasks.ToArray());
+            var coinMarketCapDataDictionary = coinMarketCapDataTasks
+                .Where(x => x.Result != null)
+                .ToDictionary(x => x.Result.Crypto, x => x.Result);
+
             var groupedTransactions = transactions.GroupBy(x => x.Crypto);
             var summaryInfos = new List<CryptoPortfolioSummaryInfo>();
             foreach (var groupedTransaction in groupedTransactions)
             {
-                coinMarketCapData.TryGetValue(groupedTransaction.Key, out CoinMarketCapDataProvider.CoinMarketCapData data);
+                coinMarketCapDataDictionary.TryGetValue(groupedTransaction.Key, out CoinMarketCapDataProvider.CoinMarketCapData data);
 
                 var heldAssets = this.GetHeldAssets(groupedTransaction.ToList());
                 decimal? averagePriceBought = null;

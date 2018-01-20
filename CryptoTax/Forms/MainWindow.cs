@@ -25,7 +25,6 @@ namespace CryptoTax.Forms
         private SaveFileReaderWriter _saveFileReaderWriter;
 
         private string _filename = null;
-        private ConcurrentDictionary<CryptocurrencyType, CoinMarketCapDataProvider.CoinMarketCapData> _coinMarketCapData;
 
         private BindingList<Transaction> Transactions = new BindingList<Transaction>();
         private SortableBindingList<Transaction> TransactionDataGridBindingSource = new SortableBindingList<Transaction>();
@@ -48,11 +47,9 @@ namespace CryptoTax.Forms
             this._portfolioSummaryProvider = portfolioSummaryProvider;
             this._formFactory = formFactory;
             this._saveFileReaderWriter = saveFileReaderWriter;
-
-            this._coinMarketCapData = new ConcurrentDictionary<CryptocurrencyType, CoinMarketCapDataProvider.CoinMarketCapData>();
-            this.SummaryDataRefreshTimer.Tick += this.RefreshLivePriceData;
+            
+            this.SummaryDataRefreshTimer.Tick += (object o, EventArgs e) => this.UpdateSummaryData();
             this.SummaryDataRefreshTimer.Start();
-            this.RefreshLivePriceData(null, null);
                
             this.SetupDataGrids();
             this.SetupEventHandlers();
@@ -128,12 +125,6 @@ namespace CryptoTax.Forms
             }
         }
 
-        private async void RefreshLivePriceData(object sender, EventArgs e)
-        {
-            this.UpdatePricesInUsd();
-            this.UpdateSummaryData();
-        }
-
         private async void TransactionsUpdated(object sender, ListChangedEventArgs e)
         {
             this.UpdateSummaryData();
@@ -155,26 +146,6 @@ namespace CryptoTax.Forms
 
             this.ReplaceBindingListItems(this.TransactionDataGridBindingSource, transactions.ToList());
             this.TransactionDataGridBindingSource.Resort();
-        }
-
-        private void UpdatePricesInUsd()
-        {
-            var cryptoTypes = Enum.GetValues(typeof(CryptocurrencyType)).Cast<CryptocurrencyType>();
-            var queryTasks = new List<Task>();
-            foreach (var cryptoType in cryptoTypes)
-            {
-                var queryTask = new Task(async () =>
-                {
-                    var coinMarketCapData = await this._coinMarketCapDataProvider.GetCoinMarketCapData(cryptoType);
-                    if (coinMarketCapData != null)
-                    {
-                        this._coinMarketCapData[cryptoType] = coinMarketCapData;
-                    }
-                });
-                queryTask.Start();
-                queryTasks.Add(queryTask);
-            }
-            Task.WaitAll(queryTasks.ToArray());
         }
 
         private void UpdateFiscalYearSummaryData()
@@ -202,7 +173,7 @@ namespace CryptoTax.Forms
             var transactions = this.Transactions
                 .Where(x => !x.ExcludeFromPortfolio)
                 .ToList();
-            var summaryInfos = this._portfolioSummaryProvider.GetCryptocurrencyPortfolioSummaryInfo(transactions, this._coinMarketCapData)
+            var summaryInfos = this._portfolioSummaryProvider.GetCryptocurrencyPortfolioSummaryInfo(transactions)
                 .OrderByDescending(x => x.TotalUsd)
                 .ToList();
 

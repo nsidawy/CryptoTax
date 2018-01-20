@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
+using System.Runtime.Caching;
 using System.Threading.Tasks;
 using System.Timers;
 
@@ -13,6 +14,12 @@ namespace CryptoTax.Cryptocurrency
 {
     public class CoinMarketCapDataProvider
     {
+        private readonly MemoryCache _cache;
+        private readonly Func<CacheItemPolicy> _defaultCacheItemPolicyFactory = () => new CacheItemPolicy
+        {
+            AbsoluteExpiration = DateTimeOffset.UtcNow.AddSeconds(30)
+        };
+
         private static IReadOnlyDictionary<CryptocurrencyType, string> _coinMarketcapCrypocurrencyLookupNames =
             new Dictionary<CryptocurrencyType, string>
             {
@@ -42,6 +49,11 @@ namespace CryptoTax.Cryptocurrency
                 { CryptocurrencyType.Coss, "coss" },
             };
 
+        public CoinMarketCapDataProvider()
+        {
+            this._cache = new MemoryCache("CoinMarketCapDataProviderCache", null);
+        }
+
         public async Task<CoinMarketCapData> GetCoinMarketCapData(CryptocurrencyType cryptocurrencyType)
         {
             if(!_coinMarketcapCrypocurrencyLookupNames.ContainsKey(cryptocurrencyType))
@@ -49,46 +61,54 @@ namespace CryptoTax.Cryptocurrency
                 return null;
             }
 
-            var client = new HttpClient
+            var coinMarketCapData = this._cache.Get(cryptocurrencyType.ToString()) as CoinMarketCapData;
+            if(coinMarketCapData == null)
             {
-                BaseAddress = new Uri($"https://api.coinmarketcap.com/v1/ticker/{_coinMarketcapCrypocurrencyLookupNames[cryptocurrencyType]}/")
-            };
 
-            // Add an Accept header for JSON format.
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            try
-            {
-                HttpResponseMessage response = await client.GetAsync("");
-                var content = await response.Content.ReadAsStringAsync();
-                if (response.IsSuccessStatusCode)
+                var client = new HttpClient
                 {
-                    var data = Newtonsoft.Json.Linq.JArray.Parse(content).First();
-                    return new CoinMarketCapData
+                    BaseAddress = new Uri($"https://api.coinmarketcap.com/v1/ticker/{_coinMarketcapCrypocurrencyLookupNames[cryptocurrencyType]}/")
+                };
+
+                // Add an Accept header for JSON format.
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                try
+                {
+                    HttpResponseMessage response = await client.GetAsync("");
+                    var content = await response.Content.ReadAsStringAsync();
+                    if (response.IsSuccessStatusCode)
                     {
-                        CryptocurrencyType = cryptocurrencyType,
-                        PriceInUsd = data.Value<decimal>("price_usd"),
-                        OneHourChangePercent = data.Value<decimal>("percent_change_1h") / (decimal)100.0,
-                        TwentyFourHourChangePercent = data.Value<decimal>("percent_change_24h") / (decimal)100.0,
-                        MarketCap = data.Value<decimal>("market_cap_usd"),
-                    };
+                        var data = Newtonsoft.Json.Linq.JArray.Parse(content).First();
+                        coinMarketCapData = new CoinMarketCapData
+                        {
+                            Crypto = cryptocurrencyType,
+                            PriceInUsd = data.Value<decimal>("price_usd"),
+                            OneHourChangePercent = data.Value<decimal>("percent_change_1h") / (decimal)100.0,
+                            TwentyFourHourChangePercent = data.Value<decimal>("percent_change_24h") / (decimal)100.0,
+                            MarketCap = data.Value<decimal>("market_cap_usd"),
+                        };
+
+                        this._cache.Set(new CacheItem(cryptocurrencyType.ToString(), coinMarketCapData), this._defaultCacheItemPolicyFactory());
+                    }
+                }
+                catch (Exception e)
+                {
+                    /* swallow exception */
                 }
             }
-            catch (Exception e) {
-                /* swallow exceptions for now*/
-            }
 
-            return null;
+            return coinMarketCapData;
         }
 
         public class CoinMarketCapData
         {
-            public CryptocurrencyType CryptocurrencyType { get; set; }
+            public CryptocurrencyType Crypto { get; set; }
             public decimal PriceInUsd { get; set; }
             public decimal OneHourChangePercent { get; set; }
             public decimal TwentyFourHourChangePercent { get; set; }
             public decimal MarketCap { get; set; }
-            public string Link { get => $"https://coinmarketcap.com/currencies/{_coinMarketcapCrypocurrencyLookupNames[this.CryptocurrencyType]}/"; }
+            public string Link { get => $"https://coinmarketcap.com/currencies/{_coinMarketcapCrypocurrencyLookupNames[this.Crypto]}/"; }
         }
     }
 }
