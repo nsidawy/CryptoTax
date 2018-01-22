@@ -1,4 +1,4 @@
-﻿using CryptoTax.Cryptocurrency;
+﻿using CryptoTax.Crypto;
 using CryptoTax.Transactions;
 using System;
 using System.Data;
@@ -18,9 +18,9 @@ namespace CryptoTax.Forms
             this.TransactionDateInput.KeyDown += this.TransactionDateInput_KeyDown;
 
             this.TransactionTypeInput.DataSource = Enum.GetValues(typeof(TransactionType));
-            this.CryptocurrencyInput.DataSource = 
-                Enum.GetValues(typeof(CryptocurrencyType))
-                    .Cast<CryptocurrencyType>().OrderBy(x => Enum.GetName(typeof(CryptocurrencyType), x))
+            this.CryptoInput.DataSource = 
+                Enum.GetValues(typeof(CryptoType))
+                    .Cast<CryptoType>().OrderBy(x => Enum.GetName(typeof(CryptoType), x))
                     .ToList();
         }
         
@@ -30,7 +30,7 @@ namespace CryptoTax.Forms
             this.Transaction = transaction;
             this.TransactionDateInput.Value = this.Transaction.TransactionDate;
             this.TransactionTypeInput.SelectedItem = this.Transaction.TransactionType;
-            this.CryptocurrencyInput.SelectedItem = this.Transaction.Crypto;
+            this.CryptoInput.SelectedItem = this.Transaction.Crypto;
             this.CryptoAmountInput.Value = this.Transaction.Quantity;
             this.UsdAmountInput.Value = this.Transaction.UsDollarAmount;
             this.ExcludeFromPortfolioCheckBox.Checked = this.Transaction.ExcludeFromPortfolio;
@@ -61,7 +61,7 @@ namespace CryptoTax.Forms
             }
             this.Transaction.TransactionDate = this.TransactionDateInput.Value;
             this.Transaction.TransactionType = (TransactionType)this.TransactionTypeInput.SelectedValue;
-            this.Transaction.Crypto = (CryptocurrencyType)this.CryptocurrencyInput.SelectedValue;
+            this.Transaction.Crypto = (Crypto.CryptoType)this.CryptoInput.SelectedValue;
             this.Transaction.Quantity = this.CryptoAmountInput.Value;
             this.Transaction.UsDollarAmount = this.UsdAmountInput.Value;
             this.Transaction.ExcludeFromPortfolio = this.ExcludeFromPortfolioCheckBox.Checked;

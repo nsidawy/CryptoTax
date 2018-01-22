@@ -55,7 +55,7 @@
             this.TransactionTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.toolStrip2 = new System.Windows.Forms.ToolStrip();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
-            this.CryptocurrencyFilterInput = new System.Windows.Forms.ToolStripComboBox();
+            this.CryptoFilterInput = new System.Windows.Forms.ToolStripComboBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.YearSummaryDataGrid = new System.Windows.Forms.DataGridView();
             this.TransactionDataGrid = new System.Windows.Forms.DataGridView();
@@ -311,7 +311,7 @@
             this.toolStrip2.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripLabel1,
-            this.CryptocurrencyFilterInput});
+            this.CryptoFilterInput});
             this.toolStrip2.Location = new System.Drawing.Point(0, 0);
             this.toolStrip2.Name = "toolStrip2";
             this.toolStrip2.Size = new System.Drawing.Size(1356, 28);
@@ -326,13 +326,13 @@
             this.toolStripLabel1.Size = new System.Drawing.Size(124, 25);
             this.toolStripLabel1.Text = "Filter by Crypto: ";
             // 
-            // CryptocurrencyFilterInput
+            // CryptoFilterInput
             // 
-            this.CryptocurrencyFilterInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.CryptocurrencyFilterInput.Name = "CryptocurrencyFilterInput";
-            this.CryptocurrencyFilterInput.Size = new System.Drawing.Size(121, 28);
-            this.CryptocurrencyFilterInput.Sorted = true;
-            this.CryptocurrencyFilterInput.ToolTipText = "Filter by cryptocurrency";
+            this.CryptoFilterInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CryptoFilterInput.Name = "CryptoFilterInput";
+            this.CryptoFilterInput.Size = new System.Drawing.Size(121, 28);
+            this.CryptoFilterInput.Sorted = true;
+            this.CryptoFilterInput.ToolTipText = "Filter by crypto";
             // 
             // tabPage3
             // 
@@ -448,7 +448,7 @@
         private System.Windows.Forms.TableLayoutPanel TransactionTableLayoutPanel;
         private System.Windows.Forms.ToolStrip toolStrip2;
         private System.Windows.Forms.ToolStripLabel toolStripLabel1;
-        private System.Windows.Forms.ToolStripComboBox CryptocurrencyFilterInput;
+        private System.Windows.Forms.ToolStripComboBox CryptoFilterInput;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.DataGridView YearSummaryDataGrid;
         private System.Windows.Forms.DataGridView TransactionDataGrid;

@@ -81,9 +81,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cryptocurrency\CoinMarketCapDataProvider.cs" />
-    <Compile Include="Cryptocurrency\TransactionCurrencyType.cs" />
-    <Compile Include="Cryptocurrency\ExchangeParser.cs" />
+    <Compile Include="Crypto\CoinMarketCapDataProvider.cs" />
+    <Compile Include="Crypto\TransactionCurrencyType.cs" />
+    <Compile Include="Crypto\ExchangeParser.cs" />
     <Compile Include="Forms\CustomCsvImporterDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -102,7 +102,7 @@
     <Compile Include="Forms\AddTransactionDialog.Designer.cs">
       <DependentUpon>AddTransactionDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Cryptocurrency\PriceInUsdProvider.cs" />
+    <Compile Include="Crypto\PriceInUsdProvider.cs" />
     <Compile Include="Forms\MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -111,12 +111,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tests\BitrexOrderCsvImporterTest.cs" />
-    <Compile Include="Tests\ZoDogeCsvImporterTest.cs" />
-    <Compile Include="Tests\PriceInUsdProviderTest.cs" />
-    <Compile Include="Tests\GdaxFillCsvImporterTest.cs" />
-    <Compile Include="Tests\TaxCalculatorTest.cs" />
-    <Compile Include="Tests\CoinbaseCsvImporterTest.cs" />
     <Compile Include="TransactionImport\CustomCsvImporter.cs" />
     <Compile Include="TransactionImport\ZoDogeCsvImporter.cs" />
     <Compile Include="TransactionImport\BittrexOrderCsvImporter.cs" />
@@ -126,7 +120,7 @@
     <Compile Include="Transactions\AccountingMethodType.cs" />
     <Compile Include="Transactions\Asset.cs" />
     <Compile Include="Transactions\CapitalGain.cs" />
-    <Compile Include="Cryptocurrency\CryptocurrencyType.cs" />
+    <Compile Include="Crypto\CryptoType.cs" />
     <Compile Include="Transactions\PortfolioSummaryProvider.cs" />
     <Compile Include="Transactions\TaxCalculator.cs" />
     <Compile Include="Transactions\Transaction.cs" />
@@ -169,6 +163,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tests\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

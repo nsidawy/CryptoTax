@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CryptoTax.Cryptocurrency;
+using CryptoTax.Crypto;
 using CryptoTax.Transactions;
 using CsvHelper.Configuration;
 using CsvHelper;
@@ -67,7 +67,7 @@ namespace CryptoTax.TransactionImport
                         Crypto = exchangeResult.AssetCurrency,
                         TransactionDate = record.Date,
                         TransactionType = record.TransactionType,
-                        Quantity = record.CryptocurrencyAmount,
+                        Quantity = record.CryptoAmount,
                         UsDollarAmount = record.TransactionCurrencyAmount,
                         ExcludeFromPortfolio = record.ExcludeFromPortfolio
                     });
@@ -90,7 +90,7 @@ namespace CryptoTax.TransactionImport
                     var usdEquivalentAmount = record.TransactionCurrencyAmount * transactionCurrencyePriceAtTransactionTime;
                     transactions.Add(new Transaction
                     {
-                        Crypto = exchangeResult.TransactionCurrency.ToCryptocurrencyType(),
+                        Crypto = exchangeResult.TransactionCurrency.ToCryptoType(),
                         TransactionDate = record.Date,
                         TransactionType = record.TransactionType == TransactionType.Buy ? TransactionType.Sell : TransactionType.Buy,
                         Quantity = record.TransactionCurrencyAmount,
@@ -102,7 +102,7 @@ namespace CryptoTax.TransactionImport
                         Crypto = exchangeResult.AssetCurrency,
                         TransactionDate = record.Date,
                         TransactionType = record.TransactionType == TransactionType.Buy ? TransactionType.Buy : TransactionType.Sell,
-                        Quantity = record.CryptocurrencyAmount,
+                        Quantity = record.CryptoAmount,
                         UsDollarAmount = usdEquivalentAmount,
                         ExcludeFromPortfolio = record.ExcludeFromPortfolio
                     });
@@ -129,10 +129,10 @@ namespace CryptoTax.TransactionImport
             public DateTime Date { get; set; }
             public TransactionType TransactionType { get; set; }
             public string Exchange { get; set; }
-            public decimal CryptocurrencyAmount { get; set; }
-            public decimal CryptocurrencyPrice { get; set; }
+            public decimal CryptoAmount { get; set; }
+            public decimal CryptoPrice { get; set; }
             public bool ExcludeFromPortfolio { get; set; }
-            public decimal TransactionCurrencyAmount { get => this.CryptocurrencyAmount * CryptocurrencyPrice; }
+            public decimal TransactionCurrencyAmount { get => this.CryptoAmount * CryptoPrice; }
         }
 
         private sealed class CustomCsvImporterRecordClassMap : ClassMap<CustomCsvImporterRecord>
@@ -142,8 +142,8 @@ namespace CryptoTax.TransactionImport
                 Map(m => m.Date).Name(settings.DateHeaderName);
                 Map(m => m.TransactionType).Name(settings.TransactionTypeHeaderName).TypeConverter<TransactionTypeConverter>();
                 Map(m => m.Exchange).Name(settings.ExchangeHeaderName);
-                Map(m => m.CryptocurrencyAmount).Name(settings.CryptocurrencyAmountHeaderName);
-                Map(m => m.CryptocurrencyPrice).Name(settings.CryptocurrencyPriceHeaderName);
+                Map(m => m.CryptoAmount).Name(settings.CryptoAmountHeaderName);
+                Map(m => m.CryptoPrice).Name(settings.CryptoPriceHeaderName);
                 if(settings.HasExcludeFromPortfolioValues)
                 {
                     Map(m => m.ExcludeFromPortfolio).Name(settings.ExcludeFromPortfolioHeaderName).TypeConverter<ExcludeFromPortfolioConverter>();

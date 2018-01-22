@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CryptoTax.Cryptocurrency;
+using CryptoTax.Crypto;
 using CryptoTax.Transactions;
 using CsvHelper.Configuration;
 using CsvHelper;
@@ -18,12 +18,12 @@ namespace CryptoTax.TransactionImport
     {
         private IReadOnlyDictionary<string, GdaxProduct> _productMapping = new Dictionary<string, GdaxProduct>
         {
-            {"BTC-USD", new GdaxProduct{ ProductAsset = CryptocurrencyType.Bitcoin, TransactionCurrency = TransactionCurrencyType.Usd } },
-            {"LTC-USD", new GdaxProduct{ ProductAsset = CryptocurrencyType.Litecoin, TransactionCurrency = TransactionCurrencyType.Usd } },
-            {"ETH-USD", new GdaxProduct{ ProductAsset = CryptocurrencyType.Ethereum, TransactionCurrency = TransactionCurrencyType.Usd } },
-            {"BCH-USD", new GdaxProduct{ ProductAsset = CryptocurrencyType.BitcoinCash, TransactionCurrency = TransactionCurrencyType.Usd } },
-            {"ETH-BTC", new GdaxProduct{ ProductAsset = CryptocurrencyType.Ethereum, TransactionCurrency = TransactionCurrencyType.Bitcoin } },
-            {"LTC-BTC", new GdaxProduct{ ProductAsset = CryptocurrencyType.Litecoin, TransactionCurrency = TransactionCurrencyType.Bitcoin } },
+            {"BTC-USD", new GdaxProduct{ ProductAsset = Crypto.CryptoType.Bitcoin, TransactionCurrency = TransactionCurrencyType.Usd } },
+            {"LTC-USD", new GdaxProduct{ ProductAsset = Crypto.CryptoType.Litecoin, TransactionCurrency = TransactionCurrencyType.Usd } },
+            {"ETH-USD", new GdaxProduct{ ProductAsset = Crypto.CryptoType.Ethereum, TransactionCurrency = TransactionCurrencyType.Usd } },
+            {"BCH-USD", new GdaxProduct{ ProductAsset = Crypto.CryptoType.BitcoinCash, TransactionCurrency = TransactionCurrencyType.Usd } },
+            {"ETH-BTC", new GdaxProduct{ ProductAsset = Crypto.CryptoType.Ethereum, TransactionCurrency = TransactionCurrencyType.Bitcoin } },
+            {"LTC-BTC", new GdaxProduct{ ProductAsset = Crypto.CryptoType.Litecoin, TransactionCurrency = TransactionCurrencyType.Bitcoin } },
         };
 
         private readonly PriceInUsdProvider _priceInUsdProvider;
@@ -75,7 +75,7 @@ namespace CryptoTax.TransactionImport
 
                         transactions.Add(new Transaction
                         {
-                            Crypto = CryptocurrencyType.Bitcoin,
+                            Crypto = Crypto.CryptoType.Bitcoin,
                             TransactionDate = record.CreatedAt,
                             TransactionType = record.TransactionType == TransactionType.Buy ? TransactionType.Sell : TransactionType.Buy,
                             Quantity = bitcoinAmount,
@@ -148,7 +148,7 @@ namespace CryptoTax.TransactionImport
         private class GdaxProduct
         {
             public TransactionCurrencyType TransactionCurrency { get; set; }
-            public CryptocurrencyType ProductAsset { get; set; }
+            public CryptoType ProductAsset { get; set; }
         }
     }
 }

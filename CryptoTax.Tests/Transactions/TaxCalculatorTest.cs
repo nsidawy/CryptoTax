@@ -1,4 +1,4 @@
-﻿using CryptoTax.Cryptocurrency;
+﻿using CryptoTax.Crypto;
 using CryptoTax.Transactions;
 using NUnit.Framework;
 using System;
@@ -15,45 +15,45 @@ namespace CryptoTax.Tests
             {1, new List<Transaction>() },
             {2, new List<Transaction>
             {
-                new Transaction {Crypto = CryptocurrencyType.Augur, TransactionType = TransactionType.Buy,
+                new Transaction {Crypto = Crypto.CryptoType.Augur, TransactionType = TransactionType.Buy,
                 Quantity = 1000, UsDollarAmount = 100, TransactionDate = new DateTime(2017, 1, 1) }
             } },
             {3, new List<Transaction>
             {
-                new Transaction {Crypto = CryptocurrencyType.Augur, TransactionType = TransactionType.Buy,
+                new Transaction {Crypto = Crypto.CryptoType.Augur, TransactionType = TransactionType.Buy,
                 Quantity = 1000, UsDollarAmount = 100, TransactionDate = new DateTime(2017, 1, 1) },
-                new Transaction {Crypto = CryptocurrencyType.Augur, TransactionType = TransactionType.Buy,
+                new Transaction {Crypto = Crypto.CryptoType.Augur, TransactionType = TransactionType.Buy,
                 Quantity = 1000, UsDollarAmount = 200, TransactionDate = new DateTime(2017, 1, 2) },
-                new Transaction {Crypto = CryptocurrencyType.Augur, TransactionType = TransactionType.Sell,
+                new Transaction {Crypto = Crypto.CryptoType.Augur, TransactionType = TransactionType.Sell,
                 Quantity = 1000, UsDollarAmount = 300, TransactionDate = new DateTime(2017, 1, 3) },
             } },
             {4, new List<Transaction>
             {
-                new Transaction {Crypto = CryptocurrencyType.Augur, TransactionType = TransactionType.Buy,
+                new Transaction {Crypto = Crypto.CryptoType.Augur, TransactionType = TransactionType.Buy,
                 Quantity = 1000, UsDollarAmount = 100, TransactionDate = new DateTime(2016, 1, 1) },
-                new Transaction {Crypto = CryptocurrencyType.Augur, TransactionType = TransactionType.Buy,
+                new Transaction {Crypto = Crypto.CryptoType.Augur, TransactionType = TransactionType.Buy,
                 Quantity = 1000, UsDollarAmount = 200, TransactionDate = new DateTime(2016, 1, 2) },
-                new Transaction {Crypto = CryptocurrencyType.Augur, TransactionType = TransactionType.Sell,
+                new Transaction {Crypto = Crypto.CryptoType.Augur, TransactionType = TransactionType.Sell,
                 Quantity = 1500, UsDollarAmount = 750, TransactionDate = new DateTime(2017, 1, 3) },
             } },
             {5, new List<Transaction>
             {
-                new Transaction {Crypto = CryptocurrencyType.Augur, TransactionType = TransactionType.Buy,
+                new Transaction {Crypto = Crypto.CryptoType.Augur, TransactionType = TransactionType.Buy,
                 Quantity = 1000, UsDollarAmount = 100, TransactionDate = new DateTime(2016, 1, 1) },
-                new Transaction {Crypto = CryptocurrencyType.Augur, TransactionType = TransactionType.Buy,
+                new Transaction {Crypto = Crypto.CryptoType.Augur, TransactionType = TransactionType.Buy,
                 Quantity = 1000, UsDollarAmount = 200, TransactionDate = new DateTime(2016, 1, 2) },
-                new Transaction {Crypto = CryptocurrencyType.Augur, TransactionType = TransactionType.Sell,
+                new Transaction {Crypto = Crypto.CryptoType.Augur, TransactionType = TransactionType.Sell,
                 Quantity = 1500, UsDollarAmount = 750, TransactionDate = new DateTime(2017, 1, 3) },
-                new Transaction {Crypto = CryptocurrencyType.Augur, TransactionType = TransactionType.Sell,
+                new Transaction {Crypto = Crypto.CryptoType.Augur, TransactionType = TransactionType.Sell,
                 Quantity = 500, UsDollarAmount = 1000, TransactionDate = new DateTime(2018, 1, 3) },
             } },
             {6, new List<Transaction>
             {
-                new Transaction {Crypto = CryptocurrencyType.Augur, TransactionType = TransactionType.Buy,
+                new Transaction {Crypto = Crypto.CryptoType.Augur, TransactionType = TransactionType.Buy,
                 Quantity = 1000, UsDollarAmount = 100, TransactionDate = new DateTime(2016, 1, 1) },
-                new Transaction {Crypto = CryptocurrencyType.Bitcoin, TransactionType = TransactionType.Buy,
+                new Transaction {Crypto = Crypto.CryptoType.Bitcoin, TransactionType = TransactionType.Buy,
                 Quantity = 1000, UsDollarAmount = 200, TransactionDate = new DateTime(2016, 1, 2) },
-                new Transaction {Crypto = CryptocurrencyType.Bitcoin, TransactionType = TransactionType.Sell,
+                new Transaction {Crypto = Crypto.CryptoType.Bitcoin, TransactionType = TransactionType.Sell,
                 Quantity = 500, UsDollarAmount = 1000, TransactionDate = new DateTime(2018, 1, 3) },
             } },
         };
@@ -96,7 +96,7 @@ namespace CryptoTax.Tests
         [TestCase(6, 1, AccountingMethodType.Lifo, Description = "Lifo - multi year sell")]
         public void Test(int transactionSetId, int baselineId, AccountingMethodType accountingMethodType)
         {
-            var currencyType = CryptocurrencyType.Augur;
+            var currencyType = Crypto.CryptoType.Augur;
             var actualCapitalGains = (new TaxCalculator()).CalculateCapialGains(this._inputTransactionSet[transactionSetId], accountingMethodType, currencyType);
 
             Assert.IsTrue(Enumerable.SequenceEqual(actualCapitalGains, this._baselines[baselineId]));

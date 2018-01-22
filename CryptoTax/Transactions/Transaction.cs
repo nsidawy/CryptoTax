@@ -1,4 +1,4 @@
-﻿using CryptoTax.Cryptocurrency;
+﻿using CryptoTax.Crypto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +16,7 @@ namespace CryptoTax.Transactions
     public class Transaction
     {
         public DateTime TransactionDate { get; set; }
-        public CryptocurrencyType Crypto { get; set; }
+        public CryptoType Crypto { get; set; }
         public TransactionType TransactionType { get; set; }
         public decimal Quantity { get; set; }
         public decimal UsDollarAmount { get; set; }

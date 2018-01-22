@@ -32,7 +32,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.TransactionTypeInput = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.CryptocurrencyInput = new System.Windows.Forms.ComboBox();
+            this.CryptoInput = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.UsdAmountInput = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
@@ -83,17 +83,17 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(123, 17);
             this.label3.TabIndex = 4;
-            this.label3.Text = "Cryptocurrency:";
+            this.label3.Text = "Crypto:";
             // 
-            // CryptocurrencyInput
+            // CryptoInput
             // 
-            this.CryptocurrencyInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.CryptocurrencyInput.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CryptocurrencyInput.FormattingEnabled = true;
-            this.CryptocurrencyInput.Location = new System.Drawing.Point(146, 72);
-            this.CryptocurrencyInput.Name = "CryptocurrencyInput";
-            this.CryptocurrencyInput.Size = new System.Drawing.Size(121, 24);
-            this.CryptocurrencyInput.TabIndex = 5;
+            this.CryptoInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CryptoInput.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CryptoInput.FormattingEnabled = true;
+            this.CryptoInput.Location = new System.Drawing.Point(146, 72);
+            this.CryptoInput.Name = "CryptoInput";
+            this.CryptoInput.Size = new System.Drawing.Size(121, 24);
+            this.CryptoInput.TabIndex = 5;
             // 
             // label4
             // 
@@ -224,7 +224,7 @@
             this.Controls.Add(this.label5);
             this.Controls.Add(this.UsdAmountInput);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.CryptocurrencyInput);
+            this.Controls.Add(this.CryptoInput);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.TransactionTypeInput);
             this.Controls.Add(this.label1);
@@ -248,7 +248,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox TransactionTypeInput;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ComboBox CryptocurrencyInput;
+        private System.Windows.Forms.ComboBox CryptoInput;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.NumericUpDown UsdAmountInput;
         private System.Windows.Forms.Label label5;

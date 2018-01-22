@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CryptoTax.Cryptocurrency;
+using CryptoTax.Crypto;
 using CryptoTax.Transactions;
 using CsvHelper.Configuration;
 using CsvHelper;
@@ -14,25 +14,25 @@ namespace CryptoTax.TransactionImport
 {
     public class BittrexOrderCsvImporter : ITransactionImporter
     {
-        private IReadOnlyDictionary<string, CryptocurrencyType> _exchangeMapping = new Dictionary<string, CryptocurrencyType>
+        private IReadOnlyDictionary<string, Crypto.CryptoType> _exchangeMapping = new Dictionary<string, Crypto.CryptoType>
         {
-            {"BTC-XRP", CryptocurrencyType.Ripple },
-            {"BTC-MANA", CryptocurrencyType.Decentraland },
-            {"BTC-EMC2", CryptocurrencyType.Einsteinium },
-            {"BTC-QTUM", CryptocurrencyType.Quantum },
-            {"BTC-DASH", CryptocurrencyType.Dash },
-            {"BTC-REP", CryptocurrencyType.Augur },
-            {"BTC-ADA", CryptocurrencyType.Ada },
-            {"BTC-XVG", CryptocurrencyType.Verge },
-            {"BTC-NXT", CryptocurrencyType.Nxt },
-            {"BTC-GNT", CryptocurrencyType.Golem },
-            {"BTC-STRAT", CryptocurrencyType.Stratis },
-            {"BTC-ZEC", CryptocurrencyType.ZCash },
-            {"BTC-HMQ", CryptocurrencyType.Humaniq },
-            {"BTC-XMR", CryptocurrencyType.Monero },
-            {"BTC-XLM", CryptocurrencyType.Stellar },
-            {"BTC-NEO", CryptocurrencyType.Neo },
-            {"BTC-RDD", CryptocurrencyType.Reddcoin },
+            {"BTC-XRP", Crypto.CryptoType.Ripple },
+            {"BTC-MANA", Crypto.CryptoType.Decentraland },
+            {"BTC-EMC2", Crypto.CryptoType.Einsteinium },
+            {"BTC-QTUM", Crypto.CryptoType.Quantum },
+            {"BTC-DASH", Crypto.CryptoType.Dash },
+            {"BTC-REP", Crypto.CryptoType.Augur },
+            {"BTC-ADA", Crypto.CryptoType.Ada },
+            {"BTC-XVG", Crypto.CryptoType.Verge },
+            {"BTC-NXT", Crypto.CryptoType.Nxt },
+            {"BTC-GNT", Crypto.CryptoType.Golem },
+            {"BTC-STRAT", Crypto.CryptoType.Stratis },
+            {"BTC-ZEC", Crypto.CryptoType.ZCash },
+            {"BTC-HMQ", Crypto.CryptoType.Humaniq },
+            {"BTC-XMR", Crypto.CryptoType.Monero },
+            {"BTC-XLM", Crypto.CryptoType.Stellar },
+            {"BTC-NEO", Crypto.CryptoType.Neo },
+            {"BTC-RDD", Crypto.CryptoType.Reddcoin },
         };
 
         private readonly PriceInUsdProvider _priceInUsdProvider;
@@ -78,7 +78,7 @@ namespace CryptoTax.TransactionImport
 
                 transactions.Add(new Transaction
                 {
-                    Crypto = CryptocurrencyType.Bitcoin,
+                    Crypto = Crypto.CryptoType.Bitcoin,
                     TransactionDate = record.ClosedTimestamp,
                     TransactionType = record.TransactionType.Value == TransactionType.Buy ? TransactionType.Sell : TransactionType.Buy,
                     Quantity = bitcoinAmount + record.CommissionInBitcoin,

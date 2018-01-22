@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CryptoTax.Cryptocurrency
+namespace CryptoTax.Crypto
 {
-    public enum CryptocurrencyType
+    public enum CryptoType
     {
         Bitcoin,
         Ethereum,

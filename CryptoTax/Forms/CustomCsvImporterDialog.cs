@@ -1,4 +1,4 @@
-﻿using CryptoTax.Cryptocurrency;
+﻿using CryptoTax.Crypto;
 using CryptoTax.Transactions;
 using System;
 using System.Data;
@@ -25,8 +25,8 @@ namespace CryptoTax.Forms
             if(this.TransactionDateInput.Text == string.Empty
                 || this.TransctionTypeInput.Text == string.Empty
                 || this.ExchangeInput.Text == string.Empty
-                || this.CryptocurrencyPriceInput.Text == string.Empty
-                || this.CryptocurrencyAmountInput.Text == string.Empty
+                || this.CryptoPriceInput.Text == string.Empty
+                || this.CryptoAmountInput.Text == string.Empty
                 || (this.ExcludeFromPortfolioCheckbox.Checked && this.ExcludeFromPortfolioInput.Text == string.Empty))
             {
                 MessageBox.Show("Fill in all fields.");
@@ -38,8 +38,8 @@ namespace CryptoTax.Forms
                 DateHeaderName = this.TransactionDateInput.Text,
                 TransactionTypeHeaderName = this.TransctionTypeInput.Text,
                 ExchangeHeaderName = this.ExchangeInput.Text,
-                CryptocurrencyPriceHeaderName = this.CryptocurrencyPriceInput.Text,
-                CryptocurrencyAmountHeaderName = this.CryptocurrencyAmountInput.Text,
+                CryptoPriceHeaderName = this.CryptoPriceInput.Text,
+                CryptoAmountHeaderName = this.CryptoAmountInput.Text,
                 ExcludeFromPortfolioHeaderName = this.ExcludeFromPortfolioCheckbox.Checked ? this.ExcludeFromPortfolioInput.Text : null,
                 HasExcludeFromPortfolioValues = this.ExcludeFromPortfolioCheckbox.Checked
             };
@@ -53,8 +53,8 @@ namespace CryptoTax.Forms
             public string DateHeaderName { get; set; }
             public string TransactionTypeHeaderName { get; set; }
             public string ExchangeHeaderName { get; set; }
-            public string CryptocurrencyPriceHeaderName { get; set; }
-            public string CryptocurrencyAmountHeaderName { get; set; }
+            public string CryptoPriceHeaderName { get; set; }
+            public string CryptoAmountHeaderName { get; set; }
             public string ExcludeFromPortfolioHeaderName { get; set; }
             public bool HasExcludeFromPortfolioValues { get; set; }
         }

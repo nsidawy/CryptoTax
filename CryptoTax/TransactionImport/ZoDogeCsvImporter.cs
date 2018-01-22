@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CryptoTax.Cryptocurrency;
+using CryptoTax.Crypto;
 using CryptoTax.Transactions;
 using CsvHelper.Configuration;
 using CsvHelper;
@@ -51,7 +51,7 @@ namespace CryptoTax.TransactionImport
 
                 transactions.Add(new Transaction
                 {
-                    Crypto = CryptocurrencyType.Dogecoin,
+                    Crypto = Crypto.CryptoType.Dogecoin,
                     TransactionDate = record.TimeStamp,
                     TransactionType = record.IsReceived ? TransactionType.Buy : TransactionType.Sell,
                     Quantity = record.Amount,

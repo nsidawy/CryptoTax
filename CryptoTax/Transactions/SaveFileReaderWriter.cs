@@ -1,4 +1,4 @@
-﻿using CryptoTax.Cryptocurrency;
+﻿using CryptoTax.Crypto;
 using CsvHelper;
 using CsvHelper.Configuration;
 using System;

@@ -1,4 +1,4 @@
-﻿using CryptoTax.Cryptocurrency;
+﻿using CryptoTax.Crypto;
 using CryptoTax.TransactionImport;
 using NUnit.Framework;
 using System;

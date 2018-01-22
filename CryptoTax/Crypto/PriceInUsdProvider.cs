@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 
-namespace CryptoTax.Cryptocurrency
+namespace CryptoTax.Crypto
 {
     public class PriceInUsdProvider
     {

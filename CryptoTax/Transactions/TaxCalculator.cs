@@ -1,4 +1,4 @@
-﻿using CryptoTax.Cryptocurrency;
+﻿using CryptoTax.Crypto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +14,11 @@ namespace CryptoTax.Transactions
             return 0;
         }
 
-        public IReadOnlyList<CapitalGain> CalculateCapialGains(IReadOnlyList<Transaction> transactions, AccountingMethodType accountingMethod, CryptocurrencyType cryptocurrency)
+        public IReadOnlyList<CapitalGain> CalculateCapialGains(IReadOnlyList<Transaction> transactions, AccountingMethodType accountingMethod, Crypto.CryptoType crypto)
         {
             var capitalGains = new List<CapitalGain>();
             var sortedTransactions = transactions
-                .Where(x => x.Crypto == cryptocurrency)
+                .Where(x => x.Crypto == crypto)
                 .OrderBy(x => x.TransactionDate);
             var assetCollection = new AssetCollection(accountingMethod);           
             foreach(var transaction in sortedTransactions)
@@ -34,8 +34,8 @@ namespace CryptoTax.Transactions
                         });
                         break;
                     case TransactionType.Sell:
-                        var cryptocurrencySellAmount = transaction.Quantity;
-                        while (cryptocurrencySellAmount > 0)
+                        var cryptoSellAmount = transaction.Quantity;
+                        while (cryptoSellAmount > 0)
                         {
                             if (assetCollection.Count == 0)
                             {
@@ -43,7 +43,7 @@ namespace CryptoTax.Transactions
                             }
                             Asset soldAsset;
                             decimal sellAmount;
-                            if (assetCollection.Peek().Amount <= cryptocurrencySellAmount)
+                            if (assetCollection.Peek().Amount <= cryptoSellAmount)
                             {
                                 soldAsset = assetCollection.Pop();
                                 sellAmount = soldAsset.Amount;
@@ -51,10 +51,10 @@ namespace CryptoTax.Transactions
                             else
                             {
                                 soldAsset = assetCollection.Peek();
-                                sellAmount = cryptocurrencySellAmount;
+                                sellAmount = cryptoSellAmount;
                                 soldAsset.Amount -= sellAmount;
                             }
-                            cryptocurrencySellAmount -= sellAmount;
+                            cryptoSellAmount -= sellAmount;
                             capitalGains.Add(new CapitalGain
                             {
                                 YearIncurred = transaction.TransactionDate.Year,

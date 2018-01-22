@@ -37,10 +37,10 @@
             this.TransactionTypeLabel = new System.Windows.Forms.Label();
             this.ExchangeInput = new System.Windows.Forms.TextBox();
             this.ExchangeLabel = new System.Windows.Forms.Label();
-            this.CryptocurrencyPriceInput = new System.Windows.Forms.TextBox();
-            this.CryptocurrencyPriceLabel = new System.Windows.Forms.Label();
+            this.CryptoPriceInput = new System.Windows.Forms.TextBox();
+            this.CryptoPriceLabel = new System.Windows.Forms.Label();
             this.CyrptocurrencyAmount = new System.Windows.Forms.Label();
-            this.CryptocurrencyAmountInput = new System.Windows.Forms.TextBox();
+            this.CryptoAmountInput = new System.Windows.Forms.TextBox();
             this.ExcludeLabel = new System.Windows.Forms.Label();
             this.ExcludeFromPortfolioInput = new System.Windows.Forms.TextBox();
             this.ExcludeFromPortfolioCheckbox = new System.Windows.Forms.CheckBox();
@@ -126,22 +126,22 @@
             this.ExchangeLabel.TabIndex = 17;
             this.ExchangeLabel.Text = "Exchange:";
             // 
-            // CryptocurrencyPriceInput
+            // CryptoPriceInput
             // 
-            this.CryptocurrencyPriceInput.Location = new System.Drawing.Point(177, 129);
-            this.CryptocurrencyPriceInput.Name = "CryptocurrencyPriceInput";
-            this.CryptocurrencyPriceInput.Size = new System.Drawing.Size(171, 22);
-            this.CryptocurrencyPriceInput.TabIndex = 20;
-            this.CryptocurrencyPriceInput.Text = "Limit";
+            this.CryptoPriceInput.Location = new System.Drawing.Point(177, 129);
+            this.CryptoPriceInput.Name = "CryptoPriceInput";
+            this.CryptoPriceInput.Size = new System.Drawing.Size(171, 22);
+            this.CryptoPriceInput.TabIndex = 20;
+            this.CryptoPriceInput.Text = "Limit";
             // 
-            // CryptocurrencyPriceLabel
+            // CryptoPriceLabel
             // 
-            this.CryptocurrencyPriceLabel.AutoSize = true;
-            this.CryptocurrencyPriceLabel.Location = new System.Drawing.Point(12, 132);
-            this.CryptocurrencyPriceLabel.Name = "CryptocurrencyPriceLabel";
-            this.CryptocurrencyPriceLabel.Size = new System.Drawing.Size(143, 17);
-            this.CryptocurrencyPriceLabel.TabIndex = 21;
-            this.CryptocurrencyPriceLabel.Text = "Cryptocurrency price:";
+            this.CryptoPriceLabel.AutoSize = true;
+            this.CryptoPriceLabel.Location = new System.Drawing.Point(12, 132);
+            this.CryptoPriceLabel.Name = "CryptoPriceLabel";
+            this.CryptoPriceLabel.Size = new System.Drawing.Size(143, 17);
+            this.CryptoPriceLabel.TabIndex = 21;
+            this.CryptoPriceLabel.Text = "Crypto price:";
             // 
             // CyrptocurrencyAmount
             // 
@@ -150,15 +150,15 @@
             this.CyrptocurrencyAmount.Name = "CyrptocurrencyAmount";
             this.CyrptocurrencyAmount.Size = new System.Drawing.Size(159, 17);
             this.CyrptocurrencyAmount.TabIndex = 23;
-            this.CyrptocurrencyAmount.Text = "Cryptocurrency amount:";
+            this.CyrptocurrencyAmount.Text = "Crypto amount:";
             // 
-            // CryptocurrencyAmountInput
+            // CryptoAmountInput
             // 
-            this.CryptocurrencyAmountInput.Location = new System.Drawing.Point(177, 157);
-            this.CryptocurrencyAmountInput.Name = "CryptocurrencyAmountInput";
-            this.CryptocurrencyAmountInput.Size = new System.Drawing.Size(171, 22);
-            this.CryptocurrencyAmountInput.TabIndex = 22;
-            this.CryptocurrencyAmountInput.Text = "Quantity";
+            this.CryptoAmountInput.Location = new System.Drawing.Point(177, 157);
+            this.CryptoAmountInput.Name = "CryptoAmountInput";
+            this.CryptoAmountInput.Size = new System.Drawing.Size(171, 22);
+            this.CryptoAmountInput.TabIndex = 22;
+            this.CryptoAmountInput.Text = "Quantity";
             // 
             // ExcludeLabel
             // 
@@ -197,9 +197,9 @@
             this.Controls.Add(this.ExcludeLabel);
             this.Controls.Add(this.ExcludeFromPortfolioInput);
             this.Controls.Add(this.CyrptocurrencyAmount);
-            this.Controls.Add(this.CryptocurrencyAmountInput);
-            this.Controls.Add(this.CryptocurrencyPriceLabel);
-            this.Controls.Add(this.CryptocurrencyPriceInput);
+            this.Controls.Add(this.CryptoAmountInput);
+            this.Controls.Add(this.CryptoPriceLabel);
+            this.Controls.Add(this.CryptoPriceInput);
             this.Controls.Add(this.ExchangeInput);
             this.Controls.Add(this.ExchangeLabel);
             this.Controls.Add(this.TransctionTypeInput);
@@ -230,10 +230,10 @@
         private System.Windows.Forms.Label TransactionTypeLabel;
         private System.Windows.Forms.TextBox ExchangeInput;
         private System.Windows.Forms.Label ExchangeLabel;
-        private System.Windows.Forms.TextBox CryptocurrencyPriceInput;
-        private System.Windows.Forms.Label CryptocurrencyPriceLabel;
+        private System.Windows.Forms.TextBox CryptoPriceInput;
+        private System.Windows.Forms.Label CryptoPriceLabel;
         private System.Windows.Forms.Label CyrptocurrencyAmount;
-        private System.Windows.Forms.TextBox CryptocurrencyAmountInput;
+        private System.Windows.Forms.TextBox CryptoAmountInput;
         private System.Windows.Forms.Label ExcludeLabel;
         private System.Windows.Forms.TextBox ExcludeFromPortfolioInput;
         private System.Windows.Forms.CheckBox ExcludeFromPortfolioCheckbox;

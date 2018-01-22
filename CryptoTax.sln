@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CryptoTax", "CryptoTax\CryptoTax.csproj", "{4A65637F-C0A0-4925-B57D-45B7A330F3EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CryptoTax.Tests", "CryptoTax.Tests\CryptoTax.Tests.csproj", "{C47E9C3A-1009-44D5-A138-FC1066C14415}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CryptoTax.Tests", "CryptoTax.Tests\CryptoTax.Tests.csproj", "{6D198918-F8FE-4A69-AAC9-F474E0AAA000}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{4A65637F-C0A0-4925-B57D-45B7A330F3EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A65637F-C0A0-4925-B57D-45B7A330F3EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A65637F-C0A0-4925-B57D-45B7A330F3EA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C47E9C3A-1009-44D5-A138-FC1066C14415}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C47E9C3A-1009-44D5-A138-FC1066C14415}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C47E9C3A-1009-44D5-A138-FC1066C14415}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C47E9C3A-1009-44D5-A138-FC1066C14415}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D198918-F8FE-4A69-AAC9-F474E0AAA000}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D198918-F8FE-4A69-AAC9-F474E0AAA000}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D198918-F8FE-4A69-AAC9-F474E0AAA000}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D198918-F8FE-4A69-AAC9-F474E0AAA000}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CryptoTax.Cryptocurrency;
+using CryptoTax.Crypto;
 using CryptoTax.Transactions;
 using CsvHelper.Configuration;
 using CsvHelper;
@@ -14,12 +14,12 @@ namespace CryptoTax.TransactionImport
 {
     public class CoinbaseCsvImporter : ITransactionImporter
     {
-        private IReadOnlyDictionary<string, CryptocurrencyType> _cryptocurrencyMapping = new Dictionary<string, CryptocurrencyType>
+        private IReadOnlyDictionary<string, Crypto.CryptoType> _cryptoMapping = new Dictionary<string, Crypto.CryptoType>
         {
-            {"BTC", CryptocurrencyType.Bitcoin },
-            {"LTC", CryptocurrencyType.Litecoin },
-            {"ETH", CryptocurrencyType.Ethereum },
-            {"BCH", CryptocurrencyType.BitcoinCash },
+            {"BTC", Crypto.CryptoType.Bitcoin },
+            {"LTC", Crypto.CryptoType.Litecoin },
+            {"ETH", Crypto.CryptoType.Ethereum },
+            {"BCH", Crypto.CryptoType.BitcoinCash },
         };
 
         public event RowProcessedEventHandler RowProcessed;
@@ -42,15 +42,15 @@ namespace CryptoTax.TransactionImport
             {
                 var record = csvReader.GetRecord<CoinbaseCsvRecord>();
                 if (record.TransferTotal == null
-                    || !this._cryptocurrencyMapping.ContainsKey(record.Currency))
+                    || !this._cryptoMapping.ContainsKey(record.Currency))
                 {
                     nonBuyOrSellTransactionCount++;
                     continue;
                 }
                 transactions.Add(new Transaction
                 {
-                    Crypto = this._cryptocurrencyMapping[record.Currency],
-                    // Sell transactions appear as negative cryptocurrency amounts so that needs to be corrected.
+                    Crypto = this._cryptoMapping[record.Currency],
+                    // Sell transactions appear as negative crypto amounts so that needs to be corrected.
                     Quantity = record.Amount.Value * (record.TransactionType == TransactionType.Buy ? 1 : -1),
                     TransactionDate = record.Timestamp,
                     TransactionType = record.TransactionType,

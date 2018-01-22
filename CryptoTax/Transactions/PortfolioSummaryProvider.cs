@@ -1,10 +1,10 @@
-﻿using CryptoTax.Cryptocurrency;
+﻿using CryptoTax.Crypto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static CryptoTax.Cryptocurrency.CoinMarketCapDataProvider;
+using static CryptoTax.Crypto.CoinMarketCapDataProvider;
 
 namespace CryptoTax.Transactions
 {
@@ -19,7 +19,7 @@ namespace CryptoTax.Transactions
             this._coinMarketCapDataProvider = coinMarketCapDataProvider;
         }
 
-        public IReadOnlyList<CryptoPortfolioSummaryInfo> GetCryptocurrencyPortfolioSummaryInfo(
+        public IReadOnlyList<CryptoPortfolioSummaryInfo> GetCryptoPortfolioSummaryInfo(
             IReadOnlyList<Transaction> transactions)
         {
             // pull all needed coin market cap data in parallel
@@ -41,7 +41,6 @@ namespace CryptoTax.Transactions
 
                 var heldAssets = this.GetHeldAssets(groupedTransaction.ToList());
                 decimal? averagePriceBought = null;
-                decimal? percentReturn = null;
                 var totalAssetAmount = heldAssets.Sum(x => x.Amount);
                 if (totalAssetAmount != 0)
                 {
@@ -64,18 +63,18 @@ namespace CryptoTax.Transactions
             return summaryInfos.Where(x => x.Quantity != 0).ToList();
         }
 
-        public IReadOnlyList<CryptoYearSummaryInfo> GetCryptocurrencyYearSummaryInfo(
+        public IReadOnlyList<CryptoYearSummaryInfo> GetCryptoYearSummaryInfo(
             IReadOnlyList<Transaction> transactions)
         {
             var yearSummaryInfos = new List<CryptoYearSummaryInfo>();
-            foreach (var cryptocurrency in transactions.Select(x => x.Crypto).Distinct())
+            foreach (var crypto in transactions.Select(x => x.Crypto).Distinct())
             {
-                var thisCryptoTransactions = transactions.Where(t => t.Crypto == cryptocurrency);
+                var thisCryptoTransactions = transactions.Where(t => t.Crypto == crypto);
                 var transactionYears = thisCryptoTransactions.Select(x => x.TransactionDate.Year).Distinct().ToList();
                 var yearToSummaryInfoLookUp = transactionYears.ToDictionary(x => x, x => new CryptoYearSummaryInfo
                 {
                     Year = x,
-                    Crypto = cryptocurrency
+                    Crypto = crypto
                 });
 
                 // calculate USD invested and returns
@@ -100,8 +99,8 @@ namespace CryptoTax.Transactions
                     });
 
                 // calculate capital gains with both accounting methods
-                var capitalGainsLifo = this._taxCalculator.CalculateCapialGains(transactions, AccountingMethodType.Lifo, cryptocurrency);
-                var capitalGainsFifo = this._taxCalculator.CalculateCapialGains(transactions, AccountingMethodType.Fifo, cryptocurrency);
+                var capitalGainsLifo = this._taxCalculator.CalculateCapialGains(transactions, AccountingMethodType.Lifo, crypto);
+                var capitalGainsFifo = this._taxCalculator.CalculateCapialGains(transactions, AccountingMethodType.Fifo, crypto);
                 
                 if (capitalGainsFifo != null)
                 {
@@ -148,8 +147,8 @@ namespace CryptoTax.Transactions
                         });
                         break;
                     case TransactionType.Sell:
-                        var cryptocurrencySellAmount = transaction.Quantity;
-                        while (cryptocurrencySellAmount > 0)
+                        var cryptoSellAmount = transaction.Quantity;
+                        while (cryptoSellAmount > 0)
                         {
                             if (assetCollection.Count == 0)
                             {
@@ -158,7 +157,7 @@ namespace CryptoTax.Transactions
                             }
                             Asset soldAsset;
                             decimal sellAmount;
-                            if (assetCollection.Peek().Amount <= cryptocurrencySellAmount)
+                            if (assetCollection.Peek().Amount <= cryptoSellAmount)
                             {
                                 soldAsset = assetCollection.Pop();
                                 sellAmount = soldAsset.Amount;
@@ -166,10 +165,10 @@ namespace CryptoTax.Transactions
                             else
                             {
                                 soldAsset = assetCollection.Peek();
-                                sellAmount = cryptocurrencySellAmount;
+                                sellAmount = cryptoSellAmount;
                                 soldAsset.Amount -= sellAmount;
                             }
-                            cryptocurrencySellAmount -= sellAmount;
+                            cryptoSellAmount -= sellAmount;
                         }
                         break;
                     default:
@@ -190,7 +189,7 @@ namespace CryptoTax.Transactions
 
         public class CryptoPortfolioSummaryInfo
         {
-            public CryptocurrencyType Crypto { get; set; }
+            public CryptoType Crypto { get; set; }
             public decimal? OneHourChange { get; set; }
             public decimal? TwentyFourHourChange { get; set; }
             public decimal? Return => (this.PriceInUsd / this.AveragePriceBought) - 1;
@@ -204,7 +203,7 @@ namespace CryptoTax.Transactions
         
         public class CryptoYearSummaryInfo
         {
-            public CryptocurrencyType Crypto { get; set; }
+            public CryptoType Crypto { get; set; }
             public int Year { get; set; }
             public decimal QuantityBought { get; set; }
             public decimal QuantitySold { get; set; }

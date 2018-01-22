@@ -1,4 +1,5 @@
-﻿using CryptoTax.TransactionImport;
+﻿using CryptoTax.Crypto;
+using CryptoTax.TransactionImport;
 using NUnit.Framework;
 using System;
 using System.IO;
@@ -7,15 +8,15 @@ using System.Text.RegularExpressions;
 namespace CryptoTax.Tests
 {
     [TestFixture]
-    public class CoinbaseCsvImporterTest
+    public class GdaxFillCsvImporterTest
     {
         [Test]
         public void BasicTest()
         {
-            var importer = new TransactionImport.CoinbaseCsvImporter();
+            var importer = new GdaxFillCsvImporter(new PriceInUsdProvider());
             var result = importer.ImportFile(new TransactonImporterSettings
             {
-                Filename = "C:\\Users\\Nick Sidawy\\Downloads\\lol.csv"
+                Filename = "C:\\Users\\Nick Sidawy\\Downloads\\fills (1).csv"
             });
         }
     }

@@ -1,4 +1,4 @@
-﻿using CryptoTax.Cryptocurrency;
+﻿using CryptoTax.Crypto;
 using CryptoTax.Transactions;
 using System;
 using System.Collections.Concurrent;
@@ -89,14 +89,14 @@ namespace CryptoTax.Forms
             
             this.Transactions.ListChanged += this.TransactionsUpdated;
 
-            var cryptocurrenyFilterInput = ((ToolStripComboBox)this.toolStrip2.Items["CryptocurrencyFilterInput"]);
+            var cryptocurrenyFilterInput = ((ToolStripComboBox)this.toolStrip2.Items["CryptoFilterInput"]);
             var noneOption = new NoneOption();
             cryptocurrenyFilterInput.Items.Add(noneOption);
             cryptocurrenyFilterInput.SelectedIndex = 0;
             cryptocurrenyFilterInput.Items
-                .AddRange(Enum.GetValues(typeof(CryptocurrencyType)).Cast<object>().ToArray());
-            cryptocurrenyFilterInput.SelectedIndexChanged += this.OnCryptocurrencyFilterInputChange;
-            cryptocurrenyFilterInput.TextChanged += this.OnCryptocurrencyFilterInputChange;
+                .AddRange(Enum.GetValues(typeof(CryptoType)).Cast<object>().ToArray());
+            cryptocurrenyFilterInput.SelectedIndexChanged += this.OnCryptoFilterInputChange;
+            cryptocurrenyFilterInput.TextChanged += this.OnCryptoFilterInputChange;
         }
 
         private void SetupEventHandlers()
@@ -137,11 +137,11 @@ namespace CryptoTax.Forms
         private void SyncTransactionDataGrid()
         {
             IEnumerable<Transaction> transactions = this.Transactions.ToList();
-            var cryptocurrenyFilterInput = ((ToolStripComboBox)this.toolStrip2.Items["CryptocurrencyFilterInput"]);
+            var cryptocurrenyFilterInput = ((ToolStripComboBox)this.toolStrip2.Items["CryptoFilterInput"]);
             if (!(cryptocurrenyFilterInput.SelectedItem is NoneOption))
             {
-                var cryptocurrencyFilter = (CryptocurrencyType)cryptocurrenyFilterInput.SelectedItem;
-                transactions = transactions.Where(x => x.Crypto == cryptocurrencyFilter);
+                var cryptoFilter = (Crypto.CryptoType)cryptocurrenyFilterInput.SelectedItem;
+                transactions = transactions.Where(x => x.Crypto == cryptoFilter);
             }
 
             this.ReplaceBindingListItems(this.TransactionDataGridBindingSource, transactions.ToList());
@@ -153,7 +153,7 @@ namespace CryptoTax.Forms
             var transactions = this.Transactions
                 .Where(x => !x.ExcludeFromPortfolio)
                 .ToList();
-            var yearSummaryInfos = this._portfolioSummaryProvider.GetCryptocurrencyYearSummaryInfo(transactions)
+            var yearSummaryInfos = this._portfolioSummaryProvider.GetCryptoYearSummaryInfo(transactions)
                 .OrderBy(x => x.Crypto)
                 .ThenBy(x => x.Year)
                 .ToList();
@@ -173,7 +173,7 @@ namespace CryptoTax.Forms
             var transactions = this.Transactions
                 .Where(x => !x.ExcludeFromPortfolio)
                 .ToList();
-            var summaryInfos = this._portfolioSummaryProvider.GetCryptocurrencyPortfolioSummaryInfo(transactions)
+            var summaryInfos = this._portfolioSummaryProvider.GetCryptoPortfolioSummaryInfo(transactions)
                 .OrderByDescending(x => x.TotalUsd)
                 .ToList();
 
@@ -191,7 +191,7 @@ namespace CryptoTax.Forms
             }
         }
 
-        private void OnCryptocurrencyFilterInputChange(object sender, EventArgs e)
+        private void OnCryptoFilterInputChange(object sender, EventArgs e)
         {
             this.SyncTransactionDataGrid();
         }
