@@ -52,7 +52,7 @@ namespace CryptoTax.Transactions
                             {
                                 soldAsset = assetCollection.Peek();
                                 sellAmount = cryptoSellAmount;
-                                soldAsset.Amount -= sellAmount;
+                                soldAsset.Amount -= sellAmount; 
                             }
                             cryptoSellAmount -= sellAmount;
                             capitalGains.Add(new CapitalGain

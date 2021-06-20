@@ -51,11 +51,9 @@ namespace CryptoTax.Transactions
                 {
                     Crypto = groupedTransaction.Key,
                     PriceInUsd = data?.PriceInUsd,
-                    OneHourChange = data?.OneHourChangePercent,
                     TwentyFourHourChange = data?.TwentyFourHourChangePercent,
                     MarketCap = data?.MarketCap,
                     AveragePriceBought = averagePriceBought,
-                    Link = data?.Link,
                     Quantity = totalAssetAmount
                 });
             }
@@ -190,15 +188,13 @@ namespace CryptoTax.Transactions
         public class CryptoPortfolioSummaryInfo
         {
             public CryptoType Crypto { get; set; }
-            public decimal? OneHourChange { get; set; }
-            public decimal? TwentyFourHourChange { get; set; }
             public decimal? Return => (this.PriceInUsd / this.AveragePriceBought) - 1;
             public decimal Quantity { get; set; }
             public decimal? TotalUsd => this.PriceInUsd * this.Quantity;
             public decimal? PriceInUsd { get; set; }
+            public decimal? TwentyFourHourChange { get; set; }
             public decimal? AveragePriceBought { get; set; }
             public decimal? MarketCap { get; set; }
-            public string Link { get; set; }
         }
         
         public class CryptoYearSummaryInfo

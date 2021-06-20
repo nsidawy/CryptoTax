@@ -65,15 +65,6 @@ namespace CryptoTax.Forms
             this.TransactionDataGrid.DataSource = this.TransactionDataGridBindingSource;
             this.YearSummaryDataGrid.DataSource = this.YearSummaryDataGridBindingSource;
 
-            this.SummaryDataGrid.Columns.Remove(nameof(PortfolioSummaryProvider.CryptoPortfolioSummaryInfo.Link));
-            var linkColumn = new DataGridViewLinkColumn
-            {
-                DataPropertyName = nameof(PortfolioSummaryProvider.CryptoPortfolioSummaryInfo.Link),
-                Name = nameof(PortfolioSummaryProvider.CryptoPortfolioSummaryInfo.Link)
-            };
-            this.SummaryDataGrid.Columns.Add(linkColumn);
-            this.SummaryDataGrid.CellClick += this.SummaryDataGrid_LinkClick;
-
             this.TransactionDataGrid.UserDeletingRow += (object o, DataGridViewRowCancelEventArgs e) =>
             {
                 // don't let the normal delete row happen. The data grid will be updated when the item is removed from it binding list
@@ -86,7 +77,10 @@ namespace CryptoTax.Forms
             this.TransactionDataGrid.CellFormatting += this.TransactionDataGrid_CellFormatting;
             this.SummaryDataGrid.CellFormatting += this.SummaryDataGrid_CellFormatting;
             this.YearSummaryDataGrid.CellFormatting += this.YearSummaryDataGrid_CellFormatting;
-            
+
+            this.TransactionDataGrid.Sort(this.TransactionDataGrid.Columns[0], ListSortDirection.Descending);
+            this.SummaryDataGrid.Sort(this.SummaryDataGrid.Columns[3], ListSortDirection.Descending);
+
             this.Transactions.ListChanged += this.TransactionsUpdated;
 
             var cryptocurrenyFilterInput = ((ToolStripComboBox)this.toolStrip2.Items["CryptoFilterInput"]);
@@ -178,7 +172,7 @@ namespace CryptoTax.Forms
                 .ToList();
 
             // update portfolio summary label
-            var networth = summaryInfos.Aggregate((decimal)0, (v, s) => v + s.TotalUsd ?? 0);
+            var networth = summaryInfos.Aggregate((decimal)0, (v, s) => v + (s.TotalUsd ?? 0));
             this.SummaryLabel.Text = "Crypto Net Worth - $" + networth.ToString("N2");
 
             var firstVisiblRowIndex = this.SummaryDataGrid.FirstDisplayedScrollingRowIndex;
@@ -315,15 +309,6 @@ namespace CryptoTax.Forms
 
         #region Data grid handlers
 
-        private void SummaryDataGrid_LinkClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (this.SummaryDataGrid.Columns[nameof(PortfolioSummaryProvider.CryptoPortfolioSummaryInfo.Link)].Index == e.ColumnIndex)
-            {
-                var cell = this.SummaryDataGrid.Rows[e.RowIndex].Cells[e.ColumnIndex];
-                Task.Run(() => Process.Start((string)cell.Value));
-            }
-        }
-
         private void TransactionDataGrid_Click(object sender, MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Right)
@@ -406,8 +391,7 @@ namespace CryptoTax.Forms
                     e.CellStyle.Format = "$#,##0,,.# M";
                 }
             }
-            else if (this.SummaryDataGrid.Columns[nameof(PortfolioSummaryProvider.CryptoPortfolioSummaryInfo.OneHourChange)].Index == e.ColumnIndex
-                || this.SummaryDataGrid.Columns[nameof(PortfolioSummaryProvider.CryptoPortfolioSummaryInfo.TwentyFourHourChange)].Index == e.ColumnIndex
+            else if (this.SummaryDataGrid.Columns[nameof(PortfolioSummaryProvider.CryptoPortfolioSummaryInfo.TwentyFourHourChange)].Index == e.ColumnIndex
                 || this.SummaryDataGrid.Columns[nameof(PortfolioSummaryProvider.CryptoPortfolioSummaryInfo.Return)].Index == e.ColumnIndex)
             {
                 e.CellStyle.Format = @"P1";

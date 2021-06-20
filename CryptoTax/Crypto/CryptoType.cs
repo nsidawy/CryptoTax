@@ -31,6 +31,8 @@ namespace CryptoTax.Crypto
         Reddcoin,
         Neo,
         Stellar,
-        Coss
+        Coss,
+        Holo,
+        Avax
     }
 }

@@ -9,15 +9,17 @@ using System.Threading;
 using System.Runtime.Caching;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Web;
 
 namespace CryptoTax.Crypto
 {
     public class CoinMarketCapDataProvider
     {
+        private readonly string ApiKey = "8feee1aa-8179-4355-8b91-fc05096c391d";
         private readonly MemoryCache _cache;
         private readonly Func<CacheItemPolicy> _defaultCacheItemPolicyFactory = () => new CacheItemPolicy
         {
-            AbsoluteExpiration = DateTimeOffset.UtcNow.AddSeconds(30)
+            AbsoluteExpiration = DateTimeOffset.UtcNow.AddSeconds(60)
         };
 
         private static IReadOnlyDictionary<CryptoType, string> _coinMarketcapCrypoLookupNames =
@@ -47,6 +49,8 @@ namespace CryptoTax.Crypto
                 { CryptoType.Neo, "neo" },
                 { CryptoType.Stellar, "stellar" },
                 { CryptoType.Coss, "coss" },
+                { CryptoType.Holo, "holotoken" },
+                { CryptoType.Avax, "avalanche-2" }
             };
 
         public CoinMarketCapDataProvider()
@@ -64,30 +68,37 @@ namespace CryptoTax.Crypto
             var coinMarketCapData = this._cache.Get(cryptoType.ToString()) as CoinMarketCapData;
             if(coinMarketCapData == null)
             {
+                var url = new UriBuilder("https://api.coingecko.com/api/v3/simple/price");
+
+                var queryString = HttpUtility.ParseQueryString(string.Empty);
+                queryString["ids"] = _coinMarketcapCrypoLookupNames[cryptoType];
+                queryString["vs_currencies"] = "USD";
+                queryString["include_market_cap"] = "true";
+                queryString["include_24hr_change"] = "true";
+
+                url.Query = queryString.ToString();
 
                 var client = new HttpClient
                 {
-                    BaseAddress = new Uri($"https://api.coinmarketcap.com/v1/ticker/{_coinMarketcapCrypoLookupNames[cryptoType]}/")
+                    BaseAddress = url.Uri
                 };
-
-                // Add an Accept header for JSON format.
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
                 try
                 {
                     HttpResponseMessage response = await client.GetAsync("");
                     var content = await response.Content.ReadAsStringAsync();
                     if (response.IsSuccessStatusCode)
                     {
-                        var data = Newtonsoft.Json.Linq.JArray.Parse(content).First();
-                        coinMarketCapData = new CoinMarketCapData
+                        var data = Newtonsoft.Json.Linq.JObject.Parse(content).First?.First;
+                        if (data != null)
                         {
-                            Crypto = cryptoType,
-                            PriceInUsd = data.Value<decimal>("price_usd"),
-                            OneHourChangePercent = data.Value<decimal>("percent_change_1h") / (decimal)100.0,
-                            TwentyFourHourChangePercent = data.Value<decimal>("percent_change_24h") / (decimal)100.0,
-                            MarketCap = data.Value<decimal>("market_cap_usd"),
-                        };
+                            coinMarketCapData = new CoinMarketCapData
+                            {
+                                Crypto = cryptoType,
+                                PriceInUsd = data.Value<decimal>("usd"),
+                                TwentyFourHourChangePercent = data.Value<decimal>("usd_24h_change") / (decimal)100.0,
+                                MarketCap = data.Value<decimal>("usd_market_cap"),
+                            };
+                        }
 
                         this._cache.Set(new CacheItem(cryptoType.ToString(), coinMarketCapData), this._defaultCacheItemPolicyFactory());
                     }
@@ -105,7 +116,6 @@ namespace CryptoTax.Crypto
         {
             public CryptoType Crypto { get; set; }
             public decimal PriceInUsd { get; set; }
-            public decimal OneHourChangePercent { get; set; }
             public decimal TwentyFourHourChangePercent { get; set; }
             public decimal MarketCap { get; set; }
             public string Link { get => $"https://coinmarketcap.com/currencies/{_coinMarketcapCrypoLookupNames[this.Crypto]}/"; }
