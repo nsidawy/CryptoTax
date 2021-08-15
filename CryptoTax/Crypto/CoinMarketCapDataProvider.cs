@@ -50,7 +50,9 @@ namespace CryptoTax.Crypto
                 { CryptoType.Stellar, "stellar" },
                 { CryptoType.Coss, "coss" },
                 { CryptoType.Holo, "holotoken" },
-                { CryptoType.Avax, "avalanche-2" }
+                { CryptoType.Avax, "avalanche-2" },
+                { CryptoType.AxieInfinity, "axie-infinity" },
+                { CryptoType.Ygg, "yield-guild-games" },
             };
 
         public CoinMarketCapDataProvider()
