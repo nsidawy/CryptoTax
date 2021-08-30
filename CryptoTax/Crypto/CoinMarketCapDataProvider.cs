@@ -48,6 +48,7 @@ namespace CryptoTax.Crypto
                 { CryptoType.Reddcoin, "reddcoin" },
                 { CryptoType.Neo, "neo" },
                 { CryptoType.Stellar, "stellar" },
+                { CryptoType.Solana, "solana" },
                 { CryptoType.Coss, "coss" },
                 { CryptoType.Holo, "holotoken" },
                 { CryptoType.Avax, "avalanche-2" },

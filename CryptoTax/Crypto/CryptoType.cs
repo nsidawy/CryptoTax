@@ -30,6 +30,7 @@ namespace CryptoTax.Crypto
         Quantum,
         Reddcoin,
         Ripple,
+        Solana,
         Stellar,
         Stratis,
         Verge,
