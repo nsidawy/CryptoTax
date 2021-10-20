@@ -82,7 +82,7 @@ namespace CryptoTax.Forms
             this.SummaryDataGrid.Sort(this.SummaryDataGrid.Columns[3], ListSortDirection.Descending);
 
             this.Transactions.ListChanged += this.TransactionsUpdated;
-
+            
             var cryptocurrenyFilterInput = ((ToolStripComboBox)this.toolStrip2.Items["CryptoFilterInput"]);
             var noneOption = new NoneOption();
             cryptocurrenyFilterInput.Items.Add(noneOption);
@@ -121,7 +121,7 @@ namespace CryptoTax.Forms
 
         private async void TransactionsUpdated(object sender, ListChangedEventArgs e)
         {
-            this.UpdateSummaryData();
+            await this.UpdateSummaryData();
             this.UpdateFiscalYearSummaryData();
 
             // update transactions grid source data
@@ -134,7 +134,7 @@ namespace CryptoTax.Forms
             var cryptocurrenyFilterInput = ((ToolStripComboBox)this.toolStrip2.Items["CryptoFilterInput"]);
             if (!(cryptocurrenyFilterInput.SelectedItem is NoneOption))
             {
-                var cryptoFilter = (Crypto.CryptoType)cryptocurrenyFilterInput.SelectedItem;
+                var cryptoFilter = (CryptoType)cryptocurrenyFilterInput.SelectedItem;
                 transactions = transactions.Where(x => x.Crypto == cryptoFilter);
             }
 
@@ -162,12 +162,12 @@ namespace CryptoTax.Forms
             }
         }
 
-        private async void UpdateSummaryData()
+        private async Task UpdateSummaryData()
         {
             var transactions = this.Transactions
                 .Where(x => !x.ExcludeFromPortfolio)
                 .ToList();
-            var summaryInfos = this._portfolioSummaryProvider.GetCryptoPortfolioSummaryInfo(transactions)
+            var summaryInfos = (await this._portfolioSummaryProvider.GetCryptoPortfolioSummaryInfo(transactions))
                 .OrderByDescending(x => x.TotalUsd)
                 .ToList();
 

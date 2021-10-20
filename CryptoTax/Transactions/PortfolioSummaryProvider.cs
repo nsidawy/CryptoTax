@@ -19,7 +19,7 @@ namespace CryptoTax.Transactions
             this._coinMarketCapDataProvider = coinMarketCapDataProvider;
         }
 
-        public IReadOnlyList<CryptoPortfolioSummaryInfo> GetCryptoPortfolioSummaryInfo(
+        public async Task<IReadOnlyList<CryptoPortfolioSummaryInfo>> GetCryptoPortfolioSummaryInfo(
             IReadOnlyList<Transaction> transactions)
         {
             // pull all needed coin market cap data in parallel
@@ -28,7 +28,7 @@ namespace CryptoTax.Transactions
             {
                 coinMarketCapDataTasks.Add(Task.Run(async () => await this._coinMarketCapDataProvider.GetCoinMarketCapData(crypto)));
             }
-            Task.WaitAll(coinMarketCapDataTasks.ToArray());
+            await Task.WhenAll(coinMarketCapDataTasks.ToArray());
             var coinMarketCapDataDictionary = coinMarketCapDataTasks
                 .Where(x => x.Result != null)
                 .ToDictionary(x => x.Result.Crypto, x => x.Result);
