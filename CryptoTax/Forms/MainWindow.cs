@@ -371,7 +371,9 @@ namespace CryptoTax.Forms
 
         private void SummaryDataGrid_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (this.SummaryDataGrid.Columns[nameof(PortfolioSummaryProvider.CryptoPortfolioSummaryInfo.TotalUsd)].Index == e.ColumnIndex)
+            if (this.SummaryDataGrid.Columns[nameof(PortfolioSummaryProvider.CryptoPortfolioSummaryInfo.TotalUsd)].Index == e.ColumnIndex
+                || this.SummaryDataGrid.Columns[nameof(PortfolioSummaryProvider.CryptoPortfolioSummaryInfo.PrincipalUsd)].Index == e.ColumnIndex
+                || this.SummaryDataGrid.Columns[nameof(PortfolioSummaryProvider.CryptoPortfolioSummaryInfo.ReturnsUsd)].Index == e.ColumnIndex)
             {
                 e.CellStyle.Format = "C2";
             }
