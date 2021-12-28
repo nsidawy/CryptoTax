@@ -54,6 +54,7 @@ namespace CryptoTax.Crypto
                 { CryptoType.Avax, "avalanche-2" },
                 { CryptoType.AxieInfinity, "axie-infinity" },
                 { CryptoType.Ygg, "yield-guild-games" },
+                { CryptoType.Shiba, "shiba-inu" },
             };
 
         public CoinMarketCapDataProvider()
