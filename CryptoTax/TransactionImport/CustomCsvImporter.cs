@@ -59,6 +59,10 @@ namespace CryptoTax.TransactionImport
             {
                 var record = csvReader.GetRecord<CustomCsvImporterRecord>();
                 var exchangeResult = this._exchangeParser.ParseExchange(record.Exchange);
+                if(record.CryptoAmount == 0)
+                {
+                    continue;
+                }
 
                 if (exchangeResult.TransactionCurrency == TransactionCurrencyType.Usd)
                 {

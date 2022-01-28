@@ -55,6 +55,7 @@ namespace CryptoTax.Crypto
                 { CryptoType.AxieInfinity, "axie-infinity" },
                 { CryptoType.Ygg, "yield-guild-games" },
                 { CryptoType.Shiba, "shiba-inu" },
+                { CryptoType.Ronin, "ronin" },
             };
 
         public CoinMarketCapDataProvider()

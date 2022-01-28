@@ -188,7 +188,9 @@ namespace CryptoTax.Transactions
         public class CryptoPortfolioSummaryInfo
         {
             public CryptoType Crypto { get; set; }
-            public decimal? TotalUsd => this.PriceInUsd * this.Quantity;
+            public decimal? TotalUsd => this.PriceInUsd.HasValue 
+                ? this.PriceInUsd * this.Quantity
+                : this.PrincipalUsd;
             public decimal? Return => (this.PriceInUsd / this.AveragePriceBought) - 1;
             public decimal? PriceInUsd { get; set; }
             public decimal? TwentyFourHourChange { get; set; }
