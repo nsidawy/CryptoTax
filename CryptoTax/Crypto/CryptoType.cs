@@ -34,6 +34,7 @@ namespace CryptoTax.Crypto
         Ripple,
         Ronin,
         Shiba,
+        SmoothLovePotion,
         Solana,
         Stellar,
         Stratis,

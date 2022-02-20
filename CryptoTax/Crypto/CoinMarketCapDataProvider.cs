@@ -47,6 +47,7 @@ namespace CryptoTax.Crypto
                 { CryptoType.Nxt, "nxt" },
                 { CryptoType.Reddcoin, "reddcoin" },
                 { CryptoType.Neo, "neo" },
+                { CryptoType.SmoothLovePotion, "smooth-love-potion" },
                 { CryptoType.Stellar, "stellar" },
                 { CryptoType.Solana, "solana" },
                 { CryptoType.Coss, "coss" },
