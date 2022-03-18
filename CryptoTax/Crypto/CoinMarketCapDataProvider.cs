@@ -57,6 +57,8 @@ namespace CryptoTax.Crypto
                 { CryptoType.Ygg, "yield-guild-games" },
                 { CryptoType.Shiba, "shiba-inu" },
                 { CryptoType.Ronin, "ronin" },
+                { CryptoType.Meld, "meld" },
+                { CryptoType.Milk, "muesliswap-milk" },
             };
 
         public CoinMarketCapDataProvider()

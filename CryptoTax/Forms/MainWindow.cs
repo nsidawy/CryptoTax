@@ -87,8 +87,6 @@ namespace CryptoTax.Forms
             var noneOption = new NoneOption();
             cryptocurrenyFilterInput.Items.Add(noneOption);
             cryptocurrenyFilterInput.SelectedIndex = 0;
-            cryptocurrenyFilterInput.Items
-                .AddRange(Enum.GetValues(typeof(CryptoType)).Cast<object>().ToArray());
             cryptocurrenyFilterInput.SelectedIndexChanged += this.OnCryptoFilterInputChange;
             cryptocurrenyFilterInput.TextChanged += this.OnCryptoFilterInputChange;
         }
@@ -126,6 +124,17 @@ namespace CryptoTax.Forms
 
             // update transactions grid source data
             this.SyncTransactionDataGrid();
+
+            var cryptocurrenyFilterInput = ((ToolStripComboBox)this.toolStrip2.Items["CryptoFilterInput"]);
+            var selectedItem = cryptocurrenyFilterInput.SelectedItem;
+            cryptocurrenyFilterInput.SelectedIndexChanged -= this.OnCryptoFilterInputChange;
+            cryptocurrenyFilterInput.Items.Clear();
+            var noneOption = new NoneOption();
+            cryptocurrenyFilterInput.Items.Add(noneOption);
+            cryptocurrenyFilterInput.Items
+                .AddRange(this.Transactions.Select(t => t.Crypto).Distinct().Cast<object>().ToArray());
+            cryptocurrenyFilterInput.SelectedItem = noneOption;
+            cryptocurrenyFilterInput.SelectedIndexChanged += this.OnCryptoFilterInputChange;
         }
 
         private void SyncTransactionDataGrid()
