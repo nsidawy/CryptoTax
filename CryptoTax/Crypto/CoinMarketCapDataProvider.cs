@@ -59,6 +59,7 @@ namespace CryptoTax.Crypto
                 { CryptoType.Ronin, "ronin" },
                 { CryptoType.Meld, "meld" },
                 { CryptoType.Milk, "muesliswap-milk" },
+                { CryptoType.Rainbow, "rainbow-token-2" },
             };
 
         public CoinMarketCapDataProvider()

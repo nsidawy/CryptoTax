@@ -32,6 +32,7 @@ namespace CryptoTax.Crypto
         Neo,
         Nxt,
         Quantum,
+        Rainbow,
         Reddcoin,
         Ripple,
         Ronin,
