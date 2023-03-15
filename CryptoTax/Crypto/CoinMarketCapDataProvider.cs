@@ -61,6 +61,8 @@ namespace CryptoTax.Crypto
                 { CryptoType.Milk, "muesliswap-milk" },
                 { CryptoType.Rainbow, "rainbow-token-2" },
                 { CryptoType.Ergo, "ergo" },
+                { CryptoType.Min, "minswap" },
+                { CryptoType.Liqwid, "liqwid-finance" },
             };
 
         public CoinMarketCapDataProvider()
@@ -68,55 +70,48 @@ namespace CryptoTax.Crypto
             this._cache = new MemoryCache("CoinMarketCapDataProviderCache", null);
         }
 
-        public async Task<CoinMarketCapData> GetCoinMarketCapData(CryptoType cryptoType)
+        public async Task<List<CoinMarketCapData>> GetCoinMarketCapData(IReadOnlyCollection<CryptoType> cryptoTypes)
         {
-            if(!_coinMarketcapCrypoLookupNames.ContainsKey(cryptoType))
+            var supportedCryptos = cryptoTypes.Where(_coinMarketcapCrypoLookupNames.ContainsKey)
+                .Select(c => _coinMarketcapCrypoLookupNames[c]);
+
+            var url = new UriBuilder("https://api.coingecko.com/api/v3/simple/price");
+
+            var queryString = HttpUtility.ParseQueryString(string.Empty);
+            queryString["ids"] = String.Join(",", supportedCryptos);
+            queryString["vs_currencies"] = "USD";
+            queryString["include_market_cap"] = "true";
+            queryString["include_24hr_change"] = "true";
+
+            url.Query = queryString.ToString();
+
+            var client = new HttpClient
             {
-                return null;
-            }
-
-            var coinMarketCapData = this._cache.Get(cryptoType.ToString()) as CoinMarketCapData;
-            if(coinMarketCapData == null)
+                BaseAddress = url.Uri
+            };
+            var coinMarketCapData = new List<CoinMarketCapData>();
+            try
             {
-                var url = new UriBuilder("https://api.coingecko.com/api/v3/simple/price");
-
-                var queryString = HttpUtility.ParseQueryString(string.Empty);
-                queryString["ids"] = _coinMarketcapCrypoLookupNames[cryptoType];
-                queryString["vs_currencies"] = "USD";
-                queryString["include_market_cap"] = "true";
-                queryString["include_24hr_change"] = "true";
-
-                url.Query = queryString.ToString();
-
-                var client = new HttpClient
+                HttpResponseMessage response = await client.GetAsync("");
+                var content = await response.Content.ReadAsStringAsync();
+                if (response.IsSuccessStatusCode)
                 {
-                    BaseAddress = url.Uri
-                };
-                try
-                {
-                    HttpResponseMessage response = await client.GetAsync("");
-                    var content = await response.Content.ReadAsStringAsync();
-                    if (response.IsSuccessStatusCode)
+                    var data = Newtonsoft.Json.Linq.JObject.Parse(content);
+                    foreach(var d in data)
                     {
-                        var data = Newtonsoft.Json.Linq.JObject.Parse(content).First?.First;
-                        if (data != null)
+                        coinMarketCapData.Add(new CoinMarketCapData
                         {
-                            coinMarketCapData = new CoinMarketCapData
-                            {
-                                Crypto = cryptoType,
-                                PriceInUsd = data.Value<decimal>("usd"),
-                                TwentyFourHourChangePercent = data.Value<decimal>("usd_24h_change") / (decimal)100.0,
-                                MarketCap = data.Value<decimal>("usd_market_cap"),
-                            };
-                        }
-
-                        this._cache.Set(new CacheItem(cryptoType.ToString(), coinMarketCapData), this._defaultCacheItemPolicyFactory());
+                            Crypto = _coinMarketcapCrypoLookupNames.Single(kv => kv.Value == d.Key).Key,
+                            PriceInUsd = d.Value.Value<decimal>("usd"),
+                            TwentyFourHourChangePercent = d.Value.Value<decimal>("usd_24h_change") / (decimal)100.0,
+                            MarketCap = d.Value.Value<decimal>("usd_market_cap"),
+                        });
                     }
                 }
-                catch
-                {
-                    /* swallow exception */
-                }
+            }
+            catch
+            {
+                /* swallow exception */
             }
 
             return coinMarketCapData;

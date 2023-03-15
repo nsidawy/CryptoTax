@@ -22,16 +22,10 @@ namespace CryptoTax.Transactions
         public async Task<IReadOnlyList<CryptoPortfolioSummaryInfo>> GetCryptoPortfolioSummaryInfo(
             IReadOnlyList<Transaction> transactions)
         {
-            // pull all needed coin market cap data in parallel
-            var coinMarketCapDataTasks = new List<Task<CoinMarketCapData>>();
-            foreach(var crypto in transactions.Select(x => x.Crypto).Distinct())
-            {
-                coinMarketCapDataTasks.Add(Task.Run(async () => await this._coinMarketCapDataProvider.GetCoinMarketCapData(crypto)));
-            }
-            await Task.WhenAll(coinMarketCapDataTasks.ToArray());
-            var coinMarketCapDataDictionary = coinMarketCapDataTasks
-                .Where(x => x.Result != null)
-                .ToDictionary(x => x.Result.Crypto, x => x.Result);
+            var cryptos = transactions.Select(x => x.Crypto).Distinct().ToList();
+            var coinMarketCapData = await this._coinMarketCapDataProvider.GetCoinMarketCapData(cryptos);
+            var coinMarketCapDataDictionary = coinMarketCapData
+                .ToDictionary(x => x.Crypto, x => x);
 
             var groupedTransactions = transactions.GroupBy(x => x.Crypto);
             var summaryInfos = new List<CryptoPortfolioSummaryInfo>();
