@@ -184,6 +184,12 @@ namespace CryptoTax.Forms
             var networth = summaryInfos.Aggregate((decimal)0, (v, s) => v + (s.TotalUsd ?? 0));
             this.SummaryLabel.Text = "Crypto Net Worth - $" + networth.ToString("N2");
 
+
+            var selectedCells = new List<Tuple<int, int>>();
+            for(var i = 0; i < this.SummaryDataGrid.SelectedCells.Count; i++)
+            {
+                selectedCells.Add(new Tuple<int, int>(this.SummaryDataGrid.SelectedCells[i].ColumnIndex, this.SummaryDataGrid.SelectedCells[i].RowIndex));
+            }
             var firstVisiblRowIndex = this.SummaryDataGrid.FirstDisplayedScrollingRowIndex;
             this.ReplaceBindingListItems(this.SummaryDataGridBindingSource, summaryInfos);
             this.SummaryDataGridBindingSource.Resort();
@@ -192,7 +198,11 @@ namespace CryptoTax.Forms
             {
                 this.SummaryDataGrid.FirstDisplayedScrollingRowIndex = Math.Max(Math.Min(firstVisiblRowIndex, this.SummaryDataGrid.RowCount - 1), 0);
             }
-        }
+            foreach(var selectedCell in selectedCells)
+            {
+                this.SummaryDataGrid[selectedCell.Item1, selectedCell.Item2].Selected = true;
+            }
+        } 
 
         private void OnCryptoFilterInputChange(object sender, EventArgs e)
         {
