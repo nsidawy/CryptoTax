@@ -191,14 +191,19 @@ namespace CryptoTax.Forms
                 selectedCells.Add(new Tuple<int, int>(this.SummaryDataGrid.SelectedCells[i].ColumnIndex, this.SummaryDataGrid.SelectedCells[i].RowIndex));
             }
             var firstVisiblRowIndex = this.SummaryDataGrid.FirstDisplayedScrollingRowIndex;
+            if(firstVisiblRowIndex < 0)
+            {
+                firstVisiblRowIndex = 0;
+            }
             this.ReplaceBindingListItems(this.SummaryDataGridBindingSource, summaryInfos);
             this.SummaryDataGridBindingSource.Resort();
             // do this to maintain data grid scroll location after data rebinding
-            if (firstVisiblRowIndex >= 0)
+            if (firstVisiblRowIndex >= 0 && this.SummaryDataGrid.RowCount > 0)
             {
                 this.SummaryDataGrid.FirstDisplayedScrollingRowIndex = Math.Max(Math.Min(firstVisiblRowIndex, this.SummaryDataGrid.RowCount - 1), 0);
             }
-            foreach(var selectedCell in selectedCells)
+            this.SummaryDataGrid.ClearSelection();
+            foreach (var selectedCell in selectedCells)
             {
                 this.SummaryDataGrid[selectedCell.Item1, selectedCell.Item2].Selected = true;
             }
@@ -340,11 +345,11 @@ namespace CryptoTax.Forms
             {
                 this.TransactionDataGrid.ClearSelection();
                 this.TransactionDataGrid.Rows[currentMouseOverRow].Selected = true;
-                ContextMenu cm = new ContextMenu();
-                cm.MenuItems.Add("Edit transaction");
-                cm.MenuItems[0].Click += this.EditTransactionButton_Click;
-                cm.MenuItems.Add("Delete transaction");
-                cm.MenuItems[1].Click += (o1, e2) => this.Transactions.Remove((Transaction)this.TransactionDataGrid.Rows[currentMouseOverRow].DataBoundItem);
+                ContextMenuStrip cm = new ContextMenuStrip();
+                cm.Items.Add("Edit transaction");
+                cm.Items[0].Click += this.EditTransactionButton_Click;
+                cm.Items.Add("Delete transaction");
+                cm.Items[1].Click += (o1, e2) => this.Transactions.Remove((Transaction)this.TransactionDataGrid.Rows[currentMouseOverRow].DataBoundItem);
                 cm.Show(this.TransactionDataGrid, new Point(e.X, e.Y));
             }
         }

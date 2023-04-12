@@ -254,7 +254,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.NumericUpDown CryptoAmountInput;
         private System.Windows.Forms.Button AddButton;
-        private System.Windows.Forms.Button CancelButton;
+        private new System.Windows.Forms.Button CancelButton;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.CheckBox ExcludeFromPortfolioCheckBox;

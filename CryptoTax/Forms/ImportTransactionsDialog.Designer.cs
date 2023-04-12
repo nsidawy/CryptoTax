@@ -187,7 +187,7 @@
 
         #endregion
         private System.Windows.Forms.Button ImportButton;
-        private System.Windows.Forms.Button CancelButton;
+        private new System.Windows.Forms.Button CancelButton;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.RadioButton CoinbaseCsvRadioButton;
         private System.Windows.Forms.RadioButton GdaxFillCsvRadioButton;

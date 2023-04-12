@@ -9,14 +9,12 @@ using System.Threading;
 using System.Runtime.Caching;
 using System.Threading.Tasks;
 using System.Timers;
-using System.Web;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace CryptoTax.Crypto
 {
     public class CoinMarketCapDataProvider
     {
-        private readonly string ApiKey = "8feee1aa-8179-4355-8b91-fc05096c391d";
-        private readonly MemoryCache _cache;
         private readonly Func<CacheItemPolicy> _defaultCacheItemPolicyFactory = () => new CacheItemPolicy
         {
             AbsoluteExpiration = DateTimeOffset.UtcNow.AddSeconds(60)
@@ -65,29 +63,19 @@ namespace CryptoTax.Crypto
                 { CryptoType.Liqwid, "liqwid-finance" },
             };
 
-        public CoinMarketCapDataProvider()
-        {
-            this._cache = new MemoryCache("CoinMarketCapDataProviderCache", null);
-        }
-
         public async Task<List<CoinMarketCapData>> GetCoinMarketCapData(IReadOnlyCollection<CryptoType> cryptoTypes)
         {
             var supportedCryptos = cryptoTypes.Where(_coinMarketcapCrypoLookupNames.ContainsKey)
                 .Select(c => _coinMarketcapCrypoLookupNames[c]);
 
-            var url = new UriBuilder("https://api.coingecko.com/api/v3/simple/price");
-
-            var queryString = HttpUtility.ParseQueryString(string.Empty);
+            var queryString = new Dictionary<string, string>();
             queryString["ids"] = String.Join(",", supportedCryptos);
             queryString["vs_currencies"] = "USD";
             queryString["include_market_cap"] = "true";
             queryString["include_24hr_change"] = "true";
-
-            url.Query = queryString.ToString();
-
             var client = new HttpClient
             {
-                BaseAddress = url.Uri
+                BaseAddress = new Uri(QueryHelpers.AddQueryString("https://api.coingecko.com/api/v3/simple/price", queryString))
             };
             var coinMarketCapData = new List<CoinMarketCapData>();
             try
