@@ -11,6 +11,7 @@ namespace CryptoTax.Crypto
         Ada,
         Augur,
         Avax,
+        Axo,
         AxieInfinity,
         Bitcoin,
         BitcoinCash,
