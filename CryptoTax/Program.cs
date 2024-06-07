@@ -37,7 +37,7 @@ namespace CryptoTax
 
             container.RegisterType<PriceInUsdProvider>()
                 .InstancePerLifetimeScope();
-            container.RegisterType<CoinMarketCapDataProvider>()
+            container.RegisterType<CryptoDataProvider>()
                 .InstancePerLifetimeScope();
 
             container.RegisterType<TaxCalculator>();

@@ -4,16 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static CryptoTax.Crypto.CoinMarketCapDataProvider;
+using static CryptoTax.Crypto.CryptoDataProvider;
 
 namespace CryptoTax.Transactions
 {
     public class PortfolioSummaryProvider
     {
         private readonly TaxCalculator _taxCalculator;
-        private readonly CoinMarketCapDataProvider _coinMarketCapDataProvider;
+        private readonly CryptoDataProvider _coinMarketCapDataProvider;
 
-        public PortfolioSummaryProvider(TaxCalculator taxCalculator, CoinMarketCapDataProvider coinMarketCapDataProvider)
+        public PortfolioSummaryProvider(TaxCalculator taxCalculator, CryptoDataProvider coinMarketCapDataProvider)
         {
             this._taxCalculator = taxCalculator;
             this._coinMarketCapDataProvider = coinMarketCapDataProvider;
@@ -23,7 +23,7 @@ namespace CryptoTax.Transactions
             IReadOnlyList<Transaction> transactions)
         {
             var cryptos = transactions.Select(x => x.Crypto).Distinct().ToList();
-            var coinMarketCapData = await this._coinMarketCapDataProvider.GetCoinMarketCapData(cryptos);
+            var coinMarketCapData = await this._coinMarketCapDataProvider.GetCryptoData(cryptos);
             var coinMarketCapDataDictionary = coinMarketCapData
                 .ToDictionary(x => x.Crypto, x => x);
 
@@ -31,7 +31,7 @@ namespace CryptoTax.Transactions
             var summaryInfos = new List<CryptoPortfolioSummaryInfo>();
             foreach (var groupedTransaction in groupedTransactions)
             {
-                coinMarketCapDataDictionary.TryGetValue(groupedTransaction.Key, out CoinMarketCapDataProvider.CoinMarketCapData data);
+                coinMarketCapDataDictionary.TryGetValue(groupedTransaction.Key, out CryptoDataProvider.CoinMarketCapData data);
 
                 var heldAssets = this.GetHeldAssets(groupedTransaction.ToList());
                 decimal? averagePriceBought = null;

@@ -18,7 +18,7 @@ namespace CryptoTax.Forms
     public partial class MainWindow : Form
     {
         private PriceInUsdProvider _priceInUsdProvider;
-        private CoinMarketCapDataProvider _coinMarketCapDataProvider;
+        private CryptoDataProvider _coinMarketCapDataProvider;
         private TaxCalculator _taxCalculator;
         private PortfolioSummaryProvider _portfolioSummaryProvider;
         private FormFactory _formFactory;
@@ -33,7 +33,7 @@ namespace CryptoTax.Forms
 
         public MainWindow(
             PriceInUsdProvider priceInUsdProvider,
-            CoinMarketCapDataProvider coinMarketCapDataProvider,
+            CryptoDataProvider coinMarketCapDataProvider,
             TaxCalculator taxCalculator,
             PortfolioSummaryProvider portfolioSummaryProvider,
             FormFactory formFactory,
