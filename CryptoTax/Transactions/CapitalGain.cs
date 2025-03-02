@@ -26,5 +26,10 @@ namespace CryptoTax.Transactions
                 && capitalGainsObj.UsdAmount == this.UsdAmount
                 && capitalGainsObj.YearIncurred == this.YearIncurred;
         }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(AssetLifetime, UsdAmount, YearIncurred, IsLongTerm);
+        }
     }
 }

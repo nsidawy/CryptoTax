@@ -1,4 +1,6 @@
-﻿namespace CryptoTax.Forms
+﻿using System.Threading;
+
+namespace CryptoTax.Forms
 {
     partial class MainWindow
     {

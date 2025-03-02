@@ -19,11 +19,10 @@ namespace CryptoTax.Transactions
             this._coinMarketCapDataProvider = coinMarketCapDataProvider;
         }
 
-        public async Task<IReadOnlyList<CryptoPortfolioSummaryInfo>> GetCryptoPortfolioSummaryInfo(
-            IReadOnlyList<Transaction> transactions)
+        public IReadOnlyList<CryptoPortfolioSummaryInfo> GetCryptoPortfolioSummaryInfo(
+            IReadOnlyList<Transaction> transactions,
+            List<CoinMarketCapData> coinMarketCapData)
         {
-            var cryptos = transactions.Select(x => x.Crypto).Distinct().ToList();
-            var coinMarketCapData = await this._coinMarketCapDataProvider.GetCryptoData(cryptos);
             var coinMarketCapDataDictionary = coinMarketCapData
                 .ToDictionary(x => x.Crypto, x => x);
 

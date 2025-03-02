@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using CryptoTax.Utilities;
 using System.ComponentModel;
 using System.Diagnostics;
+using static CryptoTax.Crypto.CryptoDataProvider;
 
 namespace CryptoTax.Forms
 {
@@ -31,6 +32,8 @@ namespace CryptoTax.Forms
         private SortableBindingList<PortfolioSummaryProvider.CryptoPortfolioSummaryInfo> SummaryDataGridBindingSource = new SortableBindingList<PortfolioSummaryProvider.CryptoPortfolioSummaryInfo>();
         private SortableBindingList<PortfolioSummaryProvider.CryptoYearSummaryInfo> YearSummaryDataGridBindingSource = new SortableBindingList<PortfolioSummaryProvider.CryptoYearSummaryInfo>();
 
+        private List<CoinMarketCapData> CoinMarketCapData = new();
+
         public MainWindow(
             PriceInUsdProvider priceInUsdProvider,
             CryptoDataProvider coinMarketCapDataProvider,
@@ -48,7 +51,7 @@ namespace CryptoTax.Forms
             this._formFactory = formFactory;
             this._saveFileReaderWriter = saveFileReaderWriter;
             
-            this.SummaryDataRefreshTimer.Tick += (object o, EventArgs e) => this.UpdateSummaryData();
+            this.SummaryDataRefreshTimer.Tick += async (object o, EventArgs e) => await this.UpdateSummaryData();
             this.SummaryDataRefreshTimer.Start();
                
             this.SetupDataGrids();
@@ -176,7 +179,14 @@ namespace CryptoTax.Forms
             var transactions = this.Transactions
                 .Where(x => !x.ExcludeFromPortfolio)
                 .ToList();
-            var summaryInfos = (await this._portfolioSummaryProvider.GetCryptoPortfolioSummaryInfo(transactions))
+
+            var cryptos = transactions.Select(x => x.Crypto).Distinct().ToList();
+            var newCoinMarketCapData = await this._coinMarketCapDataProvider.GetCryptoData(cryptos);
+            if(newCoinMarketCapData != null)
+            {
+                this.CoinMarketCapData = newCoinMarketCapData;
+            }
+            var summaryInfos = (this._portfolioSummaryProvider.GetCryptoPortfolioSummaryInfo(transactions, this.CoinMarketCapData))
                 .OrderByDescending(x => x.TotalUsd)
                 .ToList();
 
